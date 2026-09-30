@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#050A13" />
+  <meta name="description" content="AVERO Studio — estratégia, design e tecnologia para criar sites que impulsionam negócios." />
+  <title>AVERO Studio — Sites que impulsionam negócios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="page-flow" aria-hidden="true">
+    <svg viewBox="0 0 1440 9000" preserveAspectRatio="none">
+      <path d="M1320 0C980 620 1110 980 720 1420S166 2220 624 2780s688 794 306 1350S312 5030 796 5590s462 1128 68 1580S250 8210 604 9000"/>
+      <path d="M1410 40C1090 670 1215 1050 812 1510S275 2270 713 2810s603 817 238 1374S410 5078 858 5660s391 1115 24 1560S351 8280 694 8980"/>
+    </svg>
+  </div>
+
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="AVERO Studio, início"><span>AVERO</span><small>Studio</small></a>
+      <nav class="desktop-nav" aria-label="Navegação principal">
+        <a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a>
+      </nav>
+      <a class="btn btn-outline desktop-cta" href="#contato">Falar sobre meu projeto <span>→</span></a>
+      <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+    <nav class="mobile-nav" aria-label="Navegação móvel">
+      <a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">ESTRATÉGIA · DESIGN · TECNOLOGIA</p>
+          <h1 id="hero-title">Sites que<br>impulsionam<br><em>negócios.</em></h1>
+          <p class="lead">Estratégia, design e tecnologia para transformar sua presença digital em percepção, oportunidades e resultados.</p>
+          <div class="actions"><a class="btn btn-primary" href="#contato">Falar sobre meu projeto <span>→</span></a><a class="btn btn-outline" href="#projetos">Ver projetos <span>↗</span></a></div>
+          <a class="scroll-cue" href="#posicionamento"><span>↓</span> ROLAR</a>
+        </div>
+        <div class="hero-art reveal" id="heroEye">
+          <svg class="avero-eye" viewBox="0 0 760 440" role="img" aria-label="Símbolo Avero em forma de olho abstrato">
+            <defs>
+              <filter id="softGlow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="9"/></filter>
+              <filter id="pinGlow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <path class="eye-atmosphere" d="M125 222C240 48 531 77 641 216C529 365 235 377 125 222Z" filter="url(#softGlow)"/>
+            <g class="eye-lines upper">
+              <path d="M52 222C170 40 294 74 382 157C455 226 545 244 702 201"/><path d="M58 233C174 61 293 91 380 166C458 234 557 245 695 193"/><path d="M66 244C183 87 300 105 381 174C462 243 571 244 686 185"/><path d="M79 254C196 111 312 120 384 183C469 254 581 241 672 176"/><path d="M95 266C214 136 326 142 389 193C476 263 590 236 653 168"/><path d="M112 279C231 160 340 161 396 201C483 263 595 227 632 163"/>
+            </g>
+            <g class="eye-lines lower">
+              <path d="M52 222C171 405 302 367 389 284C463 214 550 190 702 201"/><path d="M58 233C176 390 299 350 386 276C465 210 558 187 695 193"/><path d="M66 244C185 371 306 333 386 268C470 200 570 188 686 185"/><path d="M79 254C200 352 317 318 388 260C475 190 580 191 672 176"/><path d="M95 266C217 334 328 301 391 252C480 182 590 196 653 168"/><path d="M112 279C235 316 342 283 397 245C485 177 596 204 632 163"/>
+            </g>
+            <path class="eye-cross" d="M73 291C194 197 282 181 378 220C476 260 573 245 674 171"/>
+            <path class="eye-cross alt" d="M70 170C192 272 283 269 380 220C475 171 574 189 684 277"/>
+            <g class="iris" id="irisGroup">
+              <ellipse class="iris-glow" cx="389" cy="219" rx="92" ry="84" filter="url(#softGlow)"/>
+              <circle class="iris-core" cx="389" cy="219" r="70"/>
+              <circle class="iris-ring" cx="389" cy="219" r="56"/>
+              <circle class="iris-spec" cx="414" cy="195" r="4" filter="url(#pinGlow)"/>
+            </g>
+            <circle class="node" cx="70" cy="240" r="2.8" filter="url(#pinGlow)"/><circle class="node" cx="673" cy="184" r="2.8" filter="url(#pinGlow)"/>
+          </svg>
+          <div class="hero-signature">VISÃO<br>MOVIMENTO<br>RESULTADOS</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-shell positioning" id="posicionamento"><div class="container"><p class="section-index">01 / POSICIONAMENTO</p><div class="split-copy"><h2>Sua empresa já existe.<br>Agora ela precisa parecer<br>tão boa no digital quanto<br>é no mundo real.</h2><div class="copy-side"><p>Um bom site não serve apenas para dizer que sua empresa existe. Ele deve transmitir valor, orientar o cliente e transformar atenção em oportunidade.</p><p>É por isso que estratégia, design e tecnologia entram antes da estética.</p></div></div><div class="pillars"><article><span>01</span><h3>VISÃO</h3><p>Enxergar antes de construir.</p></article><article><span>02</span><h3>MOVIMENTO</h3><p>Transformar estratégia em experiência.</p></article><article><span>03</span><h3>RESULTADOS</h3><p>Presença que abre oportunidades.</p></article></div></div></section>
+
+    <section class="section-shell services" id="servicos"><div class="container services-layout"><div class="services-intro"><p class="section-index">02 / SERVIÇOS</p><h2>Seu site precisa<br>fazer mais do<br>que existir.</h2><p>Cada negócio tem um momento diferente. A Avero combina estratégia, design e tecnologia para construir a solução digital que faz sentido para o seu objetivo.</p><a class="text-cta" href="#contato">Não sabe exatamente o que precisa?<br><strong>Conte sobre seu negócio →</strong></a></div><div class="service-grid"><article class="service-card"><div class="ui-preview p1"><span></span><span></span><span></span><b></b></div><span class="num">01</span><h3>Sites institucionais</h3><small>PRESENÇA QUE POSICIONA</small><p>Presença com marca, confiança e clareza para negócios de longo prazo.</p><button aria-label="Abrir Sites institucionais">→</button></article><article class="service-card"><div class="ui-preview p2"><span></span><span></span><span></span><b></b></div><span class="num">02</span><h3>Landing Pages</h3><small>PÁGINAS QUE CONVERTEM</small><p>Uma página. Um objetivo. Mais clareza, mais direção.</p><button aria-label="Abrir Landing Pages">→</button></article><article class="service-card"><div class="ui-preview p3"><span></span><span></span><span></span><b></b></div><span class="num">03</span><h3>E-commerce + Cardápios</h3><small>EXPERIÊNCIAS QUE VENDEM</small><p>Experiência de compra profissional, clara e eficiente.</p><button aria-label="Abrir E-commerce">→</button></article><article class="service-card"><div class="ui-preview p4"><span></span><span></span><span></span><b></b></div><span class="num">04</span><h3>SEO & Performance</h3><small>BASE PARA CRESCER</small><p>Mais visibilidade, velocidade e resultados reais.</p><button aria-label="Abrir SEO e Performance">→</button></article></div></div></section>
+
+    <section class="section-shell collection" id="colecao"><div class="container collection-layout"><div class="collection-intro"><p class="section-index">03 / COLEÇÃO AVERO</p><h2>Ainda não sabe<br>como seu site<br>deveria parecer?</h2><p>Explore algumas direções criadas pela Avero e encontre um ponto de partida para o seu projeto. Cada estrutura pode ser adaptada à identidade, ao conteúdo e aos objetivos do seu negócio.</p><a class="btn btn-outline" href="#">Explorar toda a Coleção →</a></div><div class="collection-rail" aria-label="Prévia da Coleção Avero"><article class="collection-card primary"><div class="layout-thumb gastronomy"><span class="nav"></span><span class="hero"></span><span class="grid"></span></div><h3>GASTRONOMIA</h3><p>Sites e cardápios digitais para restaurantes e bares.</p></article><article class="collection-card tilt tilt-1"><div class="layout-thumb beauty"><span class="nav"></span><span class="hero"></span><span class="grid"></span></div><h3>ESTÉTICA & BELEZA</h3><p>Presença digital para clínicas e profissionais.</p></article><article class="collection-card tilt tilt-2"><div class="layout-thumb health"><span class="nav"></span><span class="hero"></span><span class="grid"></span></div><h3>SAÚDE</h3><p>Sites institucionais e páginas de conversão.</p></article><article class="collection-card tilt tilt-3"><div class="layout-thumb business"><span class="nav"></span><span class="hero"></span><span class="grid"></span></div><h3>NEGÓCIOS</h3><p>Estrutura que comunica profissionalismo.</p></article></div></div></section>
+
+    <section class="section-shell projects" id="projetos"><div class="container"><div class="section-heading-row"><div><p class="section-index">04 / PROJETOS</p><h2>Cada negócio pede<br>uma direção diferente.</h2><p>Projetos construídos a partir do contexto, da identidade e dos objetivos de cada marca.</p></div><a class="btn btn-outline" href="#">Ver todos os projetos →</a></div><div class="project-grid"><article class="project-card featured"><div class="laptop"><div class="screen"><span class="screen-top"></span><div class="screen-body"><small>CONCEITO AVERO</small><strong>STÚDIO NICOTA</strong><span></span><span></span></div></div><div class="base"></div></div><div class="project-meta"><span>CONCEITO AVERO</span><h3>STÚDIO NICOTA</h3><p>Arquitetura & Interiores</p></div></article><article class="project-card small"><div class="project-mini"><span></span><span></span><b></b></div><div class="project-meta"><span>PROJETO CLIENTE</span><h3>VÉRTICE CLÍNICA</h3><p>Saúde & Bem-estar</p></div></article><article class="project-card small"><div class="project-mini warm"><span></span><span></span><b></b></div><div class="project-meta"><span>DEMO PERSONALIZADA</span><h3>SABOR REAL</h3><p>Gastronomia</p></div></article></div></div></section>
+
+    <section class="section-shell method" id="sobre"><div class="container method-layout"><div><p class="section-index">05 / MÉTODO AVERO</p><h2>Antes de construir,<br>precisamos enxergar.</h2><p>Cada projeto começa entendendo o negócio, o momento da marca e o que o digital precisa resolver. Depois, transformamos essa visão em direção, experiência e execução.</p><a class="btn btn-outline" href="#contato">Conheça nosso método →</a></div><ol class="timeline"><li><span>01</span><div><h3>IMERSÃO</h3><p>Entender antes de propor.</p></div></li><li><span>02</span><div><h3>DIREÇÃO</h3><p>Definir antes de desenhar.</p></div></li><li><span>03</span><div><h3>CRIAÇÃO</h3><p>Transformar estratégia em experiência.</p></div></li><li><span>04</span><div><h3>EVOLUÇÃO</h3><p>O lançamento não precisa ser o fim.</p></div></li></ol></div></section>
+
+    <section class="section-shell perspective"><div class="container"><p class="section-index">06 / PERSPECTIVA</p><div class="perspective-grid"><h2>Não é sobre<br>estar online.</h2><div class="perspective-eye" aria-hidden="true"><svg viewBox="0 0 720 350"><path d="M35 180C176 17 306 87 370 145C441 208 558 218 690 169"/><path d="M35 180C177 335 313 277 371 219C443 149 561 143 690 169"/><path d="M69 200C188 81 291 110 370 165C451 222 552 221 655 172"/><path d="M71 165C188 273 292 252 371 198C452 143 557 148 652 188"/><circle cx="373" cy="184" r="55"/></svg></div><div><h2>É sobre como sua empresa é percebida quando alguém encontra você.</h2><p>Percepção gera confiança.<br>Confiança abre oportunidades.</p></div></div><div class="perspective-sign">VISÃO · MOVIMENTO · RESULTADOS</div></div></section>
+
+    <section class="section-shell contact" id="contato"><div class="container contact-layout"><div><p class="section-index">07 / CONTATO</p><h2>Seu próximo<br>movimento<br>começa aqui.</h2><p>Se você quer transformar a presença digital do seu negócio em algo mais claro, estratégico e profissional, a Avero pode ajudar a construir esse próximo passo.</p><p>Você não precisa chegar com tudo resolvido. Às vezes, uma boa conversa já é o começo da direção certa.</p><div class="actions"><a class="btn btn-primary" href="mailto:contato@avero.studio">Falar sobre meu projeto →</a><a class="btn btn-outline" href="#colecao">Explorar a Coleção →</a></div></div><form class="contact-card" onsubmit="return false"><h3>COMEÇAR CONVERSA</h3><p>Conte o essencial. O resto a gente constrói junto.</p><label>Nome<input type="text" name="nome" placeholder="Seu nome" /></label><label>Negócio / Marca<input type="text" name="marca" placeholder="Nome da empresa" /></label><label>O que você precisa resolver?<textarea name="mensagem" rows="4" placeholder="Conte um pouco sobre o projeto"></textarea></label><div class="chips"><button type="button">Site institucional</button><button type="button">Landing page</button><button type="button">Coleção Avero</button><button type="button">Redesign</button><button type="button">Ainda não sei</button></div><button class="btn btn-primary full" type="submit">Começar conversa →</button><a class="whatsapp" href="#">Prefiro falar no WhatsApp →</a></form></div></section>
+  </main>
+
+  <footer class="footer"><div class="container footer-grid"><div><a class="brand footer-brand" href="#top"><span>AVERO</span><small>Studio</small></a><p class="footer-tagline">Sites que impulsionam negócios.</p><p>Estratégia, design e tecnologia para negócios que querem construir uma presença digital mais forte.</p></div><div><h3>EXPLORAR</h3><a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção Avero</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a></div><div><h3>CONTATO</h3><a href="#contato">Falar sobre meu projeto →</a><a href="#">WhatsApp</a><a href="mailto:contato@avero.studio">contato@avero.studio</a><a href="#">Instagram</a></div></div><div class="container footer-bottom"><span>Visão. Movimento. Resultados.</span><span>© 2026 AVERO Studio · Privacidade · Termos</span></div></footer>
+</body>
+</html>
