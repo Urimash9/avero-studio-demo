@@ -463,3 +463,87 @@ body{position:relative;isolation:isolate}
  .projects .project-visual{transition:none}
  .projects .project-viewport{scroll-behavior:auto}
 }
+
+/* Build 01.8 — process as a route, perception around a shared center. */
+.method{padding:66px 0 52px}
+.method .method-layout{display:grid;grid-template-columns:.92fr 1.08fr;gap:70px;align-items:start}
+.method .method-intro{padding-top:38px;max-width:460px}
+.method .method-intro h2{font-size:clamp(31px,3.1vw,43px);line-height:1.18;letter-spacing:-.035em;margin:0 0 24px}
+.method .method-intro>p{font-size:16px;line-height:1.7;color:#bdc8d8;margin:0;max-width:435px}
+.method .method-journey{min-width:0}
+.method .method-route{position:relative;height:460px}
+.method .method-path{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.method .method-path--mobile{display:none}
+.method .method-path path{fill:none;stroke-width:1;vector-effect:non-scaling-stroke}
+.method .method-path--desktop path{stroke:url(#method-desktop-fade)}
+.method .method-path--mobile path{stroke:url(#method-mobile-fade)}
+.method .method-nodes circle{fill:#9ac9ed;stroke:#4d86b5;stroke-width:1;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 3px #4da3ff45)}
+.method .method-stages{position:relative;list-style:none;margin:0;padding:0}
+.method .method-stages li{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr);gap:15px;min-height:110px;width:66%;margin-left:8%;padding-top:12px}
+.method .method-stages li:nth-child(2){margin-left:10%}
+.method .method-stages li:nth-child(3){margin-left:12%}
+.method .method-stages li:nth-child(4){margin-left:10%}
+.method .method-index{font-size:12px;line-height:26px;font-weight:500;color:#8daac4}
+.method .method-step-copy h3{font-size:19px;line-height:1.3;letter-spacing:.065em;font-weight:600;margin:0}
+.method .method-step-copy p{font-size:15px;line-height:1.6;color:#bdc8d8;margin:7px 0 0}
+.method .method-closure{font-size:14px;line-height:1.7;margin:18px 0 0 10%;color:#a9bdd1}
+.perspective{padding:54px 0 64px}
+.perspective .perspective-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,26%) minmax(0,1fr);align-items:center;gap:32px;max-width:1100px;margin:auto;min-height:240px;position:relative}
+.perspective .perspective-grid h2{font-size:clamp(32px,3vw,41px);line-height:1.18;letter-spacing:-.035em;text-align:right;align-self:center;margin:0;position:relative;z-index:1}
+.perspective .perspective-copy{position:relative;z-index:1;min-width:0}
+.perspective .perspective-copy h3{font-size:clamp(22px,2vw,28px);line-height:1.28;font-weight:500;letter-spacing:-.025em;margin:0;color:#e0e9f5}
+.perspective .perspective-copy h3 br{display:initial}
+.perspective .perspective-eye{position:relative;width:100%;height:230px;margin:0;background:url('assets/avero-eye.png') center 51%/105% auto no-repeat;opacity:.56;mix-blend-mode:screen;mask-image:radial-gradient(ellipse 63% 43% at 50% 51%,#000 45%,rgba(0,0,0,.88) 65%,transparent 100%)}
+.perspective .perspective-closure{font-size:16px;line-height:1.65;text-align:center;margin:28px auto 0;color:#bdc8d8}
+.perspective .perspective-sign{font-size:12px;line-height:1.6;letter-spacing:.18em;text-align:center;margin:34px auto 0;color:#9fbbd3}
+.perspective .perspective-sign p{font-size:13px;line-height:1.65;letter-spacing:0;max-width:560px;margin:12px auto 0;color:#aebdd0}
+@media(max-width:1100px){
+ .method .method-layout{gap:42px;grid-template-columns:.9fr 1.1fr}
+ .method .method-intro{padding-top:28px}
+ .method .method-stages li{width:70%;margin-left:4%;gap:12px;grid-template-columns:22px minmax(0,1fr)}
+ .method .method-stages li:nth-child(2){margin-left:6%}
+ .method .method-stages li:nth-child(3){margin-left:8%}
+ .method .method-stages li:nth-child(4){margin-left:6%}
+ .perspective .perspective-grid{gap:24px;grid-template-columns:minmax(0,1fr) minmax(200px,26%) minmax(0,1fr)}
+ .perspective .perspective-grid h2{font-size:32px}
+}
+@media(max-width:900px){
+ .method{padding:54px 0 48px}
+ .method .method-layout{grid-template-columns:1fr;gap:30px}
+ .method .method-intro{padding:0;margin:auto;text-align:center;max-width:520px}
+ .method .method-intro h2{font-size:clamp(29px,5.5vw,37px);margin-bottom:22px}
+ .method .method-intro>p{max-width:none;font-size:16px;line-height:1.7}
+ .method .method-journey{width:100%;max-width:480px;margin:auto}
+ .method .method-path--desktop{display:none}
+ .method .method-path--mobile{display:block}
+ .method .method-stages li,.method .method-stages li:nth-child(n){display:block;width:100%;min-height:110px;margin:0;padding:12px 32px 0;text-align:center}
+ .method .method-index{position:absolute;left:calc(50% - 105px);top:17px;font-size:11px;line-height:20px}
+ .method .method-step-copy h3{font-size:19px;letter-spacing:.065em}
+ .method .method-step-copy p{font-size:15px;line-height:1.6;max-width:320px;margin:7px auto 0}
+ .method .method-closure{margin:18px 0 0;text-align:center;font-size:14px}
+ .perspective{padding:50px 0 56px}
+ .perspective .perspective-grid{display:grid;grid-template-columns:1fr;justify-items:center;gap:0;max-width:520px;min-height:0;text-align:center}
+ .perspective .perspective-grid h2{text-align:center;font-size:clamp(31px,5.8vw,38px);line-height:1.18;max-width:430px}
+ .perspective .perspective-eye{width:min(310px,84%);height:205px;margin:-12px 0 -22px;background-size:125% auto;background-position:center 51%;opacity:.6;mask-image:linear-gradient(180deg,transparent 0%,rgba(0,0,0,.35) 12%,#000 30%,#000 70%,rgba(0,0,0,.35) 88%,transparent 100%),radial-gradient(ellipse 65% 47% at 50% 51%,#000 40%,transparent 100%);mask-composite:intersect}
+ .perspective .perspective-copy{width:100%;max-width:450px}
+ .perspective .perspective-copy h3{text-align:center;font-size:clamp(23px,5.9vw,29px);line-height:1.28;letter-spacing:-.025em;text-wrap:balance}
+ .perspective .perspective-copy h3 br{display:none}
+ .perspective .perspective-closure{font-size:16px;margin-top:28px}
+ .perspective .perspective-sign{font-size:11px;letter-spacing:.12em;margin-top:32px}
+ .perspective .perspective-sign p{max-width:430px;font-size:13px}
+}
+@media(max-width:430px){
+ .method .method-intro h2{font-size:clamp(28px,7.3vw,32px)}
+ .method .method-intro>p{font-size:15px;line-height:1.7}
+ .method .method-step-copy h3{font-size:18px}
+ .method .method-step-copy p{font-size:14px;line-height:1.65}
+ .method .method-closure{font-size:13px}
+ .perspective .perspective-grid h2{font-size:clamp(29px,7.8vw,33px)}
+ .perspective .perspective-copy h3{font-size:clamp(22px,5.9vw,25px)}
+ .perspective .perspective-closure{font-size:15px}
+ .perspective .perspective-sign{font-size:10px;letter-spacing:.08em}
+ .perspective .perspective-sign p{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ .method .method-path,.perspective .perspective-eye{animation:none;transition:none}
+}
