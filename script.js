@@ -124,48 +124,87 @@ form.addEventListener('submit', event => {
   status.append(fallback);
 });
 
-const projectDirections = [
-  { name: 'STÚDIO NICOTA', label: 'Stúdio Nicota', category: 'Arquitetura & Interiores', image: 'project-nicota.png', tag: 'Conceito Avero' },
-  { name: 'VÉRTICE CLÍNICA', label: 'Vértice Clínica', category: 'Saúde & Bem-estar', image: 'project-clinic.png', tag: 'Conceito Avero' },
-  { name: 'SABOR REAL', label: 'Sabor Real', category: 'Gastronomia', image: 'project-sabor.png', tag: 'Demo personalizada' }
-];
+// Build 01.7 — three real slides; CSS order rotates the view, never the DOM.
+const projectViewport = document.querySelector('.project-viewport');
+const projectTrack = document.querySelector('.project-track');
+const projectSlides = [...projectTrack.querySelectorAll('.project-slide')];
 const projectPages = [...document.querySelectorAll('.project-pagination button')];
-const featuredProject = document.querySelector('.featured');
-const secondaryProjects = [...document.querySelectorAll('#project-list .project-card')];
+const projectControls = document.querySelector('.project-carousel-controls');
+const projectAnnouncement = document.querySelector('.project-announcement');
 let currentProject = 0;
-function updateProjectCard(card, project, featured = false) {
-  const image = card.querySelector(featured ? '.featured-art' : '.project-image');
-  image.src = `assets/${project.image}`;
-  image.alt = `${project.label}: projeto em computador e celular`;
-  const copy = card.querySelector(featured ? '.project-meta' : '.project-small-copy');
-  copy.querySelector('h3').textContent = project.name;
-  copy.querySelector('p').textContent = project.category;
-  copy.querySelector('.project-tags span').textContent = project.tag;
-  const action = card.querySelector('[data-project]');
-  action.dataset.project = project.label;
-  action.setAttribute('aria-label', featured ? `Explorar projeto ${project.label}` : `Conversar sobre a direção ${project.label}`);
+let projectDestination = 0;
+let projectAnimation = null;
+const projectIndex = index => (index + projectSlides.length) % projectSlides.length;
+
+function orderProjects(first) {
+  projectSlides.forEach((slide, index) => { slide.style.order = projectIndex(index - first); });
 }
-function showProject(index) {
-  currentProject = (index + projectDirections.length) % projectDirections.length;
-  const project = projectDirections[currentProject];
-  updateProjectCard(featuredProject, project, true);
-  // The two secondary cards always contain the other two existing directions.
-  projectDirections.filter((_, i) => i !== currentProject).forEach((other, i) => updateProjectCard(secondaryProjects[i], other));
-  projectPages.forEach((button, i) => {
-    button.classList.toggle('active', i === currentProject);
-    if (i === currentProject) button.setAttribute('aria-current', 'true');
+function settleProject(announce = true) {
+  // Cancel before replacing the order: the track returns to its resting position.
+  if (projectAnimation) { projectAnimation.cancel(); projectAnimation = null; }
+  currentProject = projectDestination;
+  orderProjects(currentProject);
+  projectSlides.forEach((slide, index) => {
+    const active = index === currentProject;
+    slide.classList.toggle('is-active', active);
+    slide.inert = !active;
+    slide.setAttribute('aria-hidden', String(!active));
+  });
+  projectPages.forEach((button, index) => {
+    button.classList.toggle('active', index === currentProject);
+    if (index === currentProject) button.setAttribute('aria-current', 'true');
     else button.removeAttribute('aria-current');
   });
-  document.querySelector('.project-announcement').textContent = `Projeto ${currentProject + 1} de ${projectDirections.length}: ${project.name}`;
+  projectViewport.removeAttribute('aria-busy');
+  if (announce) projectAnnouncement.textContent = `Projeto ${currentProject + 1} de ${projectSlides.length}: ${projectSlides[currentProject].querySelector('h3').textContent}`;
 }
-projectPages.forEach(button => button.setAttribute('aria-controls', 'featured-project project-list'));
-document.querySelector('.project-carousel-controls').addEventListener('keydown', event => {
-  const destinations = { ArrowRight: currentProject + 1, ArrowLeft: currentProject - 1, Home: 0, End: projectDirections.length - 1 };
-  if (event.key in destinations) { event.preventDefault(); showProject(destinations[event.key]); }
-});
-document.querySelector('.project-prev').addEventListener('click', () => showProject(currentProject - 1));
-document.querySelector('.project-next').addEventListener('click', () => showProject(currentProject + 1));
+function showProject(index) {
+  // A second input during a transition first settles its destination.
+  if (projectAnimation) settleProject(false);
+  const destination = projectIndex(index);
+  if (destination === currentProject) return;
+  projectDestination = destination;
+  if (projectViewport.contains(document.activeElement)) projectViewport.focus({ preventScroll: true });
+  if (reducedMotion.matches || !projectTrack.animate) { settleProject(); return; }
+  const next = destination === projectIndex(currentProject + 1);
+  const step = projectSlides[0].getBoundingClientRect().width + parseFloat(getComputedStyle(projectTrack).columnGap);
+  // Going back starts with the previous slide off-screen to the left.
+  if (!next) orderProjects(destination);
+  projectViewport.setAttribute('aria-busy', 'true');
+  projectAnimation = projectTrack.animate(
+    [{ transform: `translateX(${next ? 0 : -step}px)` }, { transform: `translateX(${next ? -step : 0}px)` }],
+    { duration: 620, easing: 'cubic-bezier(.22,.68,.22,1)', fill: 'forwards' }
+  );
+  projectAnimation.onfinish = () => settleProject();
+}
+projectViewport.classList.add('is-enhanced');
+projectControls.hidden = false;
+settleProject(false);
+document.querySelector('.project-prev').addEventListener('click', () => showProject(projectDestination - 1));
+document.querySelector('.project-next').addEventListener('click', () => showProject(projectDestination + 1));
 projectPages.forEach((button, index) => button.addEventListener('click', () => showProject(index)));
+function projectKeyboard(event) {
+  const destinations = { ArrowRight: projectDestination + 1, ArrowLeft: projectDestination - 1, Home: 0, End: projectSlides.length - 1 };
+  if (event.key in destinations) { event.preventDefault(); showProject(destinations[event.key]); }
+}
+projectControls.addEventListener('keydown', projectKeyboard);
+projectViewport.addEventListener('keydown', projectKeyboard);
+// Native vertical scrolling remains available; a deliberate horizontal swipe advances.
+let projectSwipe = null;
+projectViewport.addEventListener('pointerdown', event => {
+  if (event.pointerType === 'mouse' || event.target.closest('a, button')) return;
+  projectSwipe = { x: event.clientX, y: event.clientY, id: event.pointerId };
+});
+projectViewport.addEventListener('pointerup', event => {
+  if (!projectSwipe || event.pointerId !== projectSwipe.id) return;
+  const dx = event.clientX - projectSwipe.x;
+  const dy = event.clientY - projectSwipe.y;
+  projectSwipe = null;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) showProject(projectDestination + (dx < 0 ? 1 : -1));
+});
+projectViewport.addEventListener('pointercancel', () => { projectSwipe = null; });
+window.addEventListener('resize', () => { if (projectAnimation) settleProject(); });
+reducedMotion.addEventListener('change', () => { if (reducedMotion.matches && projectAnimation) settleProject(); });
 
 // Build 01.6 — four slots, stable DOM order, no autoplay or animation library.
 const serviceOrbit = document.querySelector('.services-orbit');
