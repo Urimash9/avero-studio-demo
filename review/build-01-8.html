@@ -14,7 +14,7 @@
 const select=document.getElementById('width');const frame=document.getElementById('home');const overview=document.getElementById('overview');
 const requested=new URLSearchParams(location.search).get('width');
 if([...select.options].some(option=>option.value===requested))select.value=requested;
-function resize(){const wide=Number(select.value)>1100;const scaled=overview.checked&&wide;frame.width=select.value;frame.height=scaled?'1200':Number(select.value)<=430?'1250':'1000';frame.style.transform=scaled?'scale(.66)':'none';frame.style.transformOrigin='top left';frame.parentElement.style.height=scaled?'820px':'auto';}
+function resize(){const wide=Number(select.value)>1100;const scaled=overview.checked;frame.width=select.value;frame.height=scaled?'1200':Number(select.value)<=430?'1250':'1000';frame.style.transform=scaled?(wide?'scale(.66)':'scale(.82)'):'none';frame.style.transformOrigin='top left';frame.parentElement.style.height=scaled?(wide?'820px':'1020px'):'auto';}
 overview.addEventListener('change',resize);
 select.addEventListener('change',resize);resize();
 const area=document.getElementById('area');
