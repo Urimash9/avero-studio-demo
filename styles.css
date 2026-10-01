@@ -597,7 +597,7 @@ body{position:relative;isolation:isolate}
 @media(min-width:901px) and (max-width:1100px){
  .collection .collection-layout{grid-template-columns:minmax(260px,.9fr) minmax(0,1.4fr);gap:32px}
  .collection-system.is-enhanced .collection-pieces{height:510px}
- .collection-system.is-enhanced .collection-piece[data-slot="0"]{left:13%;top:21%;width:70%}
+ .collection-system.is-enhanced .collection-piece[data-slot="0"]{left:13%;top:21%;width:67%}
  .collection-piece-copy h3{font-size:16px}.collection-piece-copy p{font-size:13px}
 }
 @media(max-width:900px){
@@ -618,7 +618,7 @@ body{position:relative;isolation:isolate}
  .collection-piece-copy a{font-size:13px;gap:9px;line-height:1.35}
  .collection-axis{left:45%;top:5%;width:53%;height:87%}
  .collection-axis circle{cx:345;cy:250}
- .collection-system.is-enhanced .collection-piece:not([data-slot="0"]) .collection-piece-visual{animation:collection-page-breathe 24s ease-in-out infinite alternate;transform-origin:20% 70%}
+ .collection-system.is-enhanced .collection-piece:not([data-slot="0"]):not([data-slot="off"]) .collection-piece-visual{animation:collection-page-breathe 24s ease-in-out infinite alternate;transform-origin:20% 70%}
  .collection-system.is-enhanced .collection-piece[data-slot="2"] .collection-piece-visual{animation-delay:-6s}
  .collection-system.is-enhanced .collection-piece[data-slot="-1"] .collection-piece-visual{animation-delay:-12s}
  .collection-system.is-enhanced .collection-piece[data-slot="-2"] .collection-piece-visual{animation-delay:-18s}
@@ -646,3 +646,7 @@ body{position:relative;isolation:isolate}
 @media(prefers-reduced-motion:reduce){
  .collection-piece-visual{animation:none!important;transition:none!important}
 }
+
+/* Keep copy quiet while the actual image changes scale and position. */
+.collection-system[aria-busy="true"] .collection-piece-copy{opacity:0}
+.collection-system.is-enhanced .collection-piece[data-slot="0"] .collection-piece-copy{transition:opacity .18s ease}
