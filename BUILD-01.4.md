@@ -33,7 +33,11 @@ Um caminho estático de espessura constante, curvas controladas e transparência
 
 Verificação estática: o HTML fora de Posicionamento é idêntico à Build 01.3; as regras de Serviços são idênticas; JavaScript e assets da Home permanecem intactos. `git diff --check` passou.
 
-A verificação visual e responsiva na prévia da branch está em andamento nas larguras 1440, 1280, 1024, 900, 768, 430, 390, 360 e 320 px; os resultados serão registrados ao final.
+A prévia da branch foi auditada em Chromium remoto nas larguras 1440, 1280, 1024, 900, 768, 430, 390, 360 e 320 px, usando viewports próprios dentro de um iframe com a Home completa. Em todas, a largura de rolagem corresponde à largura útil da página, nenhum texto da seção ultrapassa o viewport e os pilares não se sobrepõem. Montserrat carregou; os pilares usam 18 px no mobile e 16–18 px no desktop, com frases de 16 px.
+
+A comparação entre caminho e caixas dos caracteres revelou que a saída inicial da curva passava pelo título Resultados no desktop intermediário. A extremidade foi corrigida para desaparecer acima do texto, preservando os três marcos. A lista recebeu um papel explícito para manter a semântica mesmo com marcadores visuais removidos. A trajetória permanece estática e os elementos decorativos estão ocultos da leitura assistiva.
+
+Capturas de desktop e mobile foram inspecionadas. Nenhum erro da aplicação foi identificado nos logs conferidos; havia mensagens da extensão do navegador e do login anterior da Vercel, que não pertencem à Home.
 
 ## Revisão visual e limites
 
