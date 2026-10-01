@@ -36,69 +36,117 @@ document.querySelectorAll('[data-project]').forEach(link => link.addEventListene
   document.querySelector('#mensagem').value = `Gostaria de conhecer a direção ${link.dataset.project} e adaptar esse conceito para o meu negócio.`;
 }));
 
-const rail = document.querySelector('.collection-rail');
-const cards = [...rail.querySelectorAll('.collection-card')];
-const pages = [...document.querySelectorAll('.collection-pagination button')];
-const collectionAnnouncement = document.querySelector('.collection-announcement');
+// Build 01.9 — the HTML list is the catalogue: stable DOM order, replaceable assets.
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-let currentCard = 0;
-let programmaticCollectionScroll = false;
-let collectionScrollTimer;
-let collectionResizeFrame;
-cards.forEach((card, i) => {
-  card.setAttribute('role', 'group');
-  card.setAttribute('aria-roledescription', 'slide');
-  card.setAttribute('aria-label', `${i + 1} de ${cards.length}: ${card.querySelector('h3').textContent.trim()}`);
-});
-pages.forEach(button => button.setAttribute('aria-controls', 'collection-rail'));
-function goToCard(index, announce = true, instant = false) {
-  currentCard = (index + cards.length) % cards.length;
-  programmaticCollectionScroll = true;
-  clearTimeout(collectionScrollTimer);
-  cards.forEach((card, i) => card.classList.toggle('active', i === currentCard));
-  pages.forEach((button, i) => {
-    button.classList.toggle('active', i === currentCard);
-    if (i === currentCard) button.setAttribute('aria-current', 'true');
-    else button.removeAttribute('aria-current');
+const collectionSystem = document.querySelector('.collection-system');
+const collectionList = collectionSystem.querySelector('.collection-pieces');
+const collectionPieces = [...collectionList.children];
+const collectionDirections = collectionPieces.map((piece, order) => ({
+  id: piece.dataset.direction,
+  sector: piece.dataset.sector,
+  variant: piece.dataset.variant,
+  order,
+  image: piece.querySelector('img').getAttribute('src'),
+  thumbnail: piece.dataset.thumbnail,
+  name: piece.querySelector('h3').textContent.trim(),
+  description: piece.querySelector('.collection-piece-copy p').textContent.trim(),
+  provisional: piece.dataset.provisional === 'true',
+  piece
+}));
+const collectionMobile = matchMedia('(max-width: 900px)');
+const collectionNavigation = collectionSystem.querySelector('.collection-navigation');
+const collectionCurrent = collectionSystem.querySelector('.collection-current');
+const collectionPosition = collectionSystem.querySelector('.collection-position');
+const collectionAnnouncement = collectionSystem.querySelector('.collection-announcement');
+const collectionAmbient = collectionSystem.querySelector('.collection-ambient-toggle');
+let currentDirection = 0;
+let collectionAnimations = [];
+let collectionResumeTimer;
+let collectionPaused = false;
+let collectionVisible = false;
+const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
+
+function settleCollectionMotion() {
+  collectionAnimations.forEach(animation => animation.cancel());
+  collectionAnimations = [];
+  collectionSystem.removeAttribute('aria-busy');
+}
+function syncCollectionAmbient() {
+  collectionAmbient.hidden = !collectionMobile.matches || reducedMotion.matches;
+  collectionSystem.classList.toggle('is-resting', !collectionVisible || document.hidden || collectionPaused || reducedMotion.matches);
+  collectionAmbient.setAttribute('aria-pressed', String(collectionPaused));
+  collectionAmbient.setAttribute('aria-label', collectionPaused ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
+  collectionAmbient.querySelector('span').textContent = collectionPaused ? '▷' : 'Ⅱ';
+}
+function arrangeCollection(announce = false) {
+  collectionDirections.forEach((direction, index) => {
+    const offset = directionIndex(index - currentDirection);
+    const slot = offset <= 2 ? offset : offset >= collectionDirections.length - 2 ? offset - collectionDirections.length : 'off';
+    const active = index === currentDirection;
+    direction.piece.dataset.slot = String(slot);
+    direction.piece.inert = !active;
+    direction.piece.setAttribute('aria-hidden', String(!active));
+    if (active) direction.piece.setAttribute('aria-current', 'true');
+    else direction.piece.removeAttribute('aria-current');
+    direction.piece.querySelector('img').src = active ? direction.image : direction.thumbnail;
   });
-  if (announce) collectionAnnouncement.textContent = cards[currentCard].getAttribute('aria-label');
-  requestAnimationFrame(() => {
-    rail.scrollTo({ left: cards[currentCard].offsetLeft - cards[0].offsetLeft, behavior: instant || reducedMotion.matches ? 'instant' : 'smooth' });
-    // Release the flag even when the selected card was already at the correct offset.
-    collectionScrollTimer = setTimeout(() => { programmaticCollectionScroll = false; }, 700);
+  collectionCurrent.textContent = String(currentDirection + 1).padStart(2, '0');
+  collectionPosition.setAttribute('aria-label', `Direção ${currentDirection + 1} de ${collectionDirections.length}`);
+  if (announce) collectionAnnouncement.textContent = `${currentDirection + 1} de ${collectionDirections.length}: ${collectionDirections[currentDirection].name}`;
+}
+function navigateCollection(index) {
+  settleCollectionMotion();
+  const destination = directionIndex(index);
+  if (destination === currentDirection) return;
+  // Buttons keep their focus; a link in the outgoing piece returns focus to the list.
+  if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
+  collectionSystem.classList.add('is-interacting');
+  clearTimeout(collectionResumeTimer);
+  collectionResumeTimer = setTimeout(() => collectionSystem.classList.remove('is-interacting'), 5500);
+  const before = collectionPieces.map(piece => ({ rect: piece.getBoundingClientRect(), visible: piece.dataset.slot !== 'off' }));
+  const forward = destination === directionIndex(currentDirection + 1);
+  currentDirection = destination;
+  arrangeCollection(true);
+  if (reducedMotion.matches || typeof collectionList.animate !== 'function') return;
+  collectionSystem.setAttribute('aria-busy', 'true');
+  collectionAnimations = collectionPieces.flatMap((piece, index) => {
+    if (piece.dataset.slot === 'off') return [];
+    const old = before[index], next = piece.getBoundingClientRect();
+    if (!old.visible) return [piece.animate([{ opacity: 0 }, { opacity: getComputedStyle(piece).opacity }], { duration: 660, easing: 'ease-out' })];
+    const dx = old.rect.left - next.left, dy = old.rect.top - next.top;
+    const scale = old.rect.width / next.width;
+    // FLIP moves the actual piece between catalogue and highlight, without clones.
+    const frames = Array.from({ length: 9 }, (_, step) => {
+      const t = step / 8, arc = 4 * t * (1 - t);
+      return { transform: `translate(${dx * (1 - t)}px, ${dy * (1 - t) + (forward ? -18 : 18) * arc}px) scale(${scale + (1 - scale) * t})`, offset: t };
+    });
+    return [piece.animate(frames, { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' })];
+  });
+  const running = collectionAnimations;
+  Promise.allSettled(running.map(animation => animation.finished)).then(() => {
+    if (collectionAnimations === running) { collectionAnimations = []; collectionSystem.removeAttribute('aria-busy'); }
   });
 }
-function settleCollectionScroll() {
-  if (programmaticCollectionScroll) { programmaticCollectionScroll = false; return; }
-  const maxScroll = rail.scrollWidth - rail.clientWidth;
-  let nearest = 0;
-  if (maxScroll > 0 && rail.scrollLeft >= maxScroll - 2) nearest = cards.length - 1;
-  else cards.forEach((card, index) => {
-    const distance = Math.abs(card.offsetLeft - cards[0].offsetLeft - rail.scrollLeft);
-    const currentDistance = Math.abs(cards[nearest].offsetLeft - cards[0].offsetLeft - rail.scrollLeft);
-    if (distance < currentDistance) nearest = index;
-  });
-  if (nearest !== currentCard) goToCard(nearest, true, true);
+collectionSystem.classList.add('is-enhanced');
+collectionNavigation.hidden = false;
+arrangeCollection();
+collectionSystem.querySelector('.collection-previous').addEventListener('click', () => navigateCollection(currentDirection - 1));
+collectionSystem.querySelector('.collection-next').addEventListener('click', () => navigateCollection(currentDirection + 1));
+function collectionKeyboard(event) {
+  const destinations = { ArrowRight: currentDirection + 1, ArrowLeft: currentDirection - 1, Home: 0, End: collectionDirections.length - 1 };
+  if (event.key in destinations) { event.preventDefault(); navigateCollection(destinations[event.key]); }
 }
-rail.addEventListener('scroll', () => {
-  clearTimeout(collectionScrollTimer);
-  collectionScrollTimer = setTimeout(settleCollectionScroll, 180);
-}, { passive: true });
-// Native swipes / wheel scrolling take priority over a previous button navigation.
-['pointerdown', 'touchstart', 'wheel'].forEach(type => rail.addEventListener(type, () => {
-  programmaticCollectionScroll = false;
-}, { passive: true }));
-window.addEventListener('resize', () => {
-  cancelAnimationFrame(collectionResizeFrame);
-  collectionResizeFrame = requestAnimationFrame(() => goToCard(currentCard, false, true));
-});
-document.querySelector('.rail-prev').addEventListener('click', () => goToCard(currentCard - 1));
-document.querySelector('.rail-next').addEventListener('click', () => goToCard(currentCard + 1));
-pages.forEach((button, i) => button.addEventListener('click', () => goToCard(i)));
-rail.addEventListener('keydown', event => {
-  const destinations = { ArrowRight: currentCard + 1, ArrowLeft: currentCard - 1, Home: 0, End: cards.length - 1 };
-  if (event.key in destinations) { event.preventDefault(); goToCard(destinations[event.key]); }
-});
+collectionList.addEventListener('keydown', collectionKeyboard);
+collectionNavigation.addEventListener('keydown', collectionKeyboard);
+collectionAmbient.addEventListener('click', () => { collectionPaused = !collectionPaused; syncCollectionAmbient(); });
+collectionMobile.addEventListener('change', () => { settleCollectionMotion(); syncCollectionAmbient(); });
+reducedMotion.addEventListener('change', () => { settleCollectionMotion(); syncCollectionAmbient(); });
+window.addEventListener('resize', settleCollectionMotion, { passive: true });
+document.addEventListener('visibilitychange', syncCollectionAmbient);
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(entries => { collectionVisible = entries[0].isIntersecting; syncCollectionAmbient(); }, { threshold: .15 }).observe(collectionSystem);
+} else collectionVisible = true;
+syncCollectionAmbient();
 
 const form = document.querySelector('.contact-card');
 form.addEventListener('submit', event => {
