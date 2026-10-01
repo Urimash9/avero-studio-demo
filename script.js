@@ -11,6 +11,7 @@ menuButton.addEventListener('click', () => {
   menuButton.setAttribute('aria-expanded', String(!isOpen));
   menuButton.setAttribute('aria-label', isOpen ? 'Abrir menu' : 'Fechar menu');
 });
+matchMedia('(max-width: 700px)').addEventListener('change', closeMenu);
 mobileNav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !mobileNav.hidden) { closeMenu(); menuButton.focus(); }
@@ -38,24 +39,65 @@ document.querySelectorAll('[data-project]').forEach(link => link.addEventListene
 const rail = document.querySelector('.collection-rail');
 const cards = [...rail.querySelectorAll('.collection-card')];
 const pages = [...document.querySelectorAll('.collection-pagination button')];
+const collectionAnnouncement = document.querySelector('.collection-announcement');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let currentCard = 0;
-function goToCard(index) {
+let programmaticCollectionScroll = false;
+let collectionScrollTimer;
+let collectionResizeFrame;
+cards.forEach((card, i) => {
+  card.setAttribute('role', 'group');
+  card.setAttribute('aria-roledescription', 'slide');
+  card.setAttribute('aria-label', `${i + 1} de ${cards.length}: ${card.querySelector('h3').textContent.trim()}`);
+});
+pages.forEach(button => button.setAttribute('aria-controls', 'collection-rail'));
+function goToCard(index, announce = true, instant = false) {
   currentCard = (index + cards.length) % cards.length;
+  programmaticCollectionScroll = true;
+  clearTimeout(collectionScrollTimer);
   cards.forEach((card, i) => card.classList.toggle('active', i === currentCard));
-  requestAnimationFrame(() => rail.scrollTo({ left: cards[currentCard].offsetLeft - cards[0].offsetLeft, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
   pages.forEach((button, i) => {
     button.classList.toggle('active', i === currentCard);
     if (i === currentCard) button.setAttribute('aria-current', 'true');
     else button.removeAttribute('aria-current');
   });
+  if (announce) collectionAnnouncement.textContent = cards[currentCard].getAttribute('aria-label');
+  requestAnimationFrame(() => {
+    rail.scrollTo({ left: cards[currentCard].offsetLeft - cards[0].offsetLeft, behavior: instant || reducedMotion.matches ? 'instant' : 'smooth' });
+    // Release the flag even when the selected card was already at the correct offset.
+    collectionScrollTimer = setTimeout(() => { programmaticCollectionScroll = false; }, 700);
+  });
 }
+function settleCollectionScroll() {
+  if (programmaticCollectionScroll) { programmaticCollectionScroll = false; return; }
+  const maxScroll = rail.scrollWidth - rail.clientWidth;
+  let nearest = 0;
+  if (maxScroll > 0 && rail.scrollLeft >= maxScroll - 2) nearest = cards.length - 1;
+  else cards.forEach((card, index) => {
+    const distance = Math.abs(card.offsetLeft - cards[0].offsetLeft - rail.scrollLeft);
+    const currentDistance = Math.abs(cards[nearest].offsetLeft - cards[0].offsetLeft - rail.scrollLeft);
+    if (distance < currentDistance) nearest = index;
+  });
+  if (nearest !== currentCard) goToCard(nearest, true, true);
+}
+rail.addEventListener('scroll', () => {
+  clearTimeout(collectionScrollTimer);
+  collectionScrollTimer = setTimeout(settleCollectionScroll, 180);
+}, { passive: true });
+// Native swipes / wheel scrolling take priority over a previous button navigation.
+['pointerdown', 'touchstart', 'wheel'].forEach(type => rail.addEventListener(type, () => {
+  programmaticCollectionScroll = false;
+}, { passive: true }));
+window.addEventListener('resize', () => {
+  cancelAnimationFrame(collectionResizeFrame);
+  collectionResizeFrame = requestAnimationFrame(() => goToCard(currentCard, false, true));
+});
 document.querySelector('.rail-prev').addEventListener('click', () => goToCard(currentCard - 1));
 document.querySelector('.rail-next').addEventListener('click', () => goToCard(currentCard + 1));
 pages.forEach((button, i) => button.addEventListener('click', () => goToCard(i)));
 rail.addEventListener('keydown', event => {
-  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-    event.preventDefault(); goToCard(currentCard + (event.key === 'ArrowRight' ? 1 : -1));
-  }
+  const destinations = { ArrowRight: currentCard + 1, ArrowLeft: currentCard - 1, Home: 0, End: cards.length - 1 };
+  if (event.key in destinations) { event.preventDefault(); goToCard(destinations[event.key]); }
 });
 
 const form = document.querySelector('.contact-card');
@@ -83,22 +125,32 @@ form.addEventListener('submit', event => {
 });
 
 const projectDirections = [
-  { name: 'STÚDIO NICOTA', category: 'Arquitetura & Interiores', image: 'project-nicota.png', tag: 'Conceito Avero' },
-  { name: 'VÉRTICE CLÍNICA', category: 'Saúde & Bem-estar', image: 'project-clinic.png', tag: 'Conceito Avero' },
-  { name: 'SABOR REAL', category: 'Gastronomia', image: 'project-sabor.png', tag: 'Demo personalizada' }
+  { name: 'STÚDIO NICOTA', label: 'Stúdio Nicota', category: 'Arquitetura & Interiores', image: 'project-nicota.png', tag: 'Conceito Avero' },
+  { name: 'VÉRTICE CLÍNICA', label: 'Vértice Clínica', category: 'Saúde & Bem-estar', image: 'project-clinic.png', tag: 'Conceito Avero' },
+  { name: 'SABOR REAL', label: 'Sabor Real', category: 'Gastronomia', image: 'project-sabor.png', tag: 'Demo personalizada' }
 ];
 const projectPages = [...document.querySelectorAll('.project-pagination button')];
+const featuredProject = document.querySelector('.featured');
+const secondaryProjects = [...document.querySelectorAll('#project-list .project-card')];
 let currentProject = 0;
+function updateProjectCard(card, project, featured = false) {
+  const image = card.querySelector(featured ? '.featured-art' : '.project-image');
+  image.src = `assets/${project.image}`;
+  image.alt = `${project.label}: projeto em computador e celular`;
+  const copy = card.querySelector(featured ? '.project-meta' : '.project-small-copy');
+  copy.querySelector('h3').textContent = project.name;
+  copy.querySelector('p').textContent = project.category;
+  copy.querySelector('.project-tags span').textContent = project.tag;
+  const action = card.querySelector('[data-project]');
+  action.dataset.project = project.label;
+  action.setAttribute('aria-label', featured ? `Explorar projeto ${project.label}` : `Conversar sobre a direção ${project.label}`);
+}
 function showProject(index) {
   currentProject = (index + projectDirections.length) % projectDirections.length;
   const project = projectDirections[currentProject];
-  const featured = document.querySelector('.featured');
-  featured.querySelector('.featured-art').src = `assets/${project.image}`;
-  featured.querySelector('.featured-art').alt = `${project.name}: projeto em computador e celular`;
-  featured.querySelector('.project-meta h3').textContent = project.name;
-  featured.querySelector('.project-meta p').textContent = project.category;
-  featured.querySelector('.project-tags span').textContent = project.tag;
-  featured.querySelector('[data-project]').dataset.project = project.name;
+  updateProjectCard(featuredProject, project, true);
+  // The two secondary cards always contain the other two existing directions.
+  projectDirections.filter((_, i) => i !== currentProject).forEach((other, i) => updateProjectCard(secondaryProjects[i], other));
   projectPages.forEach((button, i) => {
     button.classList.toggle('active', i === currentProject);
     if (i === currentProject) button.setAttribute('aria-current', 'true');
@@ -106,6 +158,11 @@ function showProject(index) {
   });
   document.querySelector('.project-announcement').textContent = `Projeto ${currentProject + 1} de ${projectDirections.length}: ${project.name}`;
 }
+projectPages.forEach(button => button.setAttribute('aria-controls', 'featured-project project-list'));
+document.querySelector('.project-carousel-controls').addEventListener('keydown', event => {
+  const destinations = { ArrowRight: currentProject + 1, ArrowLeft: currentProject - 1, Home: 0, End: projectDirections.length - 1 };
+  if (event.key in destinations) { event.preventDefault(); showProject(destinations[event.key]); }
+});
 document.querySelector('.project-prev').addEventListener('click', () => showProject(currentProject - 1));
 document.querySelector('.project-next').addEventListener('click', () => showProject(currentProject + 1));
 projectPages.forEach((button, index) => button.addEventListener('click', () => showProject(index)));
