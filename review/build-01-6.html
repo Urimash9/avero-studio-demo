@@ -8,13 +8,14 @@
 </style>
 </head>
 <body>
-<header><h1>Serviços · Build 01.6</h1><label for="width">Largura <select id="width"><option>1440</option><option>1280</option><option>1024</option><option>900</option><option>768</option><option>430</option><option>390</option><option>360</option><option>320</option></select></label><label for="area">Área <select id="area"><option value="top">Hero</option><option value="posicionamento">Posicionamento</option><option value="servicos" selected>Serviços</option><option value="colecao">Coleção</option><option value="projetos">Projetos</option><option value="sobre">Método</option><option value="contato">Contato</option></select></label><a href="../index.html">Abrir Home</a><p>Prévia isolada para revisão. Larguras reais no iframe. Selecione a área ou use a rolagem interna.</p></header>
+<header><h1>Serviços · Build 01.6</h1><label for="width">Largura <select id="width"><option>1440</option><option>1280</option><option>1101</option><option>1100</option><option>1024</option><option>900</option><option>768</option><option>430</option><option>390</option><option>360</option><option>320</option></select></label><label for="area">Área <select id="area"><option value="top">Hero</option><option value="posicionamento">Posicionamento</option><option value="servicos" selected>Serviços</option><option value="colecao">Coleção</option><option value="projetos">Projetos</option><option value="sobre">Método</option><option value="contato">Contato</option></select></label><label><input type="checkbox" id="overview"> Visão geral</label><a href="../index.html">Abrir Home</a><p>Prévia isolada para revisão. Larguras reais no iframe. Selecione a área ou use a rolagem interna.</p></header>
 <div class="frame-wrap"><iframe id="home" title="Home AVERO na largura selecionada" src="../index.html#servicos" width="1440" height="1000"></iframe></div>
 <script>
-const select=document.getElementById('width');const frame=document.getElementById('home');
+const select=document.getElementById('width');const frame=document.getElementById('home');const overview=document.getElementById('overview');
 const requested=new URLSearchParams(location.search).get('width');
 if([...select.options].some(option=>option.value===requested))select.value=requested;
-function resize(){frame.width=select.value;frame.height=Number(select.value)<=430?'1250':'1000';}
+function resize(){const wide=Number(select.value)>1100;const scaled=overview.checked&&wide;frame.width=select.value;frame.height=scaled?'1200':Number(select.value)<=430?'1250':'1000';frame.style.transform=scaled?'scale(.66)':'none';frame.style.transformOrigin='top left';frame.parentElement.style.height=scaled?'820px':'auto';}
+overview.addEventListener('change',resize);
 select.addEventListener('change',resize);resize();
 const area=document.getElementById('area');
 area.addEventListener('change',()=>{frame.src='../index.html#'+area.value;});

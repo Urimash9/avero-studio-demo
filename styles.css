@@ -291,7 +291,7 @@ body{position:relative;isolation:isolate}
 
 /* Build 01.6 — Services: a problem at the core, four real solutions in motion.
    Default flow remains readable without JS; only desktop is enhanced to orbit. */
-.services{padding-block:56px 62px;background:radial-gradient(ellipse at 51% 43%,rgba(77,163,255,.065),transparent 56%)}
+.services{padding-block:56px 62px;overflow:clip;background:radial-gradient(ellipse at 51% 43%,rgba(77,163,255,.065),transparent 56%)}
 .services .services-layout{position:relative;display:block}
 .services .services-intro{display:block;position:relative;text-align:center;max-width:530px;margin:0 auto 40px}
 .services .services-intro h2{font-size:clamp(30px,3.2vw,42px);line-height:1.15;margin:0 0 18px}
@@ -361,6 +361,9 @@ body{position:relative;isolation:isolate}
   .services .service-copy h3{font-size:24px}
   .services .service-copy .circle-link{top:auto;bottom:16px;right:16px}
   .services .service-copy p{padding-right:44px}
+}
+@media(max-width:1100px){
+  .services .service-orbit-navigation{display:none}
 }
 @media(max-width:700px){
   .services{padding-block:44px 46px}

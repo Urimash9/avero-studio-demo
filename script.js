@@ -199,7 +199,7 @@ function advanceServiceOrbit() {
   if (reducedMotion.matches || typeof orbitNext.animate !== 'function') return;
   const after = orbitServices.map(card => card.getBoundingClientRect());
   // Each leg bends outwards, keeping movement around the core, never through it.
-  const bows = [[-85, 0], [0, -155], [100, 0], [0, 145]];
+  const bows = [[-40, 0], [0, -155], [38, 0], [0, 105]];
   orbitAnimations = orbitServices.map((card, index) => {
     const old = before[index], next = after[index];
     const dx = old.left - next.left, dy = old.top - next.top;
@@ -211,7 +211,10 @@ function advanceServiceOrbit() {
     });
     return card.animate(frames, { duration: 760, easing: 'cubic-bezier(.22,1,.36,1)' });
   });
-  Promise.allSettled(orbitAnimations.map(animation => animation.finished)).then(() => { orbitAnimations = []; });
+  const activeAnimations = orbitAnimations;
+  Promise.allSettled(activeAnimations.map(animation => animation.finished)).then(() => {
+    if (orbitAnimations === activeAnimations) orbitAnimations = [];
+  });
 }
 orbitNext.addEventListener('click', advanceServiceOrbit);
 orbitDesktop.addEventListener('change', syncServiceOrbit);
