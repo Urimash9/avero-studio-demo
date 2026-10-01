@@ -288,3 +288,101 @@ body{position:relative;isolation:isolate}
   .hero-mobile-eye{width:calc(100% + 30px);margin-inline:-15px}
   .hero-signature{font-size:9px}
 }
+
+/* Build 01.6 — Services: a problem at the core, four real solutions in motion.
+   Default flow remains readable without JS; only desktop is enhanced to orbit. */
+.services{padding-block:56px 62px;background:radial-gradient(ellipse at 51% 43%,rgba(77,163,255,.065),transparent 56%)}
+.services .services-layout{position:relative;display:block}
+.services .services-intro{display:block;position:relative;text-align:center;max-width:530px;margin:0 auto 40px}
+.services .services-intro h2{font-size:clamp(30px,3.2vw,42px);line-height:1.15;margin:0 0 18px}
+.services .services-intro h2 br{display:initial}
+.services .services-intro>p{max-width:none;font-size:16px;line-height:1.65;margin:0 0 18px}
+.services .text-cta{border:0;padding:5px 0;min-height:44px;font-size:12px;line-height:1.6;color:#bac6d8}
+.services .text-cta strong{color:#a9cdec;text-decoration:underline;text-underline-offset:5px;text-decoration-color:#527798}
+.services .service-grid{display:flex;flex-direction:column;gap:28px;max-width:720px;margin:auto;padding:0}
+.services .service-card{display:flex;flex-direction:column;flex:none;min-height:0;min-width:0;width:100%;border:0;border-radius:0;background:none;transition:none;isolation:isolate}
+.services .service-visual{flex:none;min-height:0;border-radius:0;background:#09121d;overflow:hidden}
+.services .service-visual:after{background:linear-gradient(0deg,#050a13 0%,rgba(5,10,19,.72) 10%,transparent 46%)}
+.services .service-image{position:static;display:block;inset:auto;width:100%;height:auto;aspect-ratio:1.75;object-fit:cover;filter:saturate(.9) brightness(.96)}
+.services .service-institutional{object-position:58% 30%}
+.services .service-landing{object-position:55% 18%}
+.services .service-commerce{object-position:56% 30%}
+.services .service-seo{object-position:53% 38%;filter:saturate(.86) brightness(.96)}
+.services .service-card--institutional .service-visual{clip-path:polygon(0 0,91% 0,100% 12%,100% 100%,0 100%)}
+.services .service-card--landing .service-visual{clip-path:polygon(6% 0,100% 0,100% 100%,0 100%,0 8%)}
+.services .service-card--commerce .service-visual{border-radius:2px 34px 0 0}
+.services .service-card--seo .service-visual{clip-path:polygon(0 0,100% 0,100% 88%,93% 100%,0 100%)}
+.services .service-copy{position:relative;z-index:1;display:block;flex:none;min-height:0;margin-top:-30px;padding:0 18px 22px;background:linear-gradient(transparent,rgba(5,10,19,.88) 46px,rgba(5,10,19,.45));border-left:1px solid rgba(124,180,225,.22)}
+.services .service-kicker{gap:10px;max-width:calc(100% - 43px);margin-bottom:12px}
+.services .service-copy small{font-size:11px;letter-spacing:.045em;line-height:1.5;color:#b9c9d9}
+.services .service-copy .num{font-size:12px}
+.services .service-copy h3{max-width:calc(100% - 45px);font-size:24px;line-height:1.16;margin:0 0 14px;letter-spacing:-.03em}
+.services .service-footer{display:block;margin:0}
+.services .service-copy p{max-width:none;font-size:14px;line-height:1.6;margin:0;color:#c2ccda}
+.services .service-copy .circle-link{position:absolute;top:3px;right:12px;width:44px;height:44px;border-color:#779dbe;background:#09121de8;color:#c4e3ff}
+.services .service-card:focus-within .service-copy,.services .service-card:hover .service-copy{border-left-color:#a0c8eb}
+.services-trajectory{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.services-trajectory path{fill:none;stroke:#6a9fc9;stroke-opacity:.24;stroke-width:1;vector-effect:non-scaling-stroke}
+.service-orbit-navigation[hidden]{display:none}
+.service-orbit-navigation{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:22px;text-align:left}
+.service-orbit-next{flex:none;display:grid;place-items:center;width:46px;height:46px;border:1px solid #739ec1;border-radius:50%;background:#091522;color:#c4e3ff;cursor:pointer;transition:background .2s}
+.service-orbit-next span{font-size:25px;line-height:1}
+.service-orbit-next:hover{background:#15304b}
+.services .service-orbit-current{margin:0;font-size:11px;line-height:1.65;color:#a9bdd1}
+.service-orbit-current strong{display:block;font-size:13px;line-height:1.5;font-weight:500;color:#d5e5f7}
+@media(min-width:1101px){
+  .services .services-layout.is-orbital{height:980px}
+  .services .is-orbital .services-trajectory{display:block}
+  .services .is-orbital .services-intro{position:absolute;left:40%;top:260px;width:28%;max-width:350px;margin:0;z-index:3}
+  .services .is-orbital .services-intro h2{font-size:clamp(32px,2.6vw,39px);margin-bottom:16px}
+  .services .is-orbital .services-intro>p{font-size:14px;line-height:1.7;margin-bottom:14px}
+  .services .is-orbital .service-grid{position:absolute;inset:0;max-width:none;display:block;margin:0}
+  .services .is-orbital .service-card{position:absolute;transform-origin:top left;grid-column:auto;grid-row:auto;opacity:.86;z-index:1}
+  .services .is-orbital .service-card[data-orbit-slot="0"]{left:0;top:82px;width:31%;opacity:1;z-index:2}
+  .services .is-orbital .service-card[data-orbit-slot="1"]{left:70%;top:0;width:30%}
+  .services .is-orbital .service-card[data-orbit-slot="2"]{left:73%;top:474px;width:27%}
+  .services .is-orbital .service-card[data-orbit-slot="3"]{left:8%;top:658px;width:29%}
+  .services .is-orbital .service-image{height:184px;aspect-ratio:auto}
+  .services .is-orbital [data-orbit-slot="0"] .service-image{height:230px}
+  .services .is-orbital [data-orbit-slot="2"] .service-image{height:204px}
+  .services .is-orbital .service-copy h3{font-size:22px}
+  .services .is-orbital [data-orbit-slot="0"] .service-copy h3{font-size:28px}
+  .services .is-orbital .service-copy p{font-size:14px}
+  .services .is-orbital [data-orbit-slot="0"] .service-copy{border-left-color:#7cb4e1}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .services .service-grid{max-width:720px;gap:26px}
+  .services .service-card{display:grid;grid-template-columns:45% minmax(0,1fr);align-items:stretch;width:calc(100% - 24px);align-self:flex-start}
+  .services .service-card:nth-child(even){align-self:flex-end}
+  .services .service-visual{min-height:250px}
+  .services .service-visual:after{background:linear-gradient(90deg,transparent 55%,#050a13)}
+  .services .service-image{position:absolute;inset:0;height:100%;aspect-ratio:auto}
+  .services .service-copy{display:flex;flex-direction:column;justify-content:center;margin:0;padding:24px 18px;border-left:0}
+  .services .service-copy h3{font-size:24px}
+  .services .service-copy .circle-link{top:auto;bottom:16px;right:16px}
+  .services .service-copy p{padding-right:44px}
+}
+@media(max-width:700px){
+  .services{padding-block:44px 46px}
+  .services .services-intro{margin-bottom:34px}
+  .services .services-intro h2{font-size:clamp(29px,7.6vw,36px);text-wrap:balance}
+  .services .services-intro h2 br{display:none}
+  .services .services-intro>p{font-size:16px;line-height:1.65}
+  .services .service-grid{gap:30px;max-width:430px}
+  .services .service-image{aspect-ratio:1.65;mask-image:radial-gradient(ellipse 155px 105px at 100% 100%,transparent 28%,#000 78%),radial-gradient(circle,#000 1.3px,transparent 1.9px),radial-gradient(ellipse 155px 105px at 100% 100%,transparent 8%,#000 64%);mask-size:100% 100%,7px 7px,100% 100%;mask-repeat:no-repeat,repeat,no-repeat;mask-composite:add,intersect}
+  .services .service-card--landing .service-image{aspect-ratio:1.85}
+  .services .service-card--seo .service-image{aspect-ratio:1.9}
+  .services .service-visual{background:transparent}
+  .services .service-visual:after{background:linear-gradient(0deg,rgba(5,10,19,.84),transparent 40%)}
+  .services .service-copy{margin-top:-24px;padding:0 17px 20px}
+  .services .service-copy h3{font-size:24px}
+  .services .service-copy .circle-link{top:5px;right:11px}
+}
+@media(max-width:360px){
+  .services .service-copy{padding-inline:14px}
+  .services .service-copy h3{font-size:22px}
+  .services .service-copy small{letter-spacing:.02em}
+}
+@media(prefers-reduced-motion:reduce){
+  .services .service-orbit-next{transition:none}
+}

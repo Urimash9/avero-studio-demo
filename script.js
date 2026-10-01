@@ -166,3 +166,55 @@ document.querySelector('.project-carousel-controls').addEventListener('keydown',
 document.querySelector('.project-prev').addEventListener('click', () => showProject(currentProject - 1));
 document.querySelector('.project-next').addEventListener('click', () => showProject(currentProject + 1));
 projectPages.forEach((button, index) => button.addEventListener('click', () => showProject(index)));
+
+// Build 01.6 — four slots, stable DOM order, no autoplay or animation library.
+const serviceOrbit = document.querySelector('.services-orbit');
+const orbitServices = [...serviceOrbit.querySelectorAll('.service-card')];
+const orbitNavigation = serviceOrbit.querySelector('.service-orbit-navigation');
+const orbitNext = serviceOrbit.querySelector('.service-orbit-next');
+const orbitCurrent = serviceOrbit.querySelector('.service-orbit-current strong');
+const orbitDesktop = matchMedia('(min-width: 1101px)');
+let highlightedService = 0;
+let orbitAnimations = [];
+function settleServiceOrbit() {
+  orbitAnimations.forEach(animation => animation.cancel());
+  orbitAnimations = [];
+}
+function syncServiceOrbit() {
+  settleServiceOrbit();
+  serviceOrbit.classList.toggle('is-orbital', orbitDesktop.matches);
+  orbitNavigation.hidden = !orbitDesktop.matches;
+}
+function advanceServiceOrbit() {
+  if (!orbitDesktop.matches || orbitAnimations.length) return;
+  const before = orbitServices.map(card => card.getBoundingClientRect());
+  const previousSlots = orbitServices.map(card => Number(card.dataset.orbitSlot));
+  highlightedService = (highlightedService + 1) % orbitServices.length;
+  orbitServices.forEach((card, index) => {
+    card.dataset.orbitSlot = String((index - highlightedService + orbitServices.length) % orbitServices.length);
+  });
+  const label = orbitServices[highlightedService].querySelector('h3').textContent;
+  orbitCurrent.textContent = label;
+  orbitNext.setAttribute('aria-label', `Destacar próxima solução. Em destaque: ${label}`);
+  if (reducedMotion.matches || typeof orbitNext.animate !== 'function') return;
+  const after = orbitServices.map(card => card.getBoundingClientRect());
+  // Each leg bends outwards, keeping movement around the core, never through it.
+  const bows = [[-85, 0], [0, -155], [100, 0], [0, 145]];
+  orbitAnimations = orbitServices.map((card, index) => {
+    const old = before[index], next = after[index];
+    const dx = old.left - next.left, dy = old.top - next.top;
+    const [bowX, bowY] = bows[previousSlots[index]];
+    const sx = old.width / next.width, sy = old.height / next.height;
+    const frames = Array.from({ length: 9 }, (_, step) => {
+      const t = step / 8, arc = 4 * t * (1 - t);
+      return { transform: `translate(${dx * (1 - t) + bowX * arc}px, ${dy * (1 - t) + bowY * arc}px) scale(${sx + (1 - sx) * t}, ${sy + (1 - sy) * t})`, offset: t };
+    });
+    return card.animate(frames, { duration: 760, easing: 'cubic-bezier(.22,1,.36,1)' });
+  });
+  Promise.allSettled(orbitAnimations.map(animation => animation.finished)).then(() => { orbitAnimations = []; });
+}
+orbitNext.addEventListener('click', advanceServiceOrbit);
+orbitDesktop.addEventListener('change', syncServiceOrbit);
+reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settleServiceOrbit(); });
+window.addEventListener('resize', settleServiceOrbit, { passive: true });
+syncServiceOrbit();

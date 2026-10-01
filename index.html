@@ -61,10 +61,11 @@
     </div>
   </section>
   <section class="services section-shell" id="servicos" aria-labelledby="services-title">
-    <div class="container services-layout">
-      <div class="services-intro"><h2 id="services-title">Seu site precisa <br>fazer mais do <br>que existir.</h2><p>Cada negócio tem um momento diferente. A Avero combina estratégia, design e tecnologia para construir a solução que faz sentido para o seu objetivo.</p><a class="text-cta" href="#contato">Não sabe exatamente o que precisa? <br><strong>Conte sobre seu negócio <span aria-hidden="true">→</span></strong></a></div>
-      <div class="service-grid">
-        <article class="service-card service-card--institutional">
+    <div class="container services-layout services-orbit">
+      <svg class="services-trajectory" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M42 350 C-15 110 135 -15 390 18 C610 46 785 -12 990 84"/><path d="M1170 320 C1220 640 1000 965 645 968 C490 972 390 910 308 850"/></svg>
+      <div class="services-intro"><h2 id="services-title">Seu site precisa <br>fazer mais do <br>que existir.</h2><p>Cada negócio tem um momento diferente. A Avero combina estratégia, design e tecnologia para construir a solução que faz sentido para o seu objetivo.</p><a class="text-cta" href="#contato">Não sabe exatamente o que precisa? <br><strong>Conte sobre seu negócio <span aria-hidden="true">→</span></strong></a><div class="service-orbit-navigation" hidden><button class="service-orbit-next" type="button" aria-controls="service-solutions" aria-label="Destacar próxima solução"><span aria-hidden="true">↻</span></button><p class="service-orbit-current">Em destaque <strong>Sites institucionais</strong></p></div></div>
+      <div class="service-grid" id="service-solutions">
+        <article class="service-card service-card--institutional" data-orbit-slot="0">
           <div class="service-visual"><img class="service-image service-institutional" src="assets/service-institutional.png" alt="Site institucional em telas de computador e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
           <div class="service-copy">
             <div class="service-kicker"><span class="num" aria-hidden="true">01</span><small>PRESENÇA QUE POSICIONA</small></div>
@@ -72,7 +73,7 @@
             <div class="service-footer"><p>Reputação e confiança em uma presença digital à altura do seu negócio.</p><a class="circle-link service-link" href="#contato" data-service="Site institucional" aria-label="Conversar sobre site institucional">→</a></div>
           </div>
         </article>
-        <article class="service-card service-card--landing">
+        <article class="service-card service-card--landing" data-orbit-slot="1">
           <div class="service-visual"><img class="service-image service-landing" src="assets/service-landing.png" alt="Landing page com versão para celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
           <div class="service-copy">
             <div class="service-kicker"><span class="num" aria-hidden="true">02</span><small>PÁGINAS QUE CONVERTEM</small></div>
@@ -80,7 +81,7 @@
             <div class="service-footer"><p>Uma página. Um objetivo. Mais clareza, mais direção.</p><a class="circle-link service-link" href="#contato" data-service="Landing page" aria-label="Conversar sobre landing page">→</a></div>
           </div>
         </article>
-        <article class="service-card service-card--commerce">
+        <article class="service-card service-card--commerce" data-orbit-slot="2">
           <div class="service-visual"><img class="service-image service-commerce" src="assets/service-commerce.png" alt="Loja e cardápio digital em computador e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
           <div class="service-copy">
             <div class="service-kicker"><span class="num" aria-hidden="true">03</span><small>EXPERIÊNCIAS QUE VENDEM</small></div>
@@ -88,7 +89,7 @@
             <div class="service-footer"><p>Experiências de compra claras, rápidas e eficientes.</p><a class="circle-link service-link" href="#contato" data-service="E-commerce / Cardápio" aria-label="Conversar sobre e-commerce e cardápios">→</a></div>
           </div>
         </article>
-        <article class="service-card service-card--seo">
+        <article class="service-card service-card--seo" data-orbit-slot="3">
           <div class="service-visual"><img class="service-image service-seo" src="assets/service-performance.png" alt="Painéis de busca, métricas e desempenho" width="1536" height="1152" loading="lazy" decoding="async"></div>
           <div class="service-copy">
             <div class="service-kicker"><span class="num" aria-hidden="true">04</span><small>BASE PARA CRESCER</small></div>
