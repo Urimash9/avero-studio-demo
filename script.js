@@ -42,8 +42,7 @@ let currentCard = 0;
 function goToCard(index) {
   currentCard = (index + cards.length) % cards.length;
   cards.forEach((card, i) => card.classList.toggle('active', i === currentCard));
-  const offset = cards[currentCard].offsetLeft - cards[0].offsetLeft;
-  rail.scrollTo({ left: offset, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  requestAnimationFrame(() => rail.scrollTo({ left: cards[currentCard].offsetLeft - cards[0].offsetLeft, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
   pages.forEach((button, i) => {
     button.classList.toggle('active', i === currentCard);
     if (i === currentCard) button.setAttribute('aria-current', 'true');
@@ -82,3 +81,31 @@ form.addEventListener('submit', event => {
   fallback.textContent = 'Abrir conversa';
   status.append(fallback);
 });
+
+const projectDirections = [
+  { name: 'STÚDIO NICOTA', category: 'Arquitetura & Interiores', image: 'project-nicota.png', tag: 'Conceito Avero' },
+  { name: 'VÉRTICE CLÍNICA', category: 'Saúde & Bem-estar', image: 'project-clinic.png', tag: 'Conceito Avero' },
+  { name: 'SABOR REAL', category: 'Gastronomia', image: 'project-sabor.png', tag: 'Demo personalizada' }
+];
+const projectPages = [...document.querySelectorAll('.project-pagination button')];
+let currentProject = 0;
+function showProject(index) {
+  currentProject = (index + projectDirections.length) % projectDirections.length;
+  const project = projectDirections[currentProject];
+  const featured = document.querySelector('.featured');
+  featured.querySelector('.featured-art').src = `assets/${project.image}`;
+  featured.querySelector('.featured-art').alt = `${project.name}: projeto em computador e celular`;
+  featured.querySelector('.project-meta h3').textContent = project.name;
+  featured.querySelector('.project-meta p').textContent = project.category;
+  featured.querySelector('.project-tags span').textContent = project.tag;
+  featured.querySelector('[data-project]').dataset.project = project.name;
+  projectPages.forEach((button, i) => {
+    button.classList.toggle('active', i === currentProject);
+    if (i === currentProject) button.setAttribute('aria-current', 'true');
+    else button.removeAttribute('aria-current');
+  });
+  document.querySelector('.project-announcement').textContent = `Projeto ${currentProject + 1} de ${projectDirections.length}: ${project.name}`;
+}
+document.querySelector('.project-prev').addEventListener('click', () => showProject(currentProject - 1));
+document.querySelector('.project-next').addEventListener('click', () => showProject(currentProject + 1));
+projectPages.forEach((button, index) => button.addEventListener('click', () => showProject(index)));
