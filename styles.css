@@ -223,3 +223,68 @@ body{position:relative;isolation:isolate}
   .position-journey{margin-top:32px}
   .positioning .pillars p{max-width:270px}
 }
+
+/* Build 01.5 — intermittent ambient bands, preserving the original asset's ratio.
+   Screen blend leaves the dark gaps open; no new layer sits above the content. */
+.page-flow span{height:1180px;background-size:max(100%,1100px) auto;background-position:center;background-repeat:no-repeat;mix-blend-mode:screen;opacity:.48;mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}
+.page-flow span:nth-child(1){top:590px;height:1180px}
+.page-flow span:nth-child(2){top:34%;height:1320px;opacity:.44}
+.page-flow span:nth-child(3){top:68%;bottom:auto;height:1380px;opacity:.38}
+.hero-mobile-eye,.pillar-mobile-segment{display:none}
+
+/* The mobile trajectory is joined at each node. Its segments follow content
+   height, so longer phrases and font loading cannot detach the connections. */
+@media(max-width:900px){
+  .positioning .split-copy{text-align:center;justify-items:center;gap:28px}
+  .positioning #position-title{max-width:640px;text-wrap:balance}
+  .positioning .copy-side{max-width:540px}
+  .position-journey{margin-top:44px;padding-bottom:24px}
+  .positioning .pillars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;row-gap:32px;max-width:600px;margin-inline:auto;padding:0}
+  .positioning .pillars:before{display:none}
+  .positioning .pillar,.positioning .pillar--results,.positioning .pillar:last-child{margin:0;padding:0;max-width:none}
+  .positioning .pillar--vision{grid-column:1;grid-row:1;text-align:right}
+  .positioning .pillar--movement{grid-column:2;grid-row:2;text-align:left}
+  .positioning .pillar--results{grid-column:1;grid-row:3;text-align:right}
+  .positioning .pillar-index{position:static;margin-bottom:8px;font-size:11px;color:#91a9c2}
+  .positioning .pillars h3{margin:0 0 9px;font-size:18px;letter-spacing:0}
+  .positioning .pillars p{max-width:none;font-size:16px;line-height:1.6}
+  .positioning .pillar-node{top:9px;left:calc(100% + 17px);box-shadow:none}
+  .positioning .pillar--movement .pillar-node{left:-23px}
+  .positioning .pillar-mobile-segment{display:block;position:absolute;pointer-events:none;top:12px;left:100%;width:40px;height:calc(100% + 32px);overflow:visible}
+  .positioning .pillar--movement .pillar-mobile-segment{left:-40px}
+  .positioning .pillar-mobile-segment path{fill:none;stroke:#7cb4e1;stroke-opacity:.65;stroke-width:1;vector-effect:non-scaling-stroke}
+  .positioning .pillar--results .pillar-mobile-segment{height:70px;mask-image:linear-gradient(#000,transparent)}
+}
+@media(max-width:700px){
+  .page-flow span{background-size:1100px auto}
+  .page-flow span:nth-child(1){top:570px;height:1100px;background-position:58% center;opacity:.4}
+  .page-flow span:nth-child(2){top:35%;height:1200px;background-position:42% center;opacity:.4}
+  .page-flow span:nth-child(3){top:69%;height:1250px;background-position:60% center;opacity:.34}
+  .hero{min-height:0;padding:110px 0 32px;align-items:flex-start}
+  .hero-art{display:none}
+  .hero-content{display:grid;grid-template-areas:"eyebrow" "headline" "actions" "eye" "lead" "scroll" "signature";justify-items:center;text-align:center}
+  .hero .eyebrow{grid-area:eyebrow;font-size:10px;letter-spacing:.1em;margin:0 0 20px}
+  .hero h1{grid-area:headline;font-size:clamp(42px,12vw,54px);line-height:1.04;max-width:340px;margin:0 0 28px}
+  .hero .actions{grid-area:actions;width:100%;max-width:370px;display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between;gap:12px}
+  .hero .actions .btn{min-height:54px;font-size:12px;line-height:1.45;padding:12px 13px;gap:10px;white-space:normal}
+  .hero .actions .btn-primary{flex:1.35}
+  .hero .actions .btn-outline{flex:1;margin-top:12px}
+  .hero-mobile-eye{grid-area:eye;display:block;width:calc(100% + 40px);height:clamp(220px,65vw,290px);margin:4px -20px 10px;background:url("assets/avero-eye.png") center 52%/100% auto no-repeat;mask-image:linear-gradient(transparent,#000 8%,#000 92%,transparent);pointer-events:none}
+  .hero .lead{grid-area:lead;max-width:360px;font-size:16px;line-height:1.6;margin:0;color:#c4cdd9}
+  .hero .scroll-cue{grid-area:scroll;margin-top:24px}
+  .hero-signature{grid-area:signature;position:static;border:0;margin:24px 0 0;padding:0;font-size:10px;line-height:1.6;letter-spacing:.04em;text-align:center;word-spacing:.25em}
+  .hero-signature br{display:none}
+  .positioning #position-title{font-size:clamp(29px,7.4vw,38px);line-height:1.2}
+  .positioning #position-title br{display:none}
+  .positioning .copy-side{font-size:16px;line-height:1.6}
+  .positioning .pillars{max-width:390px}
+  .positioning .pillars h3{font-size:16px}
+  .positioning .pillars p{font-size:15px;line-height:1.6}
+}
+@media(max-width:360px){
+  .hero{padding-top:102px}
+  .hero .actions{gap:10px}
+  .hero .actions .btn{padding-inline:10px;gap:7px}
+  .hero-mobile-eye{width:calc(100% + 30px);margin-inline:-15px}
+  .hero-signature{font-size:9px}
+}
