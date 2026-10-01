@@ -519,7 +519,7 @@ body{position:relative;isolation:isolate}
  .method .method-path--desktop{display:none}
  .method .method-path--mobile{display:block}
  .method .method-stages li,.method .method-stages li:nth-child(n){display:block;width:100%;min-height:100px;margin:0;padding:12px 32px 0;text-align:center}
- .method .method-index{position:absolute;left:calc(50% - 105px);top:17px;font-size:11px;line-height:20px}
+ .method .method-index{position:absolute;left:calc(50% - 90px);top:17px;font-size:11px;line-height:20px}
  .method .method-step-copy h3{font-size:19px;letter-spacing:.065em}
  .method .method-step-copy p{font-size:15px;line-height:1.6;max-width:320px;margin:7px auto 0}
  .method .method-closure{margin:18px 0 0;text-align:center;font-size:14px}
