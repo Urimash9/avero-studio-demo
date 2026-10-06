@@ -764,9 +764,10 @@ body{position:relative;isolation:isolate}
  .collection-system.is-enhanced.is-3d .collection-piece[data-slot]{left:0;top:0;width:var(--collection-page-width);height:var(--collection-page-height);max-width:none;z-index:auto;visibility:visible;transform-origin:0 50%;transform-style:preserve-3d}
  .collection-system.is-enhanced.is-3d .collection-piece article{height:100%;transform-style:preserve-3d}
  .collection-system.is-enhanced.is-3d .collection-piece .collection-piece-visual{height:100%;transform:none;animation:none!important;transform-origin:0 50%;backface-visibility:hidden;border-radius:2px 10px 2px 2px;box-shadow:inset 3px 0 5px #0005,0 8px 16px #0005}
- .collection-system.is-enhanced.is-3d .collection-piece:not([data-slot="0"]) .collection-piece-visual{transform:none;animation:none!important}
+ .collection-system.is-enhanced.is-3d .collection-piece:not([data-slot="0"]) .collection-piece-visual{transform:none;animation:none!important;border-color:#8eb6d088}
  .collection-system.is-enhanced.is-3d .collection-piece[data-slot="0"]{pointer-events:auto}
- .collection-system.is-enhanced.is-3d .collection-pieces:after{content:"";position:absolute;left:var(--collection-hinge-x);top:calc(var(--collection-hinge-y) - 14px);width:5px;height:28px;border:1px solid #8dbadd88;border-radius:3px;background:linear-gradient(90deg,#0d1b2a,#88b9d0,#0d1b2a);transform:translateZ(12px) rotateZ(-16deg) rotateX(18deg);box-shadow:0 0 12px #4da3ff25;pointer-events:none}
+ /* Build 01.12.1: the short binding sits in front of the shared leaf origins. */
+ .collection-system.is-enhanced.is-3d .collection-pieces:after{content:"";position:absolute;left:calc(var(--collection-hinge-x) - 3px);top:calc(var(--collection-hinge-y) - 11px);width:6px;height:22px;border:1px solid #9bc8ddaa;border-radius:4px;background:linear-gradient(90deg,#16334a,#9ac5dc,#16334a);transform:translateZ(32px) rotateX(12deg);box-shadow:0 0 9px #4da3ff25;pointer-events:none}
  .collection-system.is-enhanced.is-3d .collection-piece.is-travelling{will-change:transform,opacity}
  .collection-system.is-enhanced.is-3d.is-transferring .collection-piece-copy{visibility:hidden;opacity:0;pointer-events:none}
  .collection-system.is-enhanced.is-3d .collection-piece[data-slot="0"] .collection-piece-copy{transition:none}

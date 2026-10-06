@@ -77,36 +77,45 @@ const collectionState = {
 };
 const collectionEngine = collectionSystem.querySelector('.collection-engine');
 const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
-const wheelStep = 360 / (collectionDirections.length - 1);
 const wrapAngle = angle => ((angle + 180) % 360 + 360) % 360 - 180;
 
 function measureCollection() {
   if (!collectionMobile.matches) { collectionState.geometry = null; return; }
   const width = collectionList.clientWidth, height = collectionList.clientHeight;
   const pageWidth = Math.min(width * .44, 240), pageHeight = pageWidth * 1.05;
+  const camera = Math.max(560, width * 2.2);
   const activeY = height * (matchMedia('(max-width: 430px)').matches ? .1 : .07);
   collectionState.geometry = {
-    width, pageWidth, pageHeight, activeY,
+    width, pageWidth, pageHeight, activeY, camera,
     hingeX: width * .63, hingeY: activeY + pageHeight * .55,
-    radius: pageWidth * .16
+    radius: pageWidth * .035
   };
   collectionList.style.setProperty('--collection-page-width', `${pageWidth}px`);
   collectionList.style.setProperty('--collection-page-height', `${pageHeight}px`);
   collectionList.style.setProperty('--collection-hinge-x', `${width * .63}px`);
   collectionList.style.setProperty('--collection-hinge-y', `${activeY + pageHeight * .55}px`);
-  collectionList.style.setProperty('--collection-camera', `${Math.max(560, width * 2.2)}px`);
+  collectionList.style.setProperty('--collection-camera', `${camera}px`);
+}
+// Build 01.12.1 — four open leaves, not eleven equal angles on a full circle.
+function collectionLeafPose(fan, rotation = collectionState.wheelRotation) {
+  const g = collectionState.geometry;
+  const breath = Math.sin((rotation + fan * 12) * Math.PI / 180) * 2;
+  return {
+    x: g.hingeX, y: g.hingeY - g.pageHeight / 2, z: -18 - fan * 4,
+    rx: 12, ry: -8 + fan * 24 + breath, rz: fan * 40 + breath,
+    radius: g.radius, scale: .48 - Math.abs(fan) * .02, opacity: 1
+  };
 }
 function collectionPose(index, active = collectionState.activeIndex, rotation = collectionState.wheelRotation) {
   const g = collectionState.geometry;
   if (index === active) return { x: 0, y: g.activeY, z: 0, rx: 0, ry: 0, rz: 0, radius: 0, scale: 1, opacity: 1 };
-  const slot = directionIndex(index - active) - 1;
-  const angle = wrapAngle(slot * wheelStep + rotation - 32);
-  const facing = Math.max(0, Math.cos(angle * Math.PI / 180));
+  const offset = directionIndex(index - active);
+  const fan = offset <= 2 ? .5 - offset : offset >= collectionDirections.length - 2 ? collectionDirections.length - offset - .5 : null;
+  if (fan !== null) return collectionLeafPose(fan, rotation);
+  // Seven folded leaves remain on the binding, deeply recessed and passive.
   return {
-    x: g.hingeX, y: g.hingeY - g.pageHeight / 2, z: -24,
-    rx: 18, ry: angle, rz: -16, radius: g.radius, scale: .66,
-    // Only the front arc is legible; the other real pages remain on the axle.
-    opacity: Math.min(1, facing / .24) * (.76 + .2 * facing)
+    x: g.hingeX, y: g.hingeY - g.pageHeight / 2, z: -g.pageWidth * .7 - offset * 4,
+    rx: 12, ry: 72 + offset, rz: 0, radius: g.radius, scale: .32, opacity: 0
   };
 }
 function collectionTransform(pose) {
@@ -204,11 +213,12 @@ function resumeCollectionInteraction(delay = 700) {
     syncCollectionAmbient();
   }, delay);
 }
-function animateCollectionPose(piece, poses, duration) {
+function animateCollectionPose(piece, poses, duration, offsets = null) {
   const animation = piece.animate(poses.map((pose, index) => ({
     transform: collectionTransform(pose), opacity: pose.opacity,
-    offset: index / (poses.length - 1)
-  })), { duration, easing: 'cubic-bezier(.22,.72,.22,1)', fill: 'both' });
+    offset: offsets ? offsets[index] : index / (poses.length - 1),
+    easing: offsets ? 'cubic-bezier(.4,0,.2,1)' : 'linear'
+  })), { duration, easing: offsets ? 'linear' : 'cubic-bezier(.22,.72,.22,1)', fill: 'both' });
   collectionState.animations.push(animation);
   return animation;
 }
@@ -223,38 +233,39 @@ async function navigateCollection3D(destination) {
   collectionSystem.setAttribute('aria-busy', 'true');
   collectionSystem.classList.add('is-transferring');
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.setAttribute('aria-disabled', 'true'));
-  const startRotation = s.wheelRotation;
-  const targetAngle = collectionPose(destination).ry;
-  const alignedRotation = startRotation + wrapAngle(-32 - targetAngle);
+  const ready = { ...collectionLeafPose(0), z: -4, ry: -20, rz: -8, radius: s.geometry.radius + 8, scale: .5, opacity: 1 };
+  const prepared = collectionPieces.map((piece, index) => index === destination ? ready : collectionPose(index));
   const alignment = collectionPieces.flatMap((piece, index) => {
-    if (index === oldActive) return [];
-    const start = collectionPose(index), end = collectionPose(index, oldActive, alignedRotation);
-    end.ry = start.ry + wrapAngle(end.ry - start.ry);
-    return [animateCollectionPose(piece, [start, end], 280)];
+    if (index !== destination) return [];
+    return [animateCollectionPose(piece, [collectionPose(index), ready], 280)];
   });
   await Promise.allSettled(alignment.map(animation => animation.finished));
   if (s.run !== run) return;
-  s.wheelRotation = wrapAngle(alignedRotation);
-  renderCollectionWheel();
+  collectionPieces.forEach((piece, index) => {
+    piece.style.transform = collectionTransform(prepared[index]);
+    piece.style.opacity = String(prepared[index].opacity);
+  });
   alignment.forEach(animation => animation.cancel());
   s.animations = [];
   s.transitionState = 'exchanging';
-  let delta = directionIndex(destination - oldActive);
-  if (delta > collectionDirections.length / 2) delta -= collectionDirections.length;
-  const finalRotation = wrapAngle(s.wheelRotation + delta * wheelStep);
+  const finalRotation = s.wheelRotation;
   const movements = collectionPieces.map((piece, index) => {
-    const start = collectionPose(index), end = collectionPose(index, destination, finalRotation);
-    end.ry = start.ry + wrapAngle(end.ry - start.ry);
+    const start = prepared[index], end = collectionPose(index, destination, finalRotation);
     if (index === destination || index === oldActive) {
       piece.classList.add('is-travelling');
-      // The actual page advances in Z before crossing the gap; no image swap/proxy.
-      const bridge = {
-        x: s.geometry.hingeX * (index === destination ? .58 : .48),
-        y: (start.y + end.y) / 2 - 8, z: 32,
-        rx: 8, ry: index === destination ? -18 : 22, rz: -7,
-        radius: s.geometry.radius + 30, scale: .82, opacity: 1
-      };
-      return animateCollectionPose(piece, [start, bridge, end], 820);
+      const g = s.geometry;
+      if (index === destination) {
+        // Incoming: open at the spine, lift forward, then cross the upper lane.
+        const opening = { ...ready, x: g.hingeX * .86, y: g.activeY - g.pageHeight * .12, z: 32, ry: -16, rz: -8, scale: .62 };
+        const crossing = { ...ready, x: g.hingeX * .4, y: g.activeY - g.pageHeight * .1, z: 48, rx: 4, ry: -12, rz: -4, radius: 12, scale: .8 };
+        // Compensate the camera projection while the page is still in front of Z=0.
+        const landing = { ...end, x: g.hingeX * 16 / g.camera, z: 16, ry: -3 };
+        return animateCollectionPose(piece, [start, opening, crossing, landing, end], 820, [0, .22, .5, .78, 1]);
+      }
+      // Outgoing: contract first, retreat in Z, and return by the lower lane.
+      const retreat = { ...start, x: g.hingeX * .5, y: g.activeY + g.pageHeight * .66, z: -65, rx: -10, ry: 28, rz: 10, radius: 0, scale: .5 };
+      const returning = { ...retreat, x: g.hingeX * .88, y: g.hingeY - g.pageHeight / 2 + g.pageHeight * .44, z: -56, ry: 26, rz: 15, scale: .44 };
+      return animateCollectionPose(piece, [start, start, retreat, returning, end, end], 820, [0, .12, .38, .62, .85, 1]);
     }
     return animateCollectionPose(piece, [start, end], 820);
   });
