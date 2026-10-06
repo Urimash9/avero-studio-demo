@@ -650,3 +650,70 @@ body{position:relative;isolation:isolate}
 /* Keep copy quiet while the actual image changes scale and position. */
 .collection-system[aria-busy="true"] .collection-piece-copy{opacity:0}
 .collection-system.is-enhanced .collection-piece[data-slot="0"] .collection-piece-copy{transition:opacity .18s ease}
+
+/* Build 01.10 — corrections confined to the existing mobile breakpoints. */
+@media(max-width:700px){
+ .hero-content{grid-template-areas:"eyebrow" "headline" "actions" "eye" "lead" "signature";isolation:isolate}
+ /* Crop only the upper nebulous region of the existing raster. The eye layer is unchanged. */
+ .hero-content:before{content:"";position:absolute;left:-20px;right:-20px;top:45%;height:168px;z-index:-1;pointer-events:none;background:url('assets/avero-eye.png') right top/320% auto no-repeat;opacity:.32;mix-blend-mode:screen;transform:scaleY(3.6);mask-image:linear-gradient(180deg,transparent,#000 28%,#000 70%,transparent)}
+ .hero .actions{align-items:flex-start;gap:10px;min-height:66px}
+ .hero .actions .btn{height:54px;min-height:54px;max-height:54px;margin-top:0;padding:0 clamp(8px,2.5vw,13px);font-size:clamp(10.5px,2.85vw,12px);line-height:1.25;letter-spacing:-.025em;gap:7px;white-space:nowrap;align-items:center;justify-content:center;min-width:0}
+ .hero .actions .btn-primary{flex:0 1 auto}
+ .hero .actions .btn-outline{flex:1}
+ .hero .scroll-cue{display:none}
+ .hero-signature{margin-top:22px}
+ .services .service-image{mask-image:radial-gradient(ellipse 205px 145px at 100% 100%,transparent 30%,#000 88%),radial-gradient(circle,#000 1.8px,transparent 2.3px),radial-gradient(ellipse 205px 145px at 100% 100%,transparent 7%,#000 68%);mask-size:100% 100%,8px 8px,100% 100%;mask-repeat:no-repeat,repeat,no-repeat;mask-composite:add,intersect}
+ .services .service-visual:after{background:linear-gradient(0deg,rgba(5,10,19,.58),transparent 33%)}
+}
+@media(max-width:360px){
+ .hero .actions{flex-direction:row;gap:7px}
+ .hero .actions .btn{padding-inline:8px;gap:5px}
+ .hero-content:before{left:-15px;right:-15px}
+}
+@media(max-width:900px){
+ /* One shared hinge: pages unfold around it, rather than stacking down the screen. */
+ .collection-engine:before{inset:0;background:radial-gradient(ellipse at 67% 40%,#347aaf24,transparent 48%)}
+ .collection-engine:after{content:"";position:absolute;left:calc(64% - 5px);top:calc(40% - 5px);width:10px;height:10px;border-radius:50%;border:1px solid #9cc9e9;background:#16354e;box-shadow:0 0 0 4px #5384a71a,0 0 18px #4da3ff22;z-index:6;pointer-events:none}
+ .collection-system.is-enhanced .collection-axis{display:none}
+ .collection-system.is-enhanced .collection-piece:not([data-slot="0"]):not([data-slot="off"]){left:64%;top:40%;max-width:none}
+ .collection-system.is-enhanced .collection-piece[data-slot="1"]{width:29%;opacity:.86;z-index:4;--page-angle:-24deg}
+ .collection-system.is-enhanced .collection-piece[data-slot="2"]{width:26%;opacity:.68;z-index:3;--page-angle:19deg}
+ .collection-system.is-enhanced .collection-piece[data-slot="-1"]{width:25%;opacity:.52;z-index:2;--page-angle:-58deg}
+ .collection-system.is-enhanced .collection-piece[data-slot="-2"]{width:23%;opacity:.46;z-index:1;--page-angle:54deg}
+ .collection-system.is-enhanced .collection-piece:not([data-slot="0"]):not([data-slot="off"]) .collection-piece-visual{transform-origin:0 50%;transform:translateY(-50%) rotate(var(--page-angle));animation:collection-book-sway 18s ease-in-out infinite alternate}
+ .collection-system.is-enhanced .collection-piece[data-slot="2"] .collection-piece-visual{animation-delay:-5s}
+ .collection-system.is-enhanced .collection-piece[data-slot="-1"] .collection-piece-visual{animation-delay:-10s}
+ .collection-system.is-enhanced .collection-piece[data-slot="-2"] .collection-piece-visual{animation-delay:-15s}
+ .perspective .perspective-eye{background-size:100% auto;mask-image:linear-gradient(180deg,transparent,rgba(0,0,0,.6) 18%,#000 35%,#000 72%,rgba(0,0,0,.5) 88%,transparent);mask-composite:add}
+ .contact .contact-layout{grid-template-columns:1fr;justify-items:center;gap:32px}
+ .contact .contact-layout>div{width:100%;max-width:520px;text-align:center}
+ .contact h2{margin-inline:auto;max-width:470px}
+ .contact .contact-layout>div>p{max-width:460px;margin-inline:auto;line-height:1.6}
+ .contact .contact-layout>div>p br{display:none}
+ .contact .actions{flex-direction:column;align-items:center;justify-content:center;gap:12px}
+ .contact .actions .btn{min-height:48px;justify-content:center}
+ .contact .contact-note{max-width:350px;margin-inline:auto}
+ .contact .contact-card{width:100%;max-width:520px;margin-inline:auto;text-align:center}
+ .contact .contact-card h3,.contact .contact-card>p,.contact .whatsapp{text-align:center}
+ .contact .contact-card input,.contact .contact-card textarea{text-align:left;min-height:46px}
+ .contact .chips{justify-content:center;margin-inline:auto}
+ .contact .chips button{min-height:44px}
+ .contact .contact-card .full{justify-content:center}
+ .contact .whatsapp{min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px}
+ .footer .footer-grid{grid-template-columns:1fr;justify-items:center;gap:30px;text-align:center}
+ .footer .footer-grid>div{width:100%;max-width:460px;margin-inline:auto}
+ .footer .footer-grid>div:first-child{grid-column:auto}
+ .footer .footer-grid>div:not(:first-child){align-items:center}
+ .footer .brand{justify-content:center;margin-inline:auto}
+ .footer .footer-grid p br{display:none}
+ .footer .footer-grid a:not(.brand){min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+ .footer .footer-grid h3{margin-bottom:8px}
+ .footer .footer-bottom{flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px}
+}
+@keyframes collection-book-sway{
+ from{transform:translateY(-50%) rotate(calc(var(--page-angle) - 2deg))}
+ to{transform:translateY(-50%) rotate(calc(var(--page-angle) + 2deg))}
+}
+@media(max-width:900px) and (prefers-reduced-motion:reduce){
+ .collection-system.is-enhanced .collection-piece-visual{animation:none!important;transition:none!important}
+}

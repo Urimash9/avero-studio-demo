@@ -103,7 +103,10 @@ function navigateCollection(index) {
   collectionSystem.classList.add('is-interacting');
   clearTimeout(collectionResumeTimer);
   collectionResumeTimer = setTimeout(() => collectionSystem.classList.remove('is-interacting'), 5500);
-  const before = collectionPieces.map(piece => ({ rect: piece.getBoundingClientRect(), visible: piece.dataset.slot !== 'off' }));
+  const before = collectionPieces.map(piece => ({
+    rect: piece.getBoundingClientRect(), visible: piece.dataset.slot !== 'off',
+    visualTransform: collectionMobile.matches ? getComputedStyle(piece.querySelector('.collection-piece-visual')).transform : null
+  }));
   const forward = destination === directionIndex(currentDirection + 1);
   currentDirection = destination;
   arrangeCollection(true);
@@ -120,7 +123,15 @@ function navigateCollection(index) {
       const t = step / 8, arc = 4 * t * (1 - t);
       return { transform: `translate(${dx * (1 - t)}px, ${dy * (1 - t) + (forward ? -18 : 18) * arc}px) scale(${scale + (1 - scale) * t})`, offset: t };
     });
-    return [piece.animate(frames, { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' })];
+    const movement = piece.animate(frames, { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' });
+    if (!collectionMobile.matches) return [movement];
+    // Mobile pages also unfold/refold while the same DOM piece crosses the axis.
+    const visual = piece.querySelector('.collection-piece-visual');
+    const unfolding = visual.animate([
+      { transform: old.visualTransform },
+      { transform: getComputedStyle(visual).transform }
+    ], { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' });
+    return [movement, unfolding];
   });
   const running = collectionAnimations;
   Promise.allSettled(running.map(animation => animation.finished)).then(() => {
