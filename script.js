@@ -79,9 +79,14 @@ const collectionEngine = collectionSystem.querySelector('.collection-engine');
 const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
 const collectionRadialStep = 360 / collectionDirections.length;
 const collectionFrontGap = collectionRadialStep / 2;
+const collectionAmbientSpeed = 2.5; // degrees per second; one turn in 144 seconds.
 let collectionRadialStage = null, collectionRadialRotor = null;
 const collectionRadialBlades = [];
 
+function closestCollectionRotation(index, from = collectionState.wheelRotation) {
+  const target = -index * collectionRadialStep - collectionFrontGap;
+  return from + ((target - from + 180) % 360 + 360) % 360 - 180;
+}
 function createCollectionRadial() {
   if (collectionRadialStage) return;
   collectionRadialStage = document.createElement('div');
@@ -147,9 +152,37 @@ function renderCollectionRadial() {
   });
 }
 function syncCollectionAmbient() {
-  // V4 is static between manual selections; no environmental RAF or pause button.
-  collectionAmbient.hidden = true;
-  collectionSystem.classList.add('is-resting');
+  collectionAmbient.hidden = !collectionMobile.matches || collectionState.reducedMotion;
+  const moving = canCollectionMove();
+  collectionSystem.classList.toggle('is-resting', !moving);
+  collectionAmbient.setAttribute('aria-pressed', String(collectionState.pauseState.manual));
+  collectionAmbient.setAttribute('aria-label', collectionState.pauseState.manual ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
+  collectionAmbient.querySelector('span').textContent = collectionState.pauseState.manual ? '▷' : 'Ⅱ';
+  if (!moving) stopCollectionFrame();
+  else if (collectionState.frame === null) collectionState.frame = requestAnimationFrame(collectionFrame);
+}
+function stopCollectionFrame() {
+  if (collectionState.frame !== null) cancelAnimationFrame(collectionState.frame);
+  collectionState.frame = null;
+  collectionState.lastFrame = null;
+}
+function canCollectionMove() {
+  const s = collectionState;
+  return collectionMobile.matches && collectionRadialRotor && !s.reducedMotion &&
+    s.visibilityState.component && s.visibilityState.document && s.transitionState === 'idle' &&
+    !Object.values(s.pauseState).some(Boolean);
+}
+function collectionFrame(time) {
+  const s = collectionState;
+  s.frame = null;
+  if (!canCollectionMove()) { s.lastFrame = null; return; }
+  if (s.lastFrame !== null) {
+    s.wheelRotation -= Math.min(time - s.lastFrame, 64) * collectionAmbientSpeed / 1000;
+    // This is the only ambient DOM write: the same rotor angle used by navigation.
+    collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
+  }
+  s.lastFrame = time;
+  s.frame = requestAnimationFrame(collectionFrame);
 }
 function arrangeCollection(announce = false) {
   collectionDirections.forEach((direction, index) => {
@@ -177,8 +210,10 @@ function settleCollectionMotion(announce = true) {
   collectionState.run++;
   collectionState.animations.forEach(animation => animation.cancel());
   collectionState.animations = [];
-  if (collectionState.destination !== null) collectionState.activeIndex = collectionState.destination;
-  collectionState.wheelRotation = -collectionState.activeIndex * collectionRadialStep - collectionFrontGap;
+  if (hadDestination) {
+    collectionState.activeIndex = collectionState.destination;
+    collectionState.wheelRotation = closestCollectionRotation(collectionState.destination);
+  }
   collectionState.destination = null;
   collectionState.transitionState = 'idle';
   collectionSystem.removeAttribute('aria-busy');
@@ -187,8 +222,10 @@ function settleCollectionMotion(announce = true) {
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
   collectionPieces.forEach(piece => piece.classList.remove('is-travelling'));
   arrangeCollection(announce && hadDestination);
-  syncCollectionAmbient();
-  if (hadDestination) resumeCollectionInteraction();
+  if (hadDestination) {
+    pauseCollectionInteraction();
+    resumeCollectionInteraction();
+  } else syncCollectionAmbient();
 }
 function pauseCollectionInteraction() {
   collectionState.pauseState.interaction = true;
@@ -205,15 +242,12 @@ function resumeCollectionInteraction(delay = 700) {
   }, delay);
 }
 async function navigateCollectionRadial(destination) {
-  const s = collectionState, run = ++s.run, oldActive = s.activeIndex;
+  const s = collectionState, run = ++s.run;
   const startRotation = s.wheelRotation;
-  let delta = destination - oldActive;
-  if (delta > collectionDirections.length / 2) delta -= collectionDirections.length;
-  if (delta < -collectionDirections.length / 2) delta += collectionDirections.length;
+  const targetRotation = closestCollectionRotation(destination, startRotation);
+  pauseCollectionInteraction();
   s.destination = destination;
   s.activeIndex = destination;
-  s.wheelRotation = startRotation - delta * collectionRadialStep;
-  pauseCollectionInteraction();
   arrangeCollection(true);
   if (s.reducedMotion || !s.visibilityState.document || !s.visibilityState.component || typeof collectionRadialRotor.animate !== 'function') {
     settleCollectionMotion(false); return;
@@ -224,7 +258,7 @@ async function navigateCollectionRadial(destination) {
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.setAttribute('aria-disabled', 'true'));
   const animation = collectionRadialRotor.animate([
     { transform: `rotateY(${startRotation}deg)` },
-    { transform: `rotateY(${s.wheelRotation}deg)` }
+    { transform: `rotateY(${targetRotation}deg)` }
   ], { duration: 850, easing: 'cubic-bezier(.22,.8,.18,1)', fill: 'both' });
   s.animations = [animation];
   await Promise.allSettled([animation.finished]);
@@ -267,7 +301,9 @@ function navigateCollection(index) {
   else navigateCollectionDesktop(destination);
 }
 function syncCollectionLayout() {
+  const enteringCompact = collectionMobile.matches && !collectionSystem.classList.contains('is-radial');
   collectionSystem.classList.toggle('is-radial', collectionMobile.matches);
+  if (enteringCompact) collectionState.wheelRotation = closestCollectionRotation(collectionState.activeIndex);
   if (collectionMobile.matches) createCollectionRadial();
   if (collectionRadialStage) collectionRadialStage.hidden = !collectionMobile.matches;
   measureCollection();
