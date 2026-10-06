@@ -654,11 +654,12 @@ body{position:relative;isolation:isolate}
 /* Build 01.10 — corrections confined to the existing mobile breakpoints. */
 @media(max-width:700px){
  .hero-content{grid-template-areas:"eyebrow" "headline" "actions" "eye" "lead" "signature";isolation:isolate}
- /* Crop only the upper nebulous region of the existing raster. The eye layer is unchanged. */
- .hero-content:before{content:"";position:absolute;left:-20px;right:-20px;top:45%;height:168px;z-index:-1;pointer-events:none;background:url('assets/avero-eye.png') right top/320% auto no-repeat;opacity:.32;mix-blend-mode:screen;transform:scaleY(3.6);mask-image:linear-gradient(180deg,transparent,#000 28%,#000 70%,transparent)}
+ /* A separate cloud layer spans the headline and lead; the symbol raster stays untouched. */
+ .hero-content:before{content:"";position:absolute;left:-20px;right:-20px;top:65px;bottom:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 65% 40% at 76% 28%,#265c8840,transparent 76%),radial-gradient(ellipse 75% 45% at 24% 65%,#20587938,transparent 72%),radial-gradient(ellipse 32% 60% at 62% 48%,#3d83b826,transparent 80%);mix-blend-mode:screen;mask-image:linear-gradient(180deg,transparent,#000 24%,#000 70%,transparent)}
+ .hero-content:after{content:"";position:absolute;left:-20px;right:-20px;top:100px;height:165px;z-index:-1;pointer-events:none;background:url('assets/avero-eye.png') right top/320% auto no-repeat;opacity:.22;filter:blur(2px);mix-blend-mode:screen;mask-image:linear-gradient(transparent,#000 32%,#000 65%,transparent)}
  .hero .actions{align-items:flex-start;gap:10px;min-height:66px}
  .hero .actions .btn{height:54px;min-height:54px;max-height:54px;margin-top:0;padding:0 clamp(8px,2.5vw,13px);font-size:clamp(10.5px,2.85vw,12px);line-height:1.25;letter-spacing:-.025em;gap:7px;white-space:nowrap;align-items:center;justify-content:center;min-width:0}
- .hero .actions .btn-primary{flex:0 1 auto}
+ .hero .actions .btn-primary{flex:1.4}
  .hero .actions .btn-outline{flex:1}
  .hero .scroll-cue{display:none}
  .hero-signature{margin-top:22px}
@@ -668,7 +669,7 @@ body{position:relative;isolation:isolate}
 @media(max-width:360px){
  .hero .actions{flex-direction:row;gap:7px}
  .hero .actions .btn{padding-inline:8px;gap:5px}
- .hero-content:before{left:-15px;right:-15px}
+ .hero-content:before,.hero-content:after{left:-15px;right:-15px}
 }
 @media(max-width:900px){
  /* One shared hinge: pages unfold around it, rather than stacking down the screen. */
