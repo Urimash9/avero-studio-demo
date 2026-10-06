@@ -59,104 +59,284 @@ const collectionCurrent = collectionSystem.querySelector('.collection-current');
 const collectionPosition = collectionSystem.querySelector('.collection-position');
 const collectionAnnouncement = collectionSystem.querySelector('.collection-announcement');
 const collectionAmbient = collectionSystem.querySelector('.collection-ambient-toggle');
-let currentDirection = 0;
-let collectionAnimations = [];
-let collectionResumeTimer;
-let collectionPaused = false;
-let collectionVisible = false;
+// Build 01.12 — one state owner; the desktop FLIP path remains separate.
+const collectionState = {
+  activeIndex: 0,
+  wheelRotation: 0,
+  transitionState: 'idle',
+  destination: null,
+  run: 0,
+  pauseState: { manual: false, interaction: false, pointer: false, focus: false },
+  reducedMotion: reducedMotion.matches,
+  visibilityState: { component: false, document: !document.hidden },
+  animations: [],
+  resumeTimer: null,
+  frame: null,
+  lastFrame: null,
+  geometry: null
+};
+const collectionEngine = collectionSystem.querySelector('.collection-engine');
 const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
+const wheelStep = 360 / (collectionDirections.length - 1);
+const wrapAngle = angle => ((angle + 180) % 360 + 360) % 360 - 180;
 
-function settleCollectionMotion() {
-  collectionAnimations.forEach(animation => animation.cancel());
-  collectionAnimations = [];
-  collectionSystem.removeAttribute('aria-busy');
+function measureCollection() {
+  if (!collectionMobile.matches) { collectionState.geometry = null; return; }
+  const width = collectionList.clientWidth, height = collectionList.clientHeight;
+  const pageWidth = Math.min(width * .44, 240), pageHeight = pageWidth * 1.05;
+  const activeY = height * (matchMedia('(max-width: 430px)').matches ? .1 : .07);
+  collectionState.geometry = {
+    width, pageWidth, pageHeight, activeY,
+    hingeX: width * .63, hingeY: activeY + pageHeight * .55,
+    radius: pageWidth * .16
+  };
+  collectionList.style.setProperty('--collection-page-width', `${pageWidth}px`);
+  collectionList.style.setProperty('--collection-page-height', `${pageHeight}px`);
+  collectionList.style.setProperty('--collection-hinge-x', `${width * .63}px`);
+  collectionList.style.setProperty('--collection-hinge-y', `${activeY + pageHeight * .55}px`);
+  collectionList.style.setProperty('--collection-camera', `${Math.max(560, width * 2.2)}px`);
+}
+function collectionPose(index, active = collectionState.activeIndex, rotation = collectionState.wheelRotation) {
+  const g = collectionState.geometry;
+  if (index === active) return { x: 0, y: g.activeY, z: 0, rx: 0, ry: 0, rz: 0, radius: 0, scale: 1, opacity: 1 };
+  const slot = directionIndex(index - active) - 1;
+  const angle = wrapAngle(slot * wheelStep + rotation - 32);
+  const facing = Math.max(0, Math.cos(angle * Math.PI / 180));
+  return {
+    x: g.hingeX, y: g.hingeY - g.pageHeight / 2, z: -24,
+    rx: 18, ry: angle, rz: -16, radius: g.radius, scale: .66,
+    // Only the front arc is legible; the other real pages remain on the axle.
+    opacity: Math.min(1, facing / .24) * (.76 + .2 * facing)
+  };
+}
+function collectionTransform(pose) {
+  return `translate3d(${pose.x}px, ${pose.y}px, ${pose.z}px) rotateZ(${pose.rz}deg) rotateX(${pose.rx}deg) rotateY(${pose.ry}deg) translateZ(${pose.radius}px) scale(${pose.scale})`;
+}
+function renderCollectionWheel() {
+  if (!collectionMobile.matches || !collectionState.geometry) return;
+  collectionPieces.forEach((piece, index) => {
+    const pose = collectionPose(index);
+    piece.style.transform = collectionTransform(pose);
+    piece.style.opacity = String(pose.opacity);
+  });
+}
+function stopCollectionFrame() {
+  if (collectionState.frame !== null) cancelAnimationFrame(collectionState.frame);
+  collectionState.frame = null;
+  collectionState.lastFrame = null;
+}
+function canCollectionMove() {
+  const s = collectionState;
+  return collectionMobile.matches && !s.reducedMotion && s.visibilityState.component && s.visibilityState.document &&
+    s.transitionState === 'idle' && !Object.values(s.pauseState).some(Boolean);
+}
+function collectionFrame(time) {
+  collectionState.frame = null;
+  if (!canCollectionMove()) { collectionState.lastFrame = null; return; }
+  if (collectionState.lastFrame !== null) {
+    collectionState.wheelRotation = wrapAngle(collectionState.wheelRotation + Math.min(time - collectionState.lastFrame, 64) * .0013);
+    renderCollectionWheel();
+  }
+  collectionState.lastFrame = time;
+  collectionState.frame = requestAnimationFrame(collectionFrame);
 }
 function syncCollectionAmbient() {
-  collectionAmbient.hidden = !collectionMobile.matches || reducedMotion.matches;
-  collectionSystem.classList.toggle('is-resting', !collectionVisible || document.hidden || collectionPaused || reducedMotion.matches);
-  collectionAmbient.setAttribute('aria-pressed', String(collectionPaused));
-  collectionAmbient.setAttribute('aria-label', collectionPaused ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
-  collectionAmbient.querySelector('span').textContent = collectionPaused ? '▷' : 'Ⅱ';
+  collectionAmbient.hidden = !collectionMobile.matches || collectionState.reducedMotion;
+  const moving = canCollectionMove();
+  collectionSystem.classList.toggle('is-resting', !moving);
+  collectionAmbient.setAttribute('aria-pressed', String(collectionState.pauseState.manual));
+  collectionAmbient.setAttribute('aria-label', collectionState.pauseState.manual ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
+  collectionAmbient.querySelector('span').textContent = collectionState.pauseState.manual ? '▷' : 'Ⅱ';
+  if (!moving) stopCollectionFrame();
+  else if (collectionState.frame === null) collectionState.frame = requestAnimationFrame(collectionFrame);
 }
 function arrangeCollection(announce = false) {
   collectionDirections.forEach((direction, index) => {
-    const offset = directionIndex(index - currentDirection);
-    const slot = offset <= 2 ? offset : offset >= collectionDirections.length - 2 ? offset - collectionDirections.length : 'off';
-    const active = index === currentDirection;
+    const offset = directionIndex(index - collectionState.activeIndex);
+    const slot = collectionMobile.matches ? offset : offset <= 2 ? offset : offset >= collectionDirections.length - 2 ? offset - collectionDirections.length : 'off';
+    const active = index === collectionState.activeIndex;
     direction.piece.dataset.slot = String(slot);
+    if (collectionMobile.matches && !active) direction.piece.dataset.wheelSlot = String(offset - 1);
+    else delete direction.piece.dataset.wheelSlot;
     direction.piece.inert = !active;
     direction.piece.setAttribute('aria-hidden', String(!active));
     if (active) direction.piece.setAttribute('aria-current', 'true');
     else direction.piece.removeAttribute('aria-current');
     direction.piece.querySelector('img').src = active ? direction.image : direction.thumbnail;
+    if (!collectionMobile.matches) {
+      direction.piece.style.removeProperty('transform');
+      direction.piece.style.removeProperty('opacity');
+    }
   });
-  collectionCurrent.textContent = String(currentDirection + 1).padStart(2, '0');
-  collectionPosition.setAttribute('aria-label', `Direção ${currentDirection + 1} de ${collectionDirections.length}`);
-  if (announce) collectionAnnouncement.textContent = `${currentDirection + 1} de ${collectionDirections.length}: ${collectionDirections[currentDirection].name}`;
+  collectionCurrent.textContent = String(collectionState.activeIndex + 1).padStart(2, '0');
+  collectionPosition.setAttribute('aria-label', `Direção ${collectionState.activeIndex + 1} de ${collectionDirections.length}`);
+  if (announce) collectionAnnouncement.textContent = `${collectionState.activeIndex + 1} de ${collectionDirections.length}: ${collectionDirections[collectionState.activeIndex].name}`;
+  renderCollectionWheel();
 }
-function navigateCollection(index) {
-  settleCollectionMotion();
-  const destination = directionIndex(index);
-  if (destination === currentDirection) return;
-  // Buttons keep their focus; a link in the outgoing piece returns focus to the list.
-  if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
+function settleCollectionMotion(announce = true) {
+  // Resize, reduced motion and hidden tabs finish the intended selection atomically.
+  const hadDestination = collectionState.destination !== null;
+  collectionState.run++;
+  collectionState.animations.forEach(animation => animation.cancel());
+  collectionState.animations = [];
+  if (collectionState.destination !== null) collectionState.activeIndex = collectionState.destination;
+  collectionState.destination = null;
+  collectionState.transitionState = 'idle';
+  collectionSystem.removeAttribute('aria-busy');
+  collectionSystem.classList.remove('is-transferring');
+  collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
+  collectionPieces.forEach(piece => piece.classList.remove('is-travelling'));
+  arrangeCollection(announce && hadDestination);
+  syncCollectionAmbient();
+  if (hadDestination) resumeCollectionInteraction();
+}
+function pauseCollectionInteraction() {
+  collectionState.pauseState.interaction = true;
+  clearTimeout(collectionState.resumeTimer);
   collectionSystem.classList.add('is-interacting');
-  clearTimeout(collectionResumeTimer);
-  collectionResumeTimer = setTimeout(() => collectionSystem.classList.remove('is-interacting'), 5500);
-  const before = collectionPieces.map(piece => ({
-    rect: piece.getBoundingClientRect(), visible: piece.dataset.slot !== 'off',
-    visualTransform: collectionMobile.matches ? getComputedStyle(piece.querySelector('.collection-piece-visual')).transform : null
-  }));
-  const forward = destination === directionIndex(currentDirection + 1);
-  currentDirection = destination;
-  arrangeCollection(true);
-  if (reducedMotion.matches || typeof collectionList.animate !== 'function') return;
+  syncCollectionAmbient();
+}
+function resumeCollectionInteraction(delay = 700) {
+  clearTimeout(collectionState.resumeTimer);
+  collectionState.resumeTimer = setTimeout(() => {
+    collectionState.pauseState.interaction = false;
+    collectionSystem.classList.remove('is-interacting');
+    syncCollectionAmbient();
+  }, delay);
+}
+function animateCollectionPose(piece, poses, duration) {
+  const animation = piece.animate(poses.map((pose, index) => ({
+    transform: collectionTransform(pose), opacity: pose.opacity,
+    offset: index / (poses.length - 1)
+  })), { duration, easing: 'cubic-bezier(.22,.72,.22,1)', fill: 'both' });
+  collectionState.animations.push(animation);
+  return animation;
+}
+async function navigateCollection3D(destination) {
+  const s = collectionState, run = ++s.run, oldActive = s.activeIndex;
+  s.destination = destination;
+  pauseCollectionInteraction();
+  if (s.reducedMotion || typeof collectionList.animate !== 'function') {
+    settleCollectionMotion(); return;
+  }
+  s.transitionState = 'aligning';
   collectionSystem.setAttribute('aria-busy', 'true');
-  collectionAnimations = collectionPieces.flatMap((piece, index) => {
+  collectionSystem.classList.add('is-transferring');
+  collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.setAttribute('aria-disabled', 'true'));
+  const startRotation = s.wheelRotation;
+  const targetAngle = collectionPose(destination).ry;
+  const alignedRotation = startRotation + wrapAngle(-32 - targetAngle);
+  const alignment = collectionPieces.flatMap((piece, index) => {
+    if (index === oldActive) return [];
+    const start = collectionPose(index), end = collectionPose(index, oldActive, alignedRotation);
+    end.ry = start.ry + wrapAngle(end.ry - start.ry);
+    return [animateCollectionPose(piece, [start, end], 280)];
+  });
+  await Promise.allSettled(alignment.map(animation => animation.finished));
+  if (s.run !== run) return;
+  s.wheelRotation = wrapAngle(alignedRotation);
+  renderCollectionWheel();
+  alignment.forEach(animation => animation.cancel());
+  s.animations = [];
+  s.transitionState = 'exchanging';
+  let delta = directionIndex(destination - oldActive);
+  if (delta > collectionDirections.length / 2) delta -= collectionDirections.length;
+  const finalRotation = wrapAngle(s.wheelRotation + delta * wheelStep);
+  const movements = collectionPieces.map((piece, index) => {
+    const start = collectionPose(index), end = collectionPose(index, destination, finalRotation);
+    end.ry = start.ry + wrapAngle(end.ry - start.ry);
+    if (index === destination || index === oldActive) {
+      piece.classList.add('is-travelling');
+      // The actual page advances in Z before crossing the gap; no image swap/proxy.
+      const bridge = {
+        x: s.geometry.hingeX * (index === destination ? .58 : .48),
+        y: (start.y + end.y) / 2 - 8, z: 32,
+        rx: 8, ry: index === destination ? -18 : 22, rz: -7,
+        radius: s.geometry.radius + 30, scale: .82, opacity: 1
+      };
+      return animateCollectionPose(piece, [start, bridge, end], 820);
+    }
+    return animateCollectionPose(piece, [start, end], 820);
+  });
+  await Promise.allSettled(movements.map(animation => animation.finished));
+  if (s.run !== run) return;
+  s.wheelRotation = finalRotation;
+  settleCollectionMotion();
+}
+function navigateCollectionDesktop(destination) {
+  // Original desktop FLIP geometry, duration and immediate state update.
+  const before = collectionPieces.map(piece => ({ rect: piece.getBoundingClientRect(), visible: piece.dataset.slot !== 'off' }));
+  const forward = destination === directionIndex(collectionState.activeIndex + 1);
+  collectionState.activeIndex = destination;
+  arrangeCollection(true);
+  if (collectionState.reducedMotion || typeof collectionList.animate !== 'function') return;
+  collectionSystem.setAttribute('aria-busy', 'true');
+  collectionState.animations = collectionPieces.flatMap((piece, index) => {
     if (piece.dataset.slot === 'off') return [];
     const old = before[index], next = piece.getBoundingClientRect();
     if (!old.visible) return [piece.animate([{ opacity: 0 }, { opacity: getComputedStyle(piece).opacity }], { duration: 660, easing: 'ease-out' })];
     const dx = old.rect.left - next.left, dy = old.rect.top - next.top;
     const scale = old.rect.width / next.width;
-    // FLIP moves the actual piece between catalogue and highlight, without clones.
     const frames = Array.from({ length: 9 }, (_, step) => {
       const t = step / 8, arc = 4 * t * (1 - t);
       return { transform: `translate(${dx * (1 - t)}px, ${dy * (1 - t) + (forward ? -18 : 18) * arc}px) scale(${scale + (1 - scale) * t})`, offset: t };
     });
-    const movement = piece.animate(frames, { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' });
-    if (!collectionMobile.matches) return [movement];
-    // Mobile pages also unfold/refold while the same DOM piece crosses the axis.
-    const visual = piece.querySelector('.collection-piece-visual');
-    const unfolding = visual.animate([
-      { transform: old.visualTransform },
-      { transform: getComputedStyle(visual).transform }
-    ], { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' });
-    return [movement, unfolding];
+    return [piece.animate(frames, { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' })];
   });
-  const running = collectionAnimations;
+  const running = collectionState.animations;
   Promise.allSettled(running.map(animation => animation.finished)).then(() => {
-    if (collectionAnimations === running) { collectionAnimations = []; collectionSystem.removeAttribute('aria-busy'); }
+    if (collectionState.animations === running) { collectionState.animations = []; collectionSystem.removeAttribute('aria-busy'); }
   });
+}
+function navigateCollection(index) {
+  // Ignore additional mobile inputs until the two real pages have settled.
+  if (collectionMobile.matches && collectionState.transitionState !== 'idle') return;
+  if (!collectionMobile.matches) settleCollectionMotion(false);
+  const destination = directionIndex(index);
+  if (destination === collectionState.activeIndex) return;
+  if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
+  if (collectionMobile.matches) navigateCollection3D(destination);
+  else navigateCollectionDesktop(destination);
+}
+function syncCollectionLayout() {
+  collectionSystem.classList.toggle('is-3d', collectionMobile.matches);
+  measureCollection();
+  settleCollectionMotion();
 }
 collectionSystem.classList.add('is-enhanced');
 collectionNavigation.hidden = false;
-arrangeCollection();
-collectionSystem.querySelector('.collection-previous').addEventListener('click', () => navigateCollection(currentDirection - 1));
-collectionSystem.querySelector('.collection-next').addEventListener('click', () => navigateCollection(currentDirection + 1));
+syncCollectionLayout();
+collectionSystem.querySelector('.collection-previous').addEventListener('click', () => navigateCollection(collectionState.activeIndex - 1));
+collectionSystem.querySelector('.collection-next').addEventListener('click', () => navigateCollection(collectionState.activeIndex + 1));
 function collectionKeyboard(event) {
-  const destinations = { ArrowRight: currentDirection + 1, ArrowLeft: currentDirection - 1, Home: 0, End: collectionDirections.length - 1 };
+  const destinations = { ArrowRight: collectionState.activeIndex + 1, ArrowLeft: collectionState.activeIndex - 1, Home: 0, End: collectionDirections.length - 1 };
   if (event.key in destinations) { event.preventDefault(); navigateCollection(destinations[event.key]); }
 }
 collectionList.addEventListener('keydown', collectionKeyboard);
 collectionNavigation.addEventListener('keydown', collectionKeyboard);
-collectionAmbient.addEventListener('click', () => { collectionPaused = !collectionPaused; syncCollectionAmbient(); });
-collectionMobile.addEventListener('change', () => { settleCollectionMotion(); syncCollectionAmbient(); });
-reducedMotion.addEventListener('change', () => { settleCollectionMotion(); syncCollectionAmbient(); });
-window.addEventListener('resize', settleCollectionMotion, { passive: true });
-document.addEventListener('visibilitychange', syncCollectionAmbient);
+collectionAmbient.addEventListener('click', () => { collectionState.pauseState.manual = !collectionState.pauseState.manual; syncCollectionAmbient(); });
+collectionEngine.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') { collectionState.pauseState.pointer = true; syncCollectionAmbient(); } });
+collectionEngine.addEventListener('pointerleave', () => { collectionState.pauseState.pointer = false; syncCollectionAmbient(); });
+collectionList.addEventListener('focusin', () => { collectionState.pauseState.focus = true; syncCollectionAmbient(); });
+collectionList.addEventListener('focusout', event => { if (!collectionList.contains(event.relatedTarget)) { collectionState.pauseState.focus = false; syncCollectionAmbient(); } });
+collectionSystem.addEventListener('pointerdown', pauseCollectionInteraction);
+// A release outside the component must not leave its interaction pause latched.
+window.addEventListener('pointerup', () => { if (collectionState.pauseState.interaction) resumeCollectionInteraction(); }, { passive: true });
+window.addEventListener('pointercancel', () => { if (collectionState.pauseState.interaction) resumeCollectionInteraction(); }, { passive: true });
+collectionMobile.addEventListener('change', syncCollectionLayout);
+reducedMotion.addEventListener('change', () => { collectionState.reducedMotion = reducedMotion.matches; settleCollectionMotion(); });
+window.addEventListener('resize', syncCollectionLayout, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  collectionState.visibilityState.document = !document.hidden;
+  if (document.hidden) settleCollectionMotion();
+  syncCollectionAmbient();
+});
 if ('IntersectionObserver' in window) {
-  new IntersectionObserver(entries => { collectionVisible = entries[0].isIntersecting; syncCollectionAmbient(); }, { threshold: .15 }).observe(collectionSystem);
-} else collectionVisible = true;
+  new IntersectionObserver(entries => {
+    collectionState.visibilityState.component = entries[0].isIntersecting;
+    syncCollectionAmbient();
+  }, { threshold: .15 }).observe(collectionSystem);
+} else collectionState.visibilityState.component = true;
 syncCollectionAmbient();
 
 const form = document.querySelector('.contact-card');

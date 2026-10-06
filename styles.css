@@ -754,3 +754,21 @@ body{position:relative;isolation:isolate}
  .footer .footer-grid>div:last-child a[href^="https://wa.me"]{grid-column:1;grid-row:3}
  .footer .footer-grid>div:last-child>span{grid-column:2;grid-row:3;min-height:44px;display:flex;align-items:center;justify-content:center}
 }
+
+/* Build 01.12 — the compact catalogue is a CSS camera and eleven hinged pages.
+   Keep the established 900px boundary; no desktop or global rules change. */
+@media(max-width:900px){
+ .collection-system.is-enhanced.is-3d .collection-engine{overflow:clip}
+ .collection-system.is-enhanced.is-3d .collection-engine:after{display:none}
+ .collection-system.is-enhanced.is-3d .collection-pieces{perspective:var(--collection-camera,560px);perspective-origin:var(--collection-hinge-x) var(--collection-hinge-y);transform-style:preserve-3d}
+ .collection-system.is-enhanced.is-3d .collection-piece[data-slot]{left:0;top:0;width:var(--collection-page-width);height:var(--collection-page-height);max-width:none;z-index:auto;visibility:visible;transform-origin:0 50%;transform-style:preserve-3d}
+ .collection-system.is-enhanced.is-3d .collection-piece article{height:100%;transform-style:preserve-3d}
+ .collection-system.is-enhanced.is-3d .collection-piece .collection-piece-visual{height:100%;transform:none;animation:none!important;transform-origin:0 50%;backface-visibility:hidden;border-radius:2px 10px 2px 2px;box-shadow:inset 3px 0 5px #0005,0 8px 16px #0005}
+ .collection-system.is-enhanced.is-3d .collection-piece:not([data-slot="0"]) .collection-piece-visual{transform:none;animation:none!important}
+ .collection-system.is-enhanced.is-3d .collection-piece[data-slot="0"]{pointer-events:auto}
+ .collection-system.is-enhanced.is-3d .collection-pieces:after{content:"";position:absolute;left:var(--collection-hinge-x);top:calc(var(--collection-hinge-y) - 14px);width:5px;height:28px;border:1px solid #8dbadd88;border-radius:3px;background:linear-gradient(90deg,#0d1b2a,#88b9d0,#0d1b2a);transform:translateZ(12px) rotateZ(-16deg) rotateX(18deg);box-shadow:0 0 12px #4da3ff25;pointer-events:none}
+ .collection-system.is-enhanced.is-3d .collection-piece.is-travelling{will-change:transform,opacity}
+ .collection-system.is-enhanced.is-3d.is-transferring .collection-piece-copy{visibility:hidden;opacity:0;pointer-events:none}
+ .collection-system.is-enhanced.is-3d .collection-piece[data-slot="0"] .collection-piece-copy{transition:none}
+ .collection-system.is-enhanced.is-3d .collection-navigation button[aria-disabled="true"]{cursor:wait}
+}
