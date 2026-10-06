@@ -718,3 +718,35 @@ body{position:relative;isolation:isolate}
 @media(max-width:900px) and (prefers-reduced-motion:reduce){
  .collection-system.is-enhanced .collection-piece-visual{animation:none!important;transition:none!important}
 }
+
+/* Build 01.11 — phone refinements; desktop and tablet keep their approved layers. */
+.method .method-path--phone{display:none}
+@media(max-width:700px){
+ /* The cloud and symbol use complementary masks of the same, unchanged raster. */
+ .hero-content:before{top:65px;bottom:35px;background:url('assets/avero-eye.png') center 51%/150% auto no-repeat;opacity:.48;filter:blur(1.5px);mask-image:url('assets/nebula-only-mask.svg'),linear-gradient(180deg,transparent,#000 20%,#000 75%,transparent),radial-gradient(ellipse 80% 70%,#000 55%,transparent 100%);mask-size:150% auto,100% 100%,100% 100%;mask-position:center 51%,center,center;mask-repeat:no-repeat;mask-composite:intersect}
+ .hero-content:after{top:65px;bottom:35px;height:auto;background:radial-gradient(ellipse 58% 38% at 77% 29%,#315f8926,transparent 80%),radial-gradient(ellipse 70% 40% at 25% 73%,#316c9226,transparent 78%);opacity:1;filter:none;mask-image:linear-gradient(transparent,#000 23%,#000 75%,transparent)}
+ .hero-mobile-eye{position:relative;background:none;mask-image:none}
+ .hero-mobile-eye:before{content:"";position:absolute;inset:0;background:url('assets/avero-eye.png') center 52%/100% auto no-repeat;mask-image:url('assets/eye-silhouette-mask.svg');mask-size:100% auto;mask-position:center 52%;mask-repeat:no-repeat}
+ /* Irregular alpha cuts dissolve the image itself, with no repeating dot overlay. */
+ .services .service-image{mask-image:url('assets/service-fragment-mask.svg');mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat;mask-composite:add}
+ .services .service-visual{background:transparent}
+ .services .service-visual:before{display:none}
+ .services .service-visual:after{background:linear-gradient(0deg,rgba(5,10,19,.25),transparent 24%)}
+ /* Separate phone route leaves the existing tablet and desktop geometry intact. */
+ .method .method-path--mobile{display:none}
+ .method .method-path--phone{display:block}
+ .method .method-path--phone path{stroke:url(#method-phone-fade)}
+ .method .method-stages li:nth-child(1),.method .method-stages li:nth-child(4){padding-left:56px;padding-right:8px}
+ .method .method-stages li:nth-child(2),.method .method-stages li:nth-child(3){padding-left:8px;padding-right:56px}
+ .method .method-stages li:nth-child(1) .method-index,.method .method-stages li:nth-child(4) .method-index{left:calc(50% - 66px)}
+ .method .method-stages li:nth-child(2) .method-index,.method .method-stages li:nth-child(3) .method-index{left:calc(50% - 114px)}
+ /* Brighter foreground, quiet cloud behind it; neither layer exposes a rectangle. */
+ .perspective .perspective-eye{background:none;opacity:1;mask-image:none}
+ .perspective .perspective-eye:before,.perspective .perspective-eye:after{content:"";position:absolute;inset:0;pointer-events:none;background:url('assets/avero-eye.png') center 51%/100% auto no-repeat;mask-size:100% auto;mask-position:center 51%;mask-repeat:no-repeat}
+ .perspective .perspective-eye:before{opacity:.32;filter:blur(1px);mask-image:url('assets/nebula-only-mask.svg'),radial-gradient(ellipse 65% 55%,#000 28%,transparent 85%);mask-size:100% auto,100% 100%;mask-position:center 51%,center;mask-composite:intersect}
+ .perspective .perspective-eye:after{opacity:.9;filter:brightness(1.08);mask-image:url('assets/eye-silhouette-mask.svg'),linear-gradient(180deg,transparent,#000 25%,#000 68%,rgba(0,0,0,.8) 83%,transparent);mask-size:100% auto,100% 100%;mask-position:center 51%,center;mask-composite:intersect}
+ /* Six exploration links, two balanced columns, with the semantic order preserved. */
+ .footer .footer-grid>div:nth-child(2){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 20px;max-width:360px;justify-items:center}
+ .footer .footer-grid>div:nth-child(2) h3{grid-column:1/-1;justify-self:center;margin-bottom:8px}
+ .footer .footer-grid>div:nth-child(2) a{width:100%;min-height:44px}
+}
