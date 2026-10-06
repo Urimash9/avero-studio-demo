@@ -59,7 +59,7 @@ const collectionCurrent = collectionSystem.querySelector('.collection-current');
 const collectionPosition = collectionSystem.querySelector('.collection-position');
 const collectionAnnouncement = collectionSystem.querySelector('.collection-announcement');
 const collectionAmbient = collectionSystem.querySelector('.collection-ambient-toggle');
-// Build 01.12 — one state owner; the desktop FLIP path remains separate.
+// Build 01.12.2 — one catalogue/state owner; desktop keeps its original FLIP path.
 const collectionState = {
   activeIndex: 0,
   wheelRotation: 0,
@@ -77,110 +77,99 @@ const collectionState = {
 };
 const collectionEngine = collectionSystem.querySelector('.collection-engine');
 const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
-const wrapAngle = angle => ((angle + 180) % 360 + 360) % 360 - 180;
+const collectionRadialStep = 360 / collectionDirections.length;
+const collectionFrontGap = collectionRadialStep / 2;
+let collectionRadialStage = null, collectionRadialRotor = null;
+const collectionRadialBlades = [];
+
+function createCollectionRadial() {
+  if (collectionRadialStage) return;
+  collectionRadialStage = document.createElement('div');
+  collectionRadialStage.className = 'collection-radial-stage';
+  collectionRadialStage.setAttribute('aria-hidden', 'true');
+  collectionRadialStage.inert = true;
+  const tilt = document.createElement('div');
+  tilt.className = 'collection-radial-tilt';
+  collectionRadialRotor = document.createElement('div');
+  collectionRadialRotor.className = 'collection-radial-rotor';
+  collectionDirections.forEach((direction, index) => {
+    const blade = document.createElement('div');
+    blade.className = 'collection-radial-blade';
+    blade.style.setProperty('--blade-angle', `${index * collectionRadialStep}deg`);
+    ['front', 'back'].forEach(side => {
+      const face = document.createElement('div');
+      face.className = `collection-radial-face collection-radial-${side}`;
+      face.setAttribute('aria-hidden', 'true');
+      const image = document.createElement('img');
+      image.src = direction.thumbnail;
+      image.alt = '';
+      image.draggable = false;
+      image.decoding = 'async';
+      face.append(image);
+      blade.append(face);
+    });
+    collectionRadialBlades.push(blade);
+    collectionRadialRotor.append(blade);
+  });
+  tilt.append(collectionRadialRotor);
+  collectionRadialStage.append(tilt);
+  collectionEngine.append(collectionRadialStage);
+}
 
 function measureCollection() {
   if (!collectionMobile.matches) { collectionState.geometry = null; return; }
   const width = collectionList.clientWidth, height = collectionList.clientHeight;
   const pageWidth = Math.min(width * .44, 240), pageHeight = pageWidth * 1.05;
-  const camera = Math.max(560, width * 2.2);
   const activeY = height * (matchMedia('(max-width: 430px)').matches ? .1 : .07);
+  const stageWidth = Math.min(width * .5, 260), radius = stageWidth * .37;
   collectionState.geometry = {
-    width, pageWidth, pageHeight, activeY, camera,
-    hingeX: width * .63, hingeY: activeY + pageHeight * .55,
-    radius: pageWidth * .035
+    width, pageWidth, pageHeight, activeY, stageWidth, radius,
+    bladeWidth: radius * .44, bladeHeight: radius * 1.28,
+    camera: Math.min(1200, Math.max(800, width * 2.6))
   };
   collectionList.style.setProperty('--collection-page-width', `${pageWidth}px`);
   collectionList.style.setProperty('--collection-page-height', `${pageHeight}px`);
-  collectionList.style.setProperty('--collection-hinge-x', `${width * .63}px`);
-  collectionList.style.setProperty('--collection-hinge-y', `${activeY + pageHeight * .55}px`);
-  collectionList.style.setProperty('--collection-camera', `${camera}px`);
-}
-// Build 01.12.1 — four open leaves, not eleven equal angles on a full circle.
-function collectionLeafPose(fan, rotation = collectionState.wheelRotation) {
+  collectionList.style.setProperty('--collection-active-y', `${activeY}px`);
   const g = collectionState.geometry;
-  const breath = Math.sin((rotation + fan * 12) * Math.PI / 180) * 2;
-  return {
-    x: g.hingeX, y: g.hingeY - g.pageHeight / 2, z: -18 - fan * 4,
-    rx: 12, ry: -8 + fan * 24 + breath, rz: fan * 40 + breath,
-    radius: g.radius, scale: .48 - Math.abs(fan) * .02, opacity: 1
+  const properties = {
+    '--radial-stage-width': stageWidth, '--radial-stage-left': width - stageWidth,
+    '--radial-stage-top': activeY, '--radial-stage-height': pageHeight,
+    '--radial-radius': radius, '--radial-blade-width': g.bladeWidth,
+    '--radial-blade-height': g.bladeHeight, '--radial-camera': g.camera
   };
+  Object.entries(properties).forEach(([name, value]) => collectionRadialStage.style.setProperty(name, `${value}px`));
 }
-function collectionPose(index, active = collectionState.activeIndex, rotation = collectionState.wheelRotation) {
-  const g = collectionState.geometry;
-  if (index === active) return { x: 0, y: g.activeY, z: 0, rx: 0, ry: 0, rz: 0, radius: 0, scale: 1, opacity: 1 };
-  const offset = directionIndex(index - active);
-  const fan = offset <= 2 ? .5 - offset : offset >= collectionDirections.length - 2 ? collectionDirections.length - offset - .5 : null;
-  if (fan !== null) return collectionLeafPose(fan, rotation);
-  // Seven folded leaves remain on the binding, deeply recessed and passive.
-  return {
-    x: g.hingeX, y: g.hingeY - g.pageHeight / 2, z: -g.pageWidth * .7 - offset * 4,
-    rx: 12, ry: 72 + offset, rz: 0, radius: g.radius, scale: .32, opacity: 0
-  };
-}
-function collectionTransform(pose) {
-  return `translate3d(${pose.x}px, ${pose.y}px, ${pose.z}px) rotateZ(${pose.rz}deg) rotateX(${pose.rx}deg) rotateY(${pose.ry}deg) translateZ(${pose.radius}px) scale(${pose.scale})`;
-}
-function renderCollectionWheel() {
-  if (!collectionMobile.matches || !collectionState.geometry) return;
-  collectionPieces.forEach((piece, index) => {
-    const pose = collectionPose(index);
-    piece.style.transform = collectionTransform(pose);
-    piece.style.opacity = String(pose.opacity);
+function renderCollectionRadial() {
+  if (!collectionMobile.matches || !collectionRadialRotor) return;
+  collectionRadialRotor.style.transform = `rotateY(${collectionState.wheelRotation}deg)`;
+  collectionRadialBlades.forEach((blade, index) => {
+    blade.classList.toggle('is-active', index === collectionState.activeIndex);
   });
 }
-function stopCollectionFrame() {
-  if (collectionState.frame !== null) cancelAnimationFrame(collectionState.frame);
-  collectionState.frame = null;
-  collectionState.lastFrame = null;
-}
-function canCollectionMove() {
-  const s = collectionState;
-  return collectionMobile.matches && !s.reducedMotion && s.visibilityState.component && s.visibilityState.document &&
-    s.transitionState === 'idle' && !Object.values(s.pauseState).some(Boolean);
-}
-function collectionFrame(time) {
-  collectionState.frame = null;
-  if (!canCollectionMove()) { collectionState.lastFrame = null; return; }
-  if (collectionState.lastFrame !== null) {
-    collectionState.wheelRotation = wrapAngle(collectionState.wheelRotation + Math.min(time - collectionState.lastFrame, 64) * .0013);
-    renderCollectionWheel();
-  }
-  collectionState.lastFrame = time;
-  collectionState.frame = requestAnimationFrame(collectionFrame);
-}
 function syncCollectionAmbient() {
-  collectionAmbient.hidden = !collectionMobile.matches || collectionState.reducedMotion;
-  const moving = canCollectionMove();
-  collectionSystem.classList.toggle('is-resting', !moving);
-  collectionAmbient.setAttribute('aria-pressed', String(collectionState.pauseState.manual));
-  collectionAmbient.setAttribute('aria-label', collectionState.pauseState.manual ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
-  collectionAmbient.querySelector('span').textContent = collectionState.pauseState.manual ? '▷' : 'Ⅱ';
-  if (!moving) stopCollectionFrame();
-  else if (collectionState.frame === null) collectionState.frame = requestAnimationFrame(collectionFrame);
+  // V4 is static between manual selections; no environmental RAF or pause button.
+  collectionAmbient.hidden = true;
+  collectionSystem.classList.add('is-resting');
 }
 function arrangeCollection(announce = false) {
   collectionDirections.forEach((direction, index) => {
     const offset = directionIndex(index - collectionState.activeIndex);
-    const slot = collectionMobile.matches ? offset : offset <= 2 ? offset : offset >= collectionDirections.length - 2 ? offset - collectionDirections.length : 'off';
     const active = index === collectionState.activeIndex;
+    const slot = collectionMobile.matches ? active ? 0 : 'off' : offset <= 2 ? offset : offset >= collectionDirections.length - 2 ? offset - collectionDirections.length : 'off';
     direction.piece.dataset.slot = String(slot);
-    if (collectionMobile.matches && !active) direction.piece.dataset.wheelSlot = String(offset - 1);
-    else delete direction.piece.dataset.wheelSlot;
+    delete direction.piece.dataset.wheelSlot;
     direction.piece.inert = !active;
     direction.piece.setAttribute('aria-hidden', String(!active));
     if (active) direction.piece.setAttribute('aria-current', 'true');
     else direction.piece.removeAttribute('aria-current');
     direction.piece.querySelector('img').src = active ? direction.image : direction.thumbnail;
-    if (!collectionMobile.matches) {
-      direction.piece.style.removeProperty('transform');
-      direction.piece.style.removeProperty('opacity');
-    }
+    direction.piece.style.removeProperty('transform');
+    direction.piece.style.removeProperty('opacity');
   });
   collectionCurrent.textContent = String(collectionState.activeIndex + 1).padStart(2, '0');
   collectionPosition.setAttribute('aria-label', `Direção ${collectionState.activeIndex + 1} de ${collectionDirections.length}`);
   if (announce) collectionAnnouncement.textContent = `${collectionState.activeIndex + 1} de ${collectionDirections.length}: ${collectionDirections[collectionState.activeIndex].name}`;
-  renderCollectionWheel();
+  renderCollectionRadial();
 }
 function settleCollectionMotion(announce = true) {
   // Resize, reduced motion and hidden tabs finish the intended selection atomically.
@@ -189,10 +178,12 @@ function settleCollectionMotion(announce = true) {
   collectionState.animations.forEach(animation => animation.cancel());
   collectionState.animations = [];
   if (collectionState.destination !== null) collectionState.activeIndex = collectionState.destination;
+  collectionState.wheelRotation = -collectionState.activeIndex * collectionRadialStep - collectionFrontGap;
   collectionState.destination = null;
   collectionState.transitionState = 'idle';
   collectionSystem.removeAttribute('aria-busy');
   collectionSystem.classList.remove('is-transferring');
+  collectionSystem.classList.remove('is-rotating');
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
   collectionPieces.forEach(piece => piece.classList.remove('is-travelling'));
   arrangeCollection(announce && hadDestination);
@@ -213,66 +204,32 @@ function resumeCollectionInteraction(delay = 700) {
     syncCollectionAmbient();
   }, delay);
 }
-function animateCollectionPose(piece, poses, duration, offsets = null) {
-  const animation = piece.animate(poses.map((pose, index) => ({
-    transform: collectionTransform(pose), opacity: pose.opacity,
-    offset: offsets ? offsets[index] : index / (poses.length - 1),
-    easing: offsets ? 'cubic-bezier(.4,0,.2,1)' : 'linear'
-  })), { duration, easing: offsets ? 'linear' : 'cubic-bezier(.22,.72,.22,1)', fill: 'both' });
-  collectionState.animations.push(animation);
-  return animation;
-}
-async function navigateCollection3D(destination) {
+async function navigateCollectionRadial(destination) {
   const s = collectionState, run = ++s.run, oldActive = s.activeIndex;
+  const startRotation = s.wheelRotation;
+  let delta = destination - oldActive;
+  if (delta > collectionDirections.length / 2) delta -= collectionDirections.length;
+  if (delta < -collectionDirections.length / 2) delta += collectionDirections.length;
   s.destination = destination;
+  s.activeIndex = destination;
+  s.wheelRotation = startRotation - delta * collectionRadialStep;
   pauseCollectionInteraction();
-  if (s.reducedMotion || typeof collectionList.animate !== 'function') {
-    settleCollectionMotion(); return;
+  arrangeCollection(true);
+  if (s.reducedMotion || !s.visibilityState.document || !s.visibilityState.component || typeof collectionRadialRotor.animate !== 'function') {
+    settleCollectionMotion(false); return;
   }
-  s.transitionState = 'aligning';
+  s.transitionState = 'rotating';
   collectionSystem.setAttribute('aria-busy', 'true');
-  collectionSystem.classList.add('is-transferring');
+  collectionSystem.classList.add('is-rotating');
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.setAttribute('aria-disabled', 'true'));
-  const ready = { ...collectionLeafPose(0), z: -4, ry: -20, rz: -8, radius: s.geometry.radius + 8, scale: .5, opacity: 1 };
-  const prepared = collectionPieces.map((piece, index) => index === destination ? ready : collectionPose(index));
-  const alignment = collectionPieces.flatMap((piece, index) => {
-    if (index !== destination) return [];
-    return [animateCollectionPose(piece, [collectionPose(index), ready], 280)];
-  });
-  await Promise.allSettled(alignment.map(animation => animation.finished));
+  const animation = collectionRadialRotor.animate([
+    { transform: `rotateY(${startRotation}deg)` },
+    { transform: `rotateY(${s.wheelRotation}deg)` }
+  ], { duration: 850, easing: 'cubic-bezier(.22,.8,.18,1)', fill: 'both' });
+  s.animations = [animation];
+  await Promise.allSettled([animation.finished]);
   if (s.run !== run) return;
-  collectionPieces.forEach((piece, index) => {
-    piece.style.transform = collectionTransform(prepared[index]);
-    piece.style.opacity = String(prepared[index].opacity);
-  });
-  alignment.forEach(animation => animation.cancel());
-  s.animations = [];
-  s.transitionState = 'exchanging';
-  const finalRotation = s.wheelRotation;
-  const movements = collectionPieces.map((piece, index) => {
-    const start = prepared[index], end = collectionPose(index, destination, finalRotation);
-    if (index === destination || index === oldActive) {
-      piece.classList.add('is-travelling');
-      const g = s.geometry;
-      if (index === destination) {
-        // Incoming: open at the spine, lift forward, then cross the upper lane.
-        const opening = { ...ready, x: g.hingeX * .86, y: g.activeY - g.pageHeight * .12, z: 32, ry: -16, rz: -8, scale: .62 };
-        const crossing = { ...ready, x: g.hingeX * .4, y: g.activeY - g.pageHeight * .1, z: 48, rx: 4, ry: -12, rz: -4, radius: 12, scale: .8 };
-        // Compensate the camera projection while the page is still in front of Z=0.
-        const landing = { ...end, x: g.hingeX * 16 / g.camera, z: 16, ry: -3 };
-        return animateCollectionPose(piece, [start, opening, crossing, landing, end], 820, [0, .22, .5, .78, 1]);
-      }
-      // Outgoing: contract first, retreat in Z, and return by the lower lane.
-      const retreat = { ...start, x: g.hingeX * .5, y: g.activeY + g.pageHeight * .66, z: -65, rx: -10, ry: 28, rz: 10, radius: 0, scale: .5 };
-      const returning = { ...retreat, x: g.hingeX * .88, y: g.hingeY - g.pageHeight / 2 + g.pageHeight * .44, z: -56, ry: 26, rz: 15, scale: .44 };
-      return animateCollectionPose(piece, [start, start, retreat, returning, end, end], 820, [0, .12, .38, .62, .85, 1]);
-    }
-    return animateCollectionPose(piece, [start, end], 820);
-  });
-  await Promise.allSettled(movements.map(animation => animation.finished));
-  if (s.run !== run) return;
-  s.wheelRotation = finalRotation;
-  settleCollectionMotion();
+  settleCollectionMotion(false);
 }
 function navigateCollectionDesktop(destination) {
   // Original desktop FLIP geometry, duration and immediate state update.
@@ -300,17 +257,19 @@ function navigateCollectionDesktop(destination) {
   });
 }
 function navigateCollection(index) {
-  // Ignore additional mobile inputs until the two real pages have settled.
+  // Ignore additional compact inputs until the single rotor has settled.
   if (collectionMobile.matches && collectionState.transitionState !== 'idle') return;
   if (!collectionMobile.matches) settleCollectionMotion(false);
   const destination = directionIndex(index);
   if (destination === collectionState.activeIndex) return;
   if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
-  if (collectionMobile.matches) navigateCollection3D(destination);
+  if (collectionMobile.matches) navigateCollectionRadial(destination);
   else navigateCollectionDesktop(destination);
 }
 function syncCollectionLayout() {
-  collectionSystem.classList.toggle('is-3d', collectionMobile.matches);
+  collectionSystem.classList.toggle('is-radial', collectionMobile.matches);
+  if (collectionMobile.matches) createCollectionRadial();
+  if (collectionRadialStage) collectionRadialStage.hidden = !collectionMobile.matches;
   measureCollection();
   settleCollectionMotion();
 }
@@ -345,6 +304,7 @@ document.addEventListener('visibilitychange', () => {
 if ('IntersectionObserver' in window) {
   new IntersectionObserver(entries => {
     collectionState.visibilityState.component = entries[0].isIntersecting;
+    if (!collectionState.visibilityState.component && collectionState.transitionState !== 'idle') settleCollectionMotion(false);
     syncCollectionAmbient();
   }, { threshold: .15 }).observe(collectionSystem);
 } else collectionState.visibilityState.component = true;

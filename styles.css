@@ -755,21 +755,24 @@ body{position:relative;isolation:isolate}
  .footer .footer-grid>div:last-child>span{grid-column:2;grid-row:3;min-height:44px;display:flex;align-items:center;justify-content:center}
 }
 
-/* Build 01.12 — the compact catalogue is a CSS camera and eleven hinged pages.
-   Keep the established 900px boundary; no desktop or global rules change. */
+/* Build 01.12.2 — V4 camera > global tilt > one rotor > twelve radial blades.
+   The commercial highlight remains independent; keep the 900px boundary. */
 @media(max-width:900px){
- .collection-system.is-enhanced.is-3d .collection-engine{overflow:clip}
- .collection-system.is-enhanced.is-3d .collection-engine:after{display:none}
- .collection-system.is-enhanced.is-3d .collection-pieces{perspective:var(--collection-camera,560px);perspective-origin:var(--collection-hinge-x) var(--collection-hinge-y);transform-style:preserve-3d}
- .collection-system.is-enhanced.is-3d .collection-piece[data-slot]{left:0;top:0;width:var(--collection-page-width);height:var(--collection-page-height);max-width:none;z-index:auto;visibility:visible;transform-origin:0 50%;transform-style:preserve-3d}
- .collection-system.is-enhanced.is-3d .collection-piece article{height:100%;transform-style:preserve-3d}
- .collection-system.is-enhanced.is-3d .collection-piece .collection-piece-visual{height:100%;transform:none;animation:none!important;transform-origin:0 50%;backface-visibility:hidden;border-radius:2px 10px 2px 2px;box-shadow:inset 3px 0 5px #0005,0 8px 16px #0005}
- .collection-system.is-enhanced.is-3d .collection-piece:not([data-slot="0"]) .collection-piece-visual{transform:none;animation:none!important;border-color:#8eb6d088}
- .collection-system.is-enhanced.is-3d .collection-piece[data-slot="0"]{pointer-events:auto}
- /* Build 01.12.1: the short binding sits in front of the shared leaf origins. */
- .collection-system.is-enhanced.is-3d .collection-pieces:after{content:"";position:absolute;left:calc(var(--collection-hinge-x) - 3px);top:calc(var(--collection-hinge-y) - 11px);width:6px;height:22px;border:1px solid #9bc8ddaa;border-radius:4px;background:linear-gradient(90deg,#16334a,#9ac5dc,#16334a);transform:translateZ(32px) rotateX(12deg);box-shadow:0 0 9px #4da3ff25;pointer-events:none}
- .collection-system.is-enhanced.is-3d .collection-piece.is-travelling{will-change:transform,opacity}
- .collection-system.is-enhanced.is-3d.is-transferring .collection-piece-copy{visibility:hidden;opacity:0;pointer-events:none}
- .collection-system.is-enhanced.is-3d .collection-piece[data-slot="0"] .collection-piece-copy{transition:none}
- .collection-system.is-enhanced.is-3d .collection-navigation button[aria-disabled="true"]{cursor:wait}
+ .collection-system.is-enhanced.is-radial .collection-engine{overflow:clip}
+ .collection-system.is-enhanced.is-radial .collection-engine:after{display:none}
+ .collection-system.is-enhanced.is-radial .collection-piece:not([data-slot="0"]){display:none}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"]{left:0;top:var(--collection-active-y);width:var(--collection-page-width);height:var(--collection-page-height);max-width:none;transform:none;opacity:1;pointer-events:auto}
+ .collection-system.is-enhanced.is-radial .collection-piece article{height:100%}
+ .collection-system.is-enhanced.is-radial .collection-piece .collection-piece-visual{height:100%;transform:none;animation:none!important;border-radius:2px 10px 2px 2px;box-shadow:inset 3px 0 5px #0005,0 8px 16px #0005}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy{transition:none}
+ .collection-system.is-radial .collection-radial-stage{position:absolute;left:var(--radial-stage-left);top:var(--radial-stage-top);width:var(--radial-stage-width);height:var(--radial-stage-height);perspective:var(--radial-camera);perspective-origin:50% 45%;pointer-events:none;user-select:none}
+ .collection-system.is-radial .collection-radial-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(-7deg)}
+ .collection-system.is-radial .collection-radial-rotor{position:absolute;inset:0;transform-style:preserve-3d}
+ .collection-system.is-radial.is-rotating .collection-radial-rotor{will-change:transform}
+ .collection-system.is-radial .collection-radial-blade{position:absolute;left:50%;top:50%;width:var(--radial-blade-width);height:var(--radial-blade-height);margin-left:calc(var(--radial-blade-width) / -2);margin-top:calc(var(--radial-blade-height) / -2);transform-style:preserve-3d;transform:rotateY(var(--blade-angle)) translateZ(var(--radial-radius)) rotateY(90deg);border-radius:2px}
+ .collection-system.is-radial .collection-radial-face{position:absolute;inset:0;overflow:hidden;border-radius:inherit;border:1px solid #8bb9d066;background:var(--nebula);box-shadow:inset 0 0 0 1px #050a1322;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+ .collection-system.is-radial .collection-radial-back{transform:rotateY(180deg)}
+ .collection-system.is-radial .collection-radial-face img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;filter:brightness(.86)}
+ .collection-system.is-radial .collection-radial-blade.is-active .collection-radial-face{border-color:#a2cce399}
+ .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:wait}
 }
