@@ -71,7 +71,22 @@ async function loadHome() {
   css.href = new URL('review/color-lab.css', root).href;
   doc.head.append(css);
   const diagnostics = doc.createElement('script');
-  diagnostics.textContent = 'window.colorLabErrors=[];window.addEventListener("error",event=>{if(event.message)window.colorLabErrors.push(event.message)});window.addEventListener("unhandledrejection",event=>window.colorLabErrors.push(String(event.reason)));';
+  diagnostics.textContent = `
+    window.colorLabErrors=[];
+    window.addEventListener('error',event=>{if(event.message)window.colorLabErrors.push(event.message)});
+    window.addEventListener('unhandledrejection',event=>window.colorLabErrors.push(String(event.reason)));
+    // A base URL resolves assets, but native fragment links would leave srcdoc.
+    // Keep their scroll/focus in this review; original link listeners still run.
+    document.addEventListener('click',event=>{
+      const link=event.target.closest('a[href^="#"]');
+      if(!link || event.defaultPrevented || event.button!==0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)return;
+      const target=document.getElementById(link.getAttribute('href').slice(1));
+      if(!target)return;
+      event.preventDefault();
+      target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+      if(link.classList.contains('skip-link'))target.focus({preventScroll:true});
+    });
+  `;
   doc.head.prepend(diagnostics);
   frame.addEventListener('load', async () => {
     ready = true;
