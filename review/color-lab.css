@@ -40,6 +40,14 @@ html[data-color-lab][data-theme="b"]{
   --accent-warm:var(--champagne-light);
   --project-light-rgb:196 175 139;
   --warm-rgb:210 194 164;
+  /* V2.1: illumination tokens stay local to B; A/C inherit no warm overrides. */
+  --champagne-text:var(--champagne-light);
+  --champagne-border:rgb(var(--warm-rgb)/.52);
+  --champagne-surface:rgb(var(--warm-rgb)/.055);
+  --champagne-glow:rgb(var(--warm-rgb)/.16);
+  --champagne-glow-soft:rgb(var(--warm-rgb)/.075);
+  --champagne-glow-node:rgb(var(--warm-rgb)/.5);
+  --champagne-hover:rgb(var(--warm-rgb)/.10);
 }
 html[data-color-lab][data-theme="c"]{
   --accent-primary:#8FD6DD;
@@ -172,3 +180,43 @@ html[data-color-lab][data-theme="b"] .footer-grid .footer-tagline{color:var(--ch
   html[data-color-lab] .perspective .perspective-eye:before{filter:var(--nebula-treatment)}
   html[data-color-lab] .collection-engine:before{background:radial-gradient(ellipse at 67% 40%,rgb(var(--material-rgb)/.03),transparent 48%)}
 }
+
+/* V2.1 — B only: cold opening, warm chapters, cold Perspective, warm ending.
+   Existing layers are recolored; no new geometry, image filter or animation. */
+html[data-color-lab][data-theme="b"] .services .service-card[data-orbit-slot="0"] .service-copy small{color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .services .service-card[data-orbit-slot="0"]:is(:hover,:focus-within) .service-copy{border-left-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .collection-current{color:var(--champagne-text)}
+
+/* First warm chapter: light outside the mockups, material details within copy. */
+html[data-color-lab][data-theme="b"] .projects{background:radial-gradient(ellipse at 78% 60%,var(--champagne-glow),transparent 68%)}
+html[data-color-lab][data-theme="b"] .project-details{border-left-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .projects .project-tags span:first-child{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .projects .project-tags span+span{border-left-color:var(--champagne-border)}
+html[data-color-lab][data-theme="b"] .projects .project-cta{border-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .projects .project-cta span,
+html[data-color-lab][data-theme="b"] .project-pagination button:is(.active,[aria-current="true"]){color:var(--champagne-text);border-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .projects .project-cta:hover{color:var(--champagne-text)}
+
+/* Second warm chapter: two nodes and only the far-right gradient endpoint.
+   Other stops remain silver, and every path coordinate remains approved. */
+html[data-color-lab][data-theme="b"] .method{background:radial-gradient(ellipse at 83% 48%,var(--champagne-glow-soft),transparent 58%)}
+html[data-color-lab][data-theme="b"] :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:last-child{stop-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .method .method-nodes circle:is(:nth-child(2),:nth-child(3)){fill:var(--champagne-text);stroke:var(--champagne-mid);filter:drop-shadow(0 0 5px var(--champagne-glow-node))}
+html[data-color-lab][data-theme="b"] .method .method-stages li:is(:nth-child(2),:nth-child(3)) .method-index{color:var(--champagne-text)}
+
+/* Perspective deliberately receives no warm override. */
+html[data-color-lab][data-theme="b"] .contact{background:radial-gradient(ellipse at 72% 55%,var(--champagne-glow),transparent 68%)}
+html[data-color-lab][data-theme="b"] .contact-card{background:linear-gradient(135deg,var(--champagne-surface),transparent 70%),var(--bg-secondary);border-color:var(--champagne-border);box-shadow:0 0 44px var(--champagne-glow-soft)}
+html[data-color-lab][data-theme="b"] .contact-card h3{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .contact-note span{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .contact .btn-outline{border-color:var(--champagne-muted)}
+html[data-color-lab][data-theme="b"] .contact .btn-outline span,
+html[data-color-lab][data-theme="b"] .contact .whatsapp span{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .contact :is(.btn-outline,.chips button):hover{border-color:var(--champagne-mid);background-color:var(--champagne-hover)}
+
+/* Closing light stays in the background; the lateral eye is never tinted. */
+html[data-color-lab][data-theme="b"] .footer{background:radial-gradient(ellipse at 86% 35%,var(--champagne-glow-soft),transparent 65%),var(--bg-primary)}
+html[data-color-lab][data-theme="b"] .footer-grid .footer-tagline,
+html[data-color-lab][data-theme="b"] .footer-grid h3,
+html[data-color-lab][data-theme="b"] .footer-bottom span:first-child{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .footer-grid a:not(.brand):hover{color:var(--champagne-text)}
