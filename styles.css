@@ -474,10 +474,10 @@ body{position:relative;isolation:isolate}
 .method .method-route{position:relative;height:460px}
 .method .method-path{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
 .method .method-path--mobile{display:none}
-.method .method-path path{fill:none;stroke-width:1;vector-effect:non-scaling-stroke}
+.method .method-path path{fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
 .method .method-path--desktop path{stroke:url(#method-desktop-fade)}
 .method .method-path--mobile path{stroke:url(#method-mobile-fade)}
-.method .method-nodes circle{fill:#9ac9ed;stroke:#4d86b5;stroke-width:1;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 3px #4da3ff45)}
+.method .method-nodes circle{fill:#9ac9ed;stroke:#4d86b5;stroke-width:1;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 2px #4da3ff45)}
 .method .method-stages{position:relative;list-style:none;margin:0;padding:0}
 .method .method-stages li{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr);gap:15px;min-height:110px;width:66%;margin-left:8%;padding-top:12px}
 .method .method-stages li:nth-child(2){margin-left:10%}
@@ -501,6 +501,7 @@ body{position:relative;isolation:isolate}
 @media(max-width:1100px){
  .method .method-layout{gap:42px;grid-template-columns:.9fr 1.1fr}
  .method .method-intro{padding-top:28px}
+ .method .method-path--desktop{transform:translateX(-4%)}
  .method .method-stages li{width:70%;margin-left:4%;gap:12px;grid-template-columns:22px minmax(0,1fr)}
  .method .method-stages li:nth-child(2){margin-left:6%}
  .method .method-stages li:nth-child(3){margin-left:8%}
@@ -801,4 +802,9 @@ body{position:relative;isolation:isolate}
  .perspective .perspective-eye:after{content:"";position:absolute;inset:0;pointer-events:none;background:url('assets/avero-eye-isolated-v1.webp') center 40%/96% auto no-repeat;opacity:.74;filter:none;mask-image:none}
  .footer{--footer-eye-width:clamp(460px,135vw,580px)}
  .footer:before{inset:auto;left:calc(100% - var(--footer-eye-width)/2 + 12px);bottom:145px;width:var(--footer-eye-width);height:calc(var(--footer-eye-width)/2);background:url('assets/avero-eye-isolated-v1.webp') center/contain no-repeat;opacity:.10;filter:none;mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent);mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat;mask-composite:add;mix-blend-mode:screen;pointer-events:none}
+}
+
+/* Build 01.13.2 — retain the approved independent atmosphere, extend 8% / 6%. */
+@media(max-width:700px){
+ .hero-content:before{top:calc(73px - 8%);bottom:calc(41px - 6%);mask-image:linear-gradient(180deg,transparent,#000 16%,#000 76%,transparent)}
 }
