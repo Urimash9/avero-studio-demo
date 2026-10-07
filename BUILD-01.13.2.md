@@ -60,3 +60,15 @@ Uma alteração local pré-existente em `assets/collection-gastronomy.png` foi p
 ## Limites
 
 A validação foi realizada em viewport de Chromium. Safari/iOS e dispositivos físicos não foram testados. O acabamento final continua sujeito à revisão visual do usuário; não foram introduzidas dependências ou motion novo.
+
+## Refinamento posterior — respiro de Criação desktop e Evolução mobile
+
+Após revisão visual do usuário, uma correção exclusivamente geométrica do Método foi aplicada sobre o commit `b8597c9a45a31409d49847b61896754f62548579`, na mesma branch. O SVG desktop originalmente transplantado passa a incorporar este ajuste autorizado.
+
+- Desktop: abertura direita ampliada em 35 unidades SVG (x 530 → 565 nos nós 02/03). Controles da curva acompanham esse deslocamento; o retorno inferior conserva o anchor (330,315), com tangente ajustada para continuidade. Nós 01/04, entrada e término permanecem nas coordenadas anteriores. A distância mínima amostrada até a caixa da descrição de Criação em 1280px passou de aproximadamente 4.9px para 11.2px, sem mover nenhuma palavra.
+- Phone e compacta: retorno intermediário elevado de y 342 para 330, cerca de 11px na altura renderizada de 420px. Controles compartilhando y 330 criam uma passagem suave acima de Evolução; a saída do nó 03 permanece vertical e a chegada ao nó 04 permanece suave. Os quatro nós, entrada, trecho superior/direito e fim da linha não foram movidos.
+- Textos, pesos, cores, CSS, JavaScript, assets, layout e todas as demais seções permanecem idênticos a b8597c9. No HTML, apenas os três SVGs da linha foram alterados.
+
+QA visual em Chromium: 320, 360, 390, 430, 768, 900, 901, 1024, 1280 e 1440px. Zero overflow da Home em todas as larguras, textos com transform computado `none`, nenhum erro da aplicação observado no console. Tangentes de todos os joins verificadas numericamente; checks `node --check script.js` e `git diff --check` aprovados. Capturas finais de Método 390px e 1280px registradas. Safari/iOS físico permanece não testado.
+
+Sem alterações em Hero, olho, nebulosa, CTA, Coleção ou demais áreas. Main continua intacta, sem merge ou promoção para produção. A alteração local pré-existente em `assets/collection-gastronomy.png` continua excluída dos commits.
