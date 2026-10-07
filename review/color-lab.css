@@ -53,6 +53,10 @@ html[data-color-lab][data-theme="c"]{
   --ambient-treatment:saturate(.45) brightness(.9);
 }
 
+/* Remove only the review frame's native gutter so 390 means 390 usable pixels.
+   Wheel, touch, keyboard scrolling and the section control remain available. */
+html[data-color-lab]{scrollbar-width:none}
+html[data-color-lab]::-webkit-scrollbar{display:none}
 html[data-color-lab] body{background:var(--bg-primary);color:var(--text-primary)}
 html[data-color-lab] .page-flow span{filter:var(--ambient-treatment)}
 html[data-color-lab] .hero-art{filter:var(--ambient-treatment)}
@@ -90,13 +94,15 @@ html[data-color-lab] .services{background:radial-gradient(ellipse at 51% 43%,rgb
 html[data-color-lab] .services .text-cta{color:var(--silver);border-color:var(--control-border)}
 html[data-color-lab] .services .service-card{--service-surface:var(--bg-primary)}
 html[data-color-lab] .services .service-visual{background-color:var(--bg-secondary)}
-html[data-color-lab] .services .service-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.72),transparent 45%)}
+html[data-color-lab] .services .service-visual:after{background:linear-gradient(0deg,var(--bg-primary) 0%,rgb(var(--background-rgb)/.72) 10%,transparent 46%)}
 html[data-color-lab] .services .service-copy{background:linear-gradient(180deg,transparent 0%,rgb(var(--background-rgb)/.88) 46px,rgb(var(--background-rgb)/.45));border-color:var(--border)}
 html[data-color-lab] .services .service-copy .num{color:var(--accent-primary)}
 html[data-color-lab] .services .service-copy small,html[data-color-lab] .services .service-copy p{color:var(--text-secondary)}
 html[data-color-lab] .services .service-copy .circle-link{border-color:var(--control-border);background:var(--bg-secondary);color:var(--silver)}
 html[data-color-lab] .services .service-copy .circle-link:hover{background:var(--surface-high);border-color:var(--accent-primary)}
-html[data-color-lab] .services .service-trajectory path{stroke:var(--line)}
+html[data-color-lab] .services .services-trajectory path{stroke:var(--line)}
+html[data-color-lab] .services .text-cta strong{color:var(--silver);text-decoration-color:var(--line)}
+html[data-color-lab] .services .service-card:hover .service-copy,html[data-color-lab] .services .service-card:focus-within .service-copy{border-left-color:var(--silver)}
 html[data-color-lab] .service-orbit-navigation button{background:var(--surface);border-color:var(--control-border);color:var(--silver)}
 html[data-color-lab] .service-orbit-navigation button:hover{background:var(--surface-high);border-color:var(--accent-primary)}
 html[data-color-lab] .service-orbit-current{color:var(--text-secondary)}
@@ -117,7 +123,7 @@ html[data-color-lab] .collection-current{color:var(--silver)}
 /* Projects: secondary illumination in B, without tinting any mockup. */
 html[data-color-lab] .projects{background:radial-gradient(ellipse at 78% 60%,rgb(var(--project-light-rgb)/.04),transparent 68%)}
 html[data-color-lab] .projects .projects-intro>p,html[data-color-lab] .project-identity p{color:var(--text-secondary)}
-html[data-color-lab] .projects .project-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.86),transparent 80%),linear-gradient(90deg,rgb(var(--background-rgb)/.55),transparent 55%)}
+html[data-color-lab] .projects .project-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.86),transparent 80%)}
 html[data-color-lab] .project-details{border-left-color:var(--line)}
 html[data-color-lab] .projects .project-tags{color:var(--text-secondary)}
 html[data-color-lab] .projects .project-tags span{border-color:var(--border)}
