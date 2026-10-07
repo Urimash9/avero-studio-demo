@@ -80,7 +80,7 @@ const collectionEngine = collectionSystem.querySelector('.collection-engine');
 const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
 const collectionRadialStep = 360 / collectionDirections.length;
 const collectionFrontGap = collectionRadialStep / 2;
-const collectionAmbientSpeed = 2.5; // degrees per second; one turn in 144 seconds.
+const collectionAmbientSpeed = 3.2; // degrees per second; one turn in 112.5 seconds.
 const collectionExtractionAngle = -60;
 const collectionTransferDuration = 600;
 const collectionTransferCropSupported = typeof CSS.registerProperty === 'function';
