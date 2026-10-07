@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>AVERO — Color Lab V2</title>
+  <link rel="stylesheet" href="color-lab-ui.css">
+  <script src="color-lab.js" defer></script>
+</head>
+<body>
+  <header class="lab-toolbar">
+    <div class="lab-heading"><strong>AVERO <span>COLOR LAB V2</span></strong><a href="../" target="_blank" rel="noopener">Home oficial ↗</a></div>
+    <div class="lab-controls">
+      <div class="lab-themes" role="group" aria-label="Direção cromática">
+        <button type="button" data-theme="a" aria-pressed="true"><b>A</b><span>Prata Nebular</span></button>
+        <button type="button" data-theme="b" aria-pressed="false"><b>B</b><span>Prata + Champagne</span></button>
+        <button type="button" data-theme="c" aria-pressed="false"><b>C</b><span>Ciano Gelo</span></button>
+      </div>
+      <label>Largura <select id="lab-width"><option value="auto">Janela</option><option>320</option><option>390</option><option>430</option><option>768</option><option>900</option><option>1280</option><option>1440</option></select></label>
+      <label>Ir para <select id="lab-area"><option value="top">Hero</option><option value="posicionamento">Posicionamento</option><option value="servicos">Serviços</option><option value="colecao">Coleção</option><option value="projetos">Projetos</option><option value="sobre">Método</option><option value="perspectiva">Perspectiva</option><option value="contato">CTA</option><option value="footer">Footer</option></select></label>
+    </div>
+    <p class="lab-status" id="lab-status" role="status">Carregando a base aprovada…</p>
+    <p class="lab-caption">Estudo de luz e temperatura. Layout, imagens e interações são os da Home. A e B preservam a mesma Hero; o contraponto quente de B aparece ao longo da página.</p>
+  </header>
+  <main class="lab-workspace">
+    <iframe id="lab-preview" title="Home AVERO — estudo cromático A" src="about:blank"></iframe>
+  </main>
+  <noscript>Ative JavaScript para comparar as três direções. A Home oficial continua disponível no link acima.</noscript>
+</body>
+</html>
