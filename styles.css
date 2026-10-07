@@ -776,4 +776,13 @@ body{position:relative;isolation:isolate}
  .collection-system.is-radial .collection-radial-face img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;filter:brightness(.86)}
  .collection-system.is-radial .collection-radial-blade.is-active .collection-radial-face{border-color:#a2cce399}
  .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:wait}
+ /* Build 01.12.4 — only visual images leave their originals during the crossing. */
+ .collection-system.is-radial .collection-radial-blade.is-transfer-hidden .collection-radial-face{visibility:hidden}
+ .collection-system.is-radial .collection-piece.is-transfer-highlight .collection-piece-visual img{opacity:0}
+ .collection-system.is-enhanced.is-radial .collection-piece.is-transfer-highlight:not([data-slot="0"]){display:block;visibility:hidden;opacity:0;pointer-events:none;left:0;top:var(--collection-active-y);width:var(--collection-page-width);height:var(--collection-page-height);max-width:none;transform:none}
+ .collection-transfer-layer{position:fixed;inset:0;z-index:50;overflow:clip;pointer-events:none}
+ .collection-transfer-proxy{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;pointer-events:none;backface-visibility:hidden;background-color:var(--nebula);border:1px solid #8bb9d066;will-change:transform}
+ .collection-transfer-proxy img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(var(--collection-transfer-crop-x,1),var(--collection-transfer-crop-y,1));pointer-events:none}
+ .collection-transfer-proxy.is-incoming{z-index:2}
+ .collection-transfer-proxy.is-outgoing{z-index:1}
 }
