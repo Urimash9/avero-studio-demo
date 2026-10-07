@@ -59,7 +59,9 @@ html[data-color-lab]{scrollbar-width:none}
 html[data-color-lab]::-webkit-scrollbar{display:none}
 html[data-color-lab] body{background:var(--bg-primary);color:var(--text-primary)}
 html[data-color-lab] .page-flow span{filter:var(--ambient-treatment)}
-html[data-color-lab] .hero-art{filter:var(--ambient-treatment)}
+/* The desktop eye is a child of hero-art. Blend only its ambient background;
+   filtering the parent would also desaturate the eye, which must stay original. */
+html[data-color-lab] .hero-art{background-color:var(--bg-primary);background-blend-mode:luminosity}
 html[data-color-lab] .hero-shade-layer{background:linear-gradient(90deg,var(--bg-primary) 15%,rgb(var(--background-rgb)/.88) 34%,transparent 60%),linear-gradient(0deg,var(--bg-primary),transparent 18%)}
 html[data-color-lab] .hero h1 em{color:var(--silver)}
 html[data-color-lab][data-theme="c"] .hero h1 em{color:var(--accent-pale)}
