@@ -802,3 +802,9 @@ body{position:relative;isolation:isolate}
  .footer{--footer-eye-width:clamp(460px,135vw,580px)}
  .footer:before{inset:auto;left:calc(100% - var(--footer-eye-width)/2 + 12px);bottom:145px;width:var(--footer-eye-width);height:calc(var(--footer-eye-width)/2);background:url('assets/avero-eye-isolated-v1.webp') center/contain no-repeat;opacity:.10;filter:none;mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent);mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat;mask-composite:add;mix-blend-mode:screen;pointer-events:none}
 }
+
+/* Build 01.13.1 — extend only the approved phone atmosphere: -8% / +6%
+   of its previous height (content height minus the original 100px insets). */
+@media(max-width:700px){
+ .hero-content:before{top:calc(73px - 8%);bottom:calc(41px - 6%);mask-image:linear-gradient(180deg,transparent,#000 16%,#000 76%,transparent)}
+}
