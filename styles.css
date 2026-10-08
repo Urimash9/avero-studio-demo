@@ -1065,19 +1065,19 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
 .method{--pulse-cycle:7.3s;--pulse-delay:-2.1s}
 html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{
  fill:none;stroke:var(--pulse-stroke);stroke-width:1;stroke-opacity:1;vector-effect:non-scaling-stroke;stroke-linecap:round;
- stroke-dasharray:var(--pulse-length) 1200;stroke-dashoffset:calc(100 + var(--pulse-lag));opacity:0;
+ stroke-dasharray:var(--pulse-length) 1200;stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0;
  filter:drop-shadow(0 0 1.2px var(--silver));pointer-events:none;
  animation:avero-line-pulse var(--pulse-cycle) linear var(--pulse-delay) infinite;animation-play-state:paused
 }
-.line-pulse--tail{--pulse-length:74;--pulse-lag:60;--pulse-opacity:.22}
-.line-pulse--body{--pulse-length:44;--pulse-lag:22;--pulse-opacity:.48}
-.line-pulse--core{--pulse-length:18;--pulse-lag:0;--pulse-opacity:1}
+.line-pulse--tail{--pulse-length:74;--pulse-lag:60px;--pulse-opacity:.22}
+.line-pulse--body{--pulse-length:44;--pulse-lag:22px;--pulse-opacity:.48}
+.line-pulse--core{--pulse-length:18;--pulse-lag:0px;--pulse-opacity:1}
 html.avero-palette-b :is(.positioning,.method).is-pulse-visible :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{animation-play-state:running}
 @keyframes avero-line-pulse{
- 0%{stroke-dashoffset:calc(100 + var(--pulse-lag));opacity:0}
+ 0%{stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0}
  6%{opacity:var(--pulse-opacity)}
  86%{opacity:var(--pulse-opacity)}
- 94%,100%{stroke-dashoffset:calc(-1100 + var(--pulse-lag));opacity:0}
+ 94%,100%{stroke-dashoffset:calc(-1100px + var(--pulse-lag));opacity:0}
 }
 /* The three approved mobile segments pass one light along the full route. */
 @media(max-width:900px){
@@ -1086,10 +1086,10 @@ html.avero-palette-b :is(.positioning,.method).is-pulse-visible :is(.pillar-line
  .positioning .pillar--results{--pulse-delay:3.8s}
 }
 @keyframes avero-line-pulse-segment{
- 0%{stroke-dashoffset:calc(100 + var(--pulse-lag));opacity:0}
+ 0%{stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0}
  2%{opacity:var(--pulse-opacity)}
  24%{opacity:var(--pulse-opacity)}
- 29%,100%{stroke-dashoffset:calc(-1100 + var(--pulse-lag));opacity:0}
+ 29%,100%{stroke-dashoffset:calc(-1100px + var(--pulse-lag));opacity:0}
 }
 .collection-system.is-radial .collection-radial-face{opacity:var(--blade-presence,.64)}
 .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:pointer}
