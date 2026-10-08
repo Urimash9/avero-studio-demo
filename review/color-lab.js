@@ -11,6 +11,43 @@ const query = new URLSearchParams(location.search);
 let theme = Object.hasOwn(names, query.get('theme')) ? query.get('theme') : 'a';
 let ready = false;
 
+// Build 01.14: only B refines the warm right turn; A/C retain the V2 path.
+const methodLabPaths = {
+  "desktop": {
+    "base": "M4 0 C20 0 34 4 34 24.35 C34 64.7 60 84 118 90 C176 96 540 90 565 134.35 C590 178.7 590 199.95 565 244.35 C540 288.75 462 309.310345 330 315 C214 320 40 314 40 354.35 C40 374 18 374 4 374",
+    "b": "M4 0 C20 0 34 4 34 24.35 C34 64.7 60 84 118 90 C236 102.206897 540 109.35 565 134.35 C590 159.35 590 199.95 565 244.35 C540 288.75 462 309.310345 330 315 C214 320 40 314 40 354.35 C40 374 18 374 4 374"
+  },
+  "mobile": {
+    "base": "M4 2 C36 2 75 4 75 26.66 C75 66 97 88 148 96 C199 104 343 91.68 362 136.18 C381 180.68 362 201.21 362 245.71 C362 296.71 398 330 290 330 C182 330 75 330 75 355.24 C75 389 30 371 4 371",
+    "b": "M4 2 C36 2 75 4 75 26.66 C75 66 97 88 148 96 C215 106.509804 339 112.68 362 136.18 C385 159.68 362 201.21 362 245.71 C362 296.71 398 330 290 330 C182 330 75 330 75 355.24 C75 389 30 371 4 371"
+  },
+  "phone": {
+    "base": "M4 2 C36 2 75 4 75 26 C75 66 97 88 148 96 C199 104 343 91 362 135.5 C381 180 362 200.5 362 245 C362 296 398 330 290 330 C182 330 75 330 75 354.5 C75 389 30 371 4 371",
+    "b": "M4 2 C36 2 75 4 75 26 C75 66 97 88 148 96 C215 106.509804 339 112 362 135.5 C385 159 362 200.5 362 245 C362 296 398 330 290 330 C182 330 75 330 75 354.5 C75 389 30 371 4 371"
+  }
+};
+const methodLabStops = [[0,0],[.16,.58],[.66,.58],[.84,.4],[.93,.2],[1,0]];
+function updateMethodLab() {
+  const doc = frame.contentDocument;
+  Object.entries(methodLabPaths).forEach(([name, paths]) => {
+    const svg = doc.querySelector(`.method-path--${name}`);
+    svg.querySelector('path').setAttribute('d', theme === 'b' ? paths.b : paths.base);
+    const gradient = svg.querySelector('linearGradient');
+    gradient.replaceChildren();
+    const stops = theme === 'b' ? methodLabStops : [[0,0],[.16,.58],[.88,.58],[1,.35]];
+    stops.forEach(([offset, opacity]) => {
+      const stop = doc.createElementNS('http://www.w3.org/2000/svg', 'stop');
+      stop.setAttribute('offset', offset);
+      stop.setAttribute('stop-opacity', opacity);
+      stop.setAttribute('stop-color', 'var(--line)');
+      gradient.append(stop);
+    });
+  });
+}
+const homeReview = query.get('view') === 'home'; // viewport QA, no theme CSS injected
+
+
+
 if ([...widthControl.options].some(option => option.value === query.get('width'))) widthControl.value = query.get('width');
 if ([...areaControl.options].some(option => option.value === query.get('area'))) areaControl.value = query.get('area');
 
@@ -25,9 +62,15 @@ function updateURL() {
 function updateTheme() {
   buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.theme === theme)));
   frame.title = `Home AVERO — ${names[theme]}`;
-  if (ready) {
+  if (ready && !homeReview) {
     frame.contentDocument.documentElement.dataset.theme = theme;
+    updateMethodLab();
     status.textContent = `${theme.toUpperCase()} — ${names[theme]} · comparação cromática, sem aplicação na Home oficial`;
+  }
+  if (homeReview) {
+    buttons.forEach(button => {button.disabled = true; button.setAttribute('aria-pressed', 'false');});
+    frame.title = 'Home AVERO — CSS oficial';
+    if (ready) status.textContent = 'Home oficial · enquadramento de revisão, sem overrides de tema';
   }
   updateURL();
 }
@@ -64,12 +107,15 @@ async function loadHome() {
   const base = doc.createElement('base');
   base.href = root.href;
   doc.head.prepend(base);
-  doc.documentElement.dataset.colorLab = 'v2';
-  doc.documentElement.dataset.theme = theme;
+  if (!homeReview) {
+    doc.documentElement.classList.remove('avero-palette-b');
+    doc.documentElement.dataset.colorLab = 'v2';
+    doc.documentElement.dataset.theme = theme;
+  }
   const css = doc.createElement('link');
   css.rel = 'stylesheet';
   css.href = new URL('review/color-lab.css', root).href;
-  doc.head.append(css);
+  if (!homeReview) doc.head.append(css);
   const diagnostics = doc.createElement('script');
   diagnostics.textContent = `
     window.colorLabErrors=[];

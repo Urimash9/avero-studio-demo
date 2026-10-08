@@ -220,3 +220,7 @@ html[data-color-lab][data-theme="b"] .footer-grid .footer-tagline,
 html[data-color-lab][data-theme="b"] .footer-grid h3,
 html[data-color-lab][data-theme="b"] .footer-bottom span:first-child{color:var(--champagne-text)}
 html[data-color-lab][data-theme="b"] .footer-grid a:not(.brand):hover{color:var(--champagne-text)}
+
+/* Build 01.14 — warm right turn dissolves before the outer boundary.
+   Offsets/opacities are supplied by the lab; native Home SVG uses the same stops. */
+html[data-color-lab][data-theme="b"] :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:nth-last-child(-n+2){stop-color:var(--champagne-mid)}
