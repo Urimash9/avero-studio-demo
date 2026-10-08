@@ -36,6 +36,46 @@ document.querySelectorAll('[data-project]').forEach(link => link.addEventListene
   document.querySelector('#mensagem').value = `Gostaria de conhecer a direção ${link.dataset.project} e adaptar esse conceito para o meu negócio.`;
 }));
 
+// Build 01.16B — decorative highlights never replace the structural paths/nodes.
+function createLinePulses() {
+  const ns = 'http://www.w3.org/2000/svg';
+  document.querySelectorAll('.pillar-line, .pillar-mobile-segment, .method-path').forEach((svg, index) => {
+    const source = svg.querySelector('path');
+    if (!source) return;
+    let defs = svg.querySelector('defs');
+    if (!defs) { defs = document.createElementNS(ns, 'defs'); svg.prepend(defs); }
+    const gradient = document.createElementNS(ns, 'linearGradient');
+    const id = `avero-line-pulse-${index}`;
+    gradient.id = id;
+    gradient.setAttribute('x1', '0'); gradient.setAttribute('x2', '1');
+    [['0', 'var(--silver)'], ['.6', 'var(--silver)'], ['.84', 'var(--champagne-light)'], ['1', 'var(--silver)']].forEach(([offset, color]) => {
+      const stop = document.createElementNS(ns, 'stop');
+      stop.setAttribute('offset', offset); stop.setAttribute('stop-color', color);
+      gradient.append(stop);
+    });
+    defs.append(gradient);
+    ['tail', 'body', 'core'].forEach(part => {
+      const pulse = source.cloneNode(false);
+      pulse.removeAttribute('id');
+      pulse.setAttribute('class', `line-pulse line-pulse--${part}`);
+      pulse.setAttribute('pathLength', '1000');
+      pulse.style.setProperty('--pulse-stroke', `url(#${id})`);
+      svg.append(pulse);
+    });
+  });
+  // Hidden variants and sections consume no animation work; visible lines run
+  // continuously, including while the visitor is stationary.
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => entries.forEach(entry => {
+      entry.target.classList.toggle('is-pulse-visible', entry.isIntersecting);
+    }), { rootMargin: '80px' }).observe(document.querySelector('.positioning'));
+    new IntersectionObserver(entries => entries.forEach(entry => {
+      entry.target.classList.toggle('is-pulse-visible', entry.isIntersecting);
+    }), { rootMargin: '80px' }).observe(document.querySelector('.method'));
+  } else document.querySelectorAll('.positioning, .method').forEach(section => section.classList.add('is-pulse-visible'));
+}
+createLinePulses();
+
 // Build 01.9 — the HTML list is the catalogue: stable DOM order, replaceable assets.
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const collectionSystem = document.querySelector('.collection-system');
@@ -73,6 +113,7 @@ const collectionState = {
   resumeTimer: null,
   frame: null,
   lastFrame: null,
+  ambientElapsed: 0,
   geometry: null,
   transfer: null
 };
@@ -82,7 +123,19 @@ const collectionRadialStep = 360 / collectionDirections.length;
 const collectionFrontGap = collectionRadialStep / 2;
 const collectionAmbientSpeed = 3.2; // degrees per second; one turn in 112.5 seconds.
 const collectionExtractionAngle = -60;
-const collectionTransferDuration = 600;
+const collectionTransferDuration = 780;
+const collectionReturnDelay = 180;
+const collectionTransferEasing = 'cubic-bezier(.25,.65,.2,1)';
+const collectionImageReady = new Map();
+function prepareCollectionImage(direction) {
+  if (!collectionImageReady.has(direction.image)) {
+    const image = new Image();
+    image.src = direction.image;
+    // A failed image never leaves navigation latched; normal image fallback applies.
+    collectionImageReady.set(direction.image, image.decode().catch(() => {}));
+  }
+  return collectionImageReady.get(direction.image);
+}
 const collectionTransferCropSupported = typeof CSS.registerProperty === 'function';
 if (collectionTransferCropSupported) {
   ['--collection-transfer-crop-x', '--collection-transfer-crop-y'].forEach(name => {
@@ -170,6 +223,21 @@ function renderCollectionRadial() {
   collectionRadialBlades.forEach((blade, index) => {
     blade.classList.toggle('is-active', radialBladeContent[index] === collectionState.activeIndex);
   });
+  updateCollectionDepth();
+}
+function collectionBladePresence(index) {
+  const angle = (index * collectionRadialStep + collectionState.wheelRotation) * Math.PI / 180;
+  return .42 + .30 * (1 + Math.cos(angle)) / 2;
+}
+function updateCollectionDepth() {
+  collectionRadialBlades.forEach((blade, index) => {
+    const presence = collectionBladePresence(index);
+    // Quantize only the decorative opacity writes; the rotor angle stays smooth.
+    if (Math.abs(presence - Number(blade.dataset.presence || 0)) > .004) {
+      blade.style.setProperty('--blade-presence', presence.toFixed(3));
+      blade.dataset.presence = String(presence);
+    }
+  });
 }
 function syncCollectionAmbient() {
   collectionAmbient.hidden = collectionState.reducedMotion;
@@ -185,6 +253,7 @@ function stopCollectionFrame() {
   if (collectionState.frame !== null) cancelAnimationFrame(collectionState.frame);
   collectionState.frame = null;
   collectionState.lastFrame = null;
+  collectionState.ambientElapsed = 0;
 }
 function canCollectionMove() {
   const s = collectionState;
@@ -197,9 +266,13 @@ function collectionFrame(time) {
   s.frame = null;
   if (!canCollectionMove()) { s.lastFrame = null; return; }
   if (s.lastFrame !== null) {
-    s.wheelRotation -= Math.min(time - s.lastFrame, 64) * collectionAmbientSpeed / 1000;
-    // This is the only ambient DOM write: the same rotor angle used by navigation.
+    const dt = Math.min(time - s.lastFrame, 64);
+    s.ambientElapsed += dt;
+    const ramp = Math.min(1, s.ambientElapsed / 600);
+    s.wheelRotation -= dt * collectionAmbientSpeed * (ramp * ramp * (3 - 2 * ramp)) / 1000;
+    // No per-frame layout reads; angle and occasional face opacity writes only.
     collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
+    updateCollectionDepth();
   }
   s.lastFrame = time;
   s.frame = requestAnimationFrame(collectionFrame);
@@ -278,19 +351,28 @@ async function navigateCollectionRadial(destination) {
     settleTransfer(); return;
   }
   try {
+    const imageReady = prepareCollectionImage(collectionDirections[destination]);
     const distance = Math.abs(gateRotation - startRotation);
-    const duration = Math.round(distance < 30 ? distance * 220 / 30 : 220 + (distance - 30) * 200 / 150);
+    const duration = Math.round(distance < 30 ? distance * 280 / 30 : 280 + (distance - 30) * 220 / 150);
     if (duration > 0) {
       const alignment = collectionRadialRotor.animate([
         { transform: `rotateY(${startRotation}deg)` },
         { transform: `rotateY(${gateRotation}deg)` }
-      ], { duration, easing: 'cubic-bezier(.22,.8,.18,1)', fill: 'both' });
-      s.animations = [alignment];
+      ], { duration, easing: 'cubic-bezier(.3,.55,.25,1)', fill: 'both' });
+      const faces = [...collectionRadialBlades[sourceSlot].querySelectorAll('.collection-radial-face')];
+      s.animations = [alignment, ...faces.map(face => face.animate([
+        { opacity: collectionBladePresence(sourceSlot) }, { opacity: .90 }
+      ], { duration, easing: 'ease-in-out', fill: 'both' }))];
       await Promise.allSettled([alignment.finished]);
       if (s.run !== run) return;
     }
+    await imageReady;
+    if (s.run !== run) return;
     s.wheelRotation = gateRotation;
     collectionRadialRotor.style.transform = `rotateY(${gateRotation}deg)`;
+    // Preserve the aligned face's presence until its proxy takes over.
+    collectionRadialBlades[sourceSlot].style.setProperty('--blade-presence', '.90');
+    collectionRadialBlades[sourceSlot].dataset.presence = '.90';
     s.animations.forEach(animation => animation.cancel());
     s.animations = [];
     beginCollectionTransfer(transfer, destination, run);
@@ -336,8 +418,8 @@ function collectionTransferFrames(from, to, width, height, imageRatio, incoming)
   const center = surface => surface.points.reduce((sum, p) => [sum[0] + p[0] / 4, sum[1] + p[1] / 4], [0, 0]);
   const a = center(from), b = center(to), lerp = (x, y, t) => x + (y - x) * t;
   const arc = incoming ? -Math.min(18, height * .12) : height * .3;
-  return Array.from({ length: 9 }, (_, index) => {
-    const t = index / 8, shape = incoming ? t * t : 1 - (1 - t) ** 3;
+  return Array.from({ length: 17 }, (_, index) => {
+    const t = index / 16, shape = t * t * (3 - 2 * t);
     const depth = incoming ? 1 : 1 - .35 * 4 * t * (1 - t);
     const cx = lerp(a[0], b[0], t), cy = lerp(a[1], b[1], t) + 4 * t * (1 - t) * arc;
     const points = from.points.map((p, i) => [cx + lerp(p[0] - a[0], to.points[i][0] - b[0], shape) * depth, cy + lerp(p[1] - a[1], to.points[i][1] - b[1], shape) * depth]);
@@ -350,7 +432,7 @@ function collectionTransferFrames(from, to, width, height, imageRatio, incoming)
       '--collection-transfer-crop-y': String(cover * height / h),
       borderRadius: `${radii.map(r => r * width / w + 'px').join(' ')} / ${radii.map(r => r * height / h + 'px').join(' ')}`,
       borderColor: t === 0 ? from.borderColor : to.borderColor,
-      filter: incoming ? t === 1 ? 'none' : `brightness(${lerp(.86, 1, shape)})` : t === 0 ? 'none' : `brightness(${lerp(1, .86, shape)})`
+      opacity: incoming ? lerp(.90, 1, Math.min(1, t * 3)) : lerp(1, collectionBladePresence(collectionState.transfer.sourceSlot), shape)
     };
   });
 }
@@ -379,7 +461,7 @@ function beginCollectionTransfer(transfer, destination, run) {
     visual.setAttribute('aria-hidden', 'true');
     proxy.append(visual);
     layer.append(proxy);
-    return { proxy, visual, frames };
+    return { proxy, visual, frames, incoming };
   });
   document.body.append(layer);
   sourceBlade.classList.add('is-transfer-hidden');
@@ -387,19 +469,28 @@ function beginCollectionTransfer(transfer, destination, run) {
   s.transitionState = 'transferring';
   collectionSystem.classList.remove('is-rotating');
   collectionSystem.classList.add('is-transferring');
-  const timing = { duration: collectionTransferDuration, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'both' };
-  s.animations = proxies.flatMap(({ proxy, visual, frames }) => {
+  s.animations = proxies.flatMap(({ proxy, visual, frames, incoming }) => {
+    // The previous card remains fully on stage while extraction starts.
+    const delay = incoming ? 0 : collectionReturnDelay;
+    const timing = { duration: collectionTransferDuration - delay, delay, easing: collectionTransferEasing, fill: 'both' };
     const animations = [proxy.animate(frames, timing)];
     // Older engines can animate the image crop inside the same two visual proxies.
     if (!collectionTransferCropSupported) animations.push(visual.animate(frames.map(frame => ({ offset: frame.offset, transform: `scale(${frame['--collection-transfer-crop-x']},${frame['--collection-transfer-crop-y']})` })), timing));
     return animations;
   });
-  // Copy/state stay synchronized, early in the crossing, without waiting for arrival.
+  const copyAt = Math.round(collectionTransferDuration * .58);
+  s.animations.push(oldPiece.querySelector('.collection-piece-copy').animate([
+    { opacity: 1 }, { opacity: 1, offset: .7 }, { opacity: .72 }
+  ], { duration: copyAt, fill: 'both' }));
+  // Copy changes as the incoming surface becomes dominant, without blank text.
   transfer.copyTimer = setTimeout(() => {
     if (s.run !== run || s.transfer !== transfer) return;
     s.activeIndex = destination;
     arrangeCollection(true);
-  }, 140);
+    s.animations.push(collectionDirections[destination].piece.querySelector('.collection-piece-copy').animate([
+      { opacity: .72 }, { opacity: 1 }
+    ], { duration: 180, easing: 'ease-out', fill: 'both' }));
+  }, copyAt);
 }
 function settleTransfer(announce = true) {
   const s = collectionState, transfer = s.transfer;
@@ -427,7 +518,7 @@ function settleTransfer(announce = true) {
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
   arrangeCollection(announce && changed);
   pauseCollectionInteraction();
-  resumeCollectionInteraction(450);
+  resumeCollectionInteraction(0);
 }
 function navigateCollection(index) {
   // Both layouts share the same physical exchange and single transition owner.
