@@ -993,7 +993,8 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
  .collection-system.is-enhanced.is-radial .collection-piece:not([data-slot="0"]){display:none}
  .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"]{left:0;top:var(--collection-active-y);width:var(--collection-page-width);max-width:none;transform:none;opacity:1;pointer-events:auto}
  .collection-system.is-enhanced.is-radial .collection-piece .collection-piece-visual{height:var(--collection-page-height);aspect-ratio:auto;transform:none;animation:none!important}
- .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy{margin-left:5%;width:90%;transition:none;opacity:1;visibility:visible}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy{margin-left:5%;width:90%;transition:none;opacity:1;visibility:visible;isolation:isolate}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy:before{content:"";position:absolute;inset:6px -18px -2px;z-index:-1;pointer-events:none;background:linear-gradient(90deg,var(--bg-primary) 0%,rgb(var(--background-rgb)/.96) 80%,transparent)}
  .collection-system.is-radial .collection-radial-stage{position:absolute;left:var(--radial-stage-left);top:var(--radial-stage-top);width:var(--radial-stage-width);height:var(--radial-stage-height);perspective:var(--radial-camera);perspective-origin:50% 45%;pointer-events:none;user-select:none}
  .collection-system.is-radial .collection-radial-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(-10deg)}
  .collection-system.is-radial .collection-radial-rotor{position:absolute;inset:0;transform-style:preserve-3d}
