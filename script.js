@@ -141,15 +141,15 @@ function measureCollection() {
   const pageWidth = compact ? Math.min(width * .44, 240) : width * .66;
   const pageHeight = pageWidth * (compact ? 1.05 : .625);
   const activeY = height * (compact ? matchMedia('(max-width: 430px)').matches ? .1 : .07 : .15);
-  const stageWidth = compact ? Math.min(width * .5, 260) : width * .9;
+  const stageWidth = compact ? Math.min(width * .5, 260) : width * .98;
   const radius = stageWidth * (compact ? .37 : .42);
   const stageHeight = compact ? pageHeight : height * .8;
   // Desktop places the axis on the frame edge: the other half continues beyond it.
   const stageLeft = compact ? width - stageWidth : width - stageWidth / 2;
-  const stageTop = compact ? activeY : activeY + pageHeight / 2 - stageHeight / 2;
+  const stageTop = compact ? activeY : (height - stageHeight) / 2;
   collectionState.geometry = {
     width, pageWidth, pageHeight, activeY, stageWidth, radius,
-    bladeWidth: radius * (compact ? .44 : .52), bladeHeight: radius * (compact ? 1.28 : 1.3),
+    bladeWidth: radius * (compact ? .44 : .52), bladeHeight: radius * (compact ? 1.28 : 1.04),
     camera: compact ? Math.min(1200, Math.max(800, width * 2.6)) : Math.max(1300, width * 2.4)
   };
   collectionList.style.setProperty('--collection-page-width', `${pageWidth}px`);
