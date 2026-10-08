@@ -102,7 +102,18 @@ function createLinePulses() {
   let measureFrame = null;
   window.addEventListener('resize', () => {
     if (measureFrame !== null) cancelAnimationFrame(measureFrame);
-    measureFrame = requestAnimationFrame(() => { measureFrame = null; positionPillarResponses(); });
+    measureFrame = requestAnimationFrame(() => {
+      positionPillarResponses();
+      // SVG variants start at different times when display changes; restart their
+      // decorative clocks together so node responses stay on the travelling pulse.
+      const sections = [...document.querySelectorAll('.positioning, .method')];
+      sections.forEach(section => section.classList.add('is-line-reset'));
+      document.querySelector('.line-base').getBoundingClientRect();
+      measureFrame = requestAnimationFrame(() => {
+        sections.forEach(section => section.classList.remove('is-line-reset'));
+        measureFrame = null;
+      });
+    });
   }, { passive: true });
   // Hidden variants and sections consume no animation work; visible lines run
   // continuously, including while the visitor is stationary.
@@ -400,8 +411,6 @@ async function navigateCollectionRadial(destination) {
     const imageReady = prepareCollectionImage(collectionDirections[destination]);
     const distance = Math.abs(gateRotation - startRotation);
     const duration = Math.round(distance < 30 ? distance * 260 / 30 : 260 + (distance - 30) * 180 / 150);
-    await imageReady;
-    if (s.run !== run) return;
     if (duration > 0) {
       // Hermite endpoint velocity joins the slow wheel drift instead of stopping.
       const frames = Array.from({ length: 33 }, (_, index) => {
@@ -418,8 +427,21 @@ async function navigateCollectionRadial(destination) {
       await Promise.allSettled([alignment.finished]);
       if (s.run !== run) return;
     }
+    // If decoding takes longer than alignment, continue drifting instead of freezing.
     s.wheelRotation = gateRotation;
     collectionRadialRotor.style.transform = `rotateY(${gateRotation}deg)`;
+    s.animations.forEach(animation => animation.cancel());
+    const decodeDrift = collectionRadialRotor.animate([
+      { transform: `rotateY(${gateRotation}deg)` },
+      { transform: `rotateY(${gateRotation - collectionAmbientSpeed * 60}deg)` }
+    ], { duration: 60000, easing: 'linear', fill: 'both' });
+    s.animations = [decodeDrift];
+    await imageReady;
+    if (s.run !== run) return;
+    transfer.gateRotation = gateRotation - collectionAmbientSpeed * Number(decodeDrift.currentTime || 0) / 1000;
+    transfer.endRotation = transfer.gateRotation;
+    s.wheelRotation = transfer.gateRotation;
+    collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
     // Preserve the aligned face's presence until its proxy takes over.
     collectionRadialBlades[sourceSlot].style.setProperty('--blade-presence', '.82');
     collectionRadialBlades[sourceSlot].dataset.presence = '.82';

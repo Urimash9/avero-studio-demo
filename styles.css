@@ -1116,6 +1116,7 @@ html.avero-palette-b .method .line-node-energy{fill:var(--node-color);stroke:non
 html.avero-palette-b .positioning .pillar-node:after{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--node-color);box-shadow:0 0 2px 1px rgb(var(--glow-rgb)/.4)}
 html.avero-palette-b :is(.positioning,.method).is-pulse-visible .line-node-energy,html.avero-palette-b .positioning.is-pulse-visible .pillar-node:after{animation-play-state:running}
 @keyframes avero-node-energy{0%,25%,100%{opacity:0}5%{opacity:.18}8%{opacity:.72}13%{opacity:.35}}
+html.avero-palette-b :is(.positioning,.method).is-line-reset :is(.line-base,.line-pulse,.line-node-energy),html.avero-palette-b .positioning.is-line-reset .pillar-node:after{animation:none!important}
 .collection-system.is-radial .collection-radial-face{opacity:var(--blade-presence,.64)}
 .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:pointer}
 .collection-transfer-layer{overflow:visible}
