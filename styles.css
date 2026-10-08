@@ -1027,3 +1027,21 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
 @media(min-width:901px) and (max-width:1100px){
  .collection .collection-layout{grid-template-columns:minmax(245px,.75fr) minmax(0,1.55fr);gap:30px}
 }
+
+/* Build 01.16A — provisional transparent identity; no image retouching or new motion. */
+.brand .brand-art,.footer .brand .brand-art{position:relative;background:none;mask-image:none;mix-blend-mode:normal}
+.brand-art img{position:absolute;top:50%;left:0;width:100%;height:auto;max-width:none;transform:translateY(-50%)}
+/* Remove the former index gutter; mobile keeps its approved alternating alignment. */
+.positioning .pillars h3{margin-left:0}
+@media(min-width:701px){
+ /* Preserve the former scroll cue's 72px flow space without a visual or focus target. */
+ .hero-content{padding-bottom:72px}
+}
+@media(min-width:901px){
+ /* Optical balance: move the title down and the explanatory copy up. */
+ .positioning #position-title{margin-top:20px}
+ .positioning .copy-side{padding-top:26px;padding-bottom:28px}
+}
+@media(min-width:901px) and (max-width:1100px){
+ .positioning .copy-side{padding-top:22px;padding-bottom:12px}
+}
