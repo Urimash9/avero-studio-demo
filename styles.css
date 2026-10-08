@@ -1060,42 +1060,66 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
  .method .method-stages li:nth-child(4) .method-step-copy h3{position:relative;left:12px}
 }
 
-/* Build 01.16B — stable one-pixel geometry, travelling light only. */
+/* Build 01.16B.1 — stable geometry with breathing and compact energy. */
 .positioning,.method{--pulse-cycle:6.4s;--pulse-delay:0s}
 .method{--pulse-cycle:7.3s;--pulse-delay:-2.1s}
+html.avero-palette-b :is(.positioning,.method) .line-base{
+ animation:avero-line-breathe 4.8s ease-in-out infinite;animation-play-state:paused
+}
+html.avero-palette-b .method .line-base{animation-duration:5.7s;animation-delay:-1.4s}
 html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{
  fill:none;stroke:var(--pulse-stroke);stroke-width:1;stroke-opacity:1;vector-effect:non-scaling-stroke;stroke-linecap:round;
  stroke-dasharray:var(--pulse-length) 1200;stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0;
- filter:drop-shadow(0 0 1.2px var(--silver));pointer-events:none;
+ filter:drop-shadow(0 0 1.4px var(--silver));pointer-events:none;
  animation:avero-line-pulse var(--pulse-cycle) linear var(--pulse-delay) infinite;animation-play-state:paused
 }
-.line-pulse--tail{--pulse-length:74;--pulse-lag:60px;--pulse-opacity:.22}
-.line-pulse--body{--pulse-length:44;--pulse-lag:22px;--pulse-opacity:.48}
-.line-pulse--core{--pulse-length:18;--pulse-lag:0px;--pulse-opacity:1}
+.line-pulse--halo{--pulse-length:28;--pulse-lag:8px;--pulse-opacity:.5}
+.line-pulse--tail{--pulse-length:54;--pulse-lag:38px;--pulse-opacity:.2}
+.line-pulse--body{--pulse-length:28;--pulse-lag:8px;--pulse-opacity:.58}
+.line-pulse--core{--pulse-length:10;--pulse-lag:0px;--pulse-opacity:1}
+html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse--halo{
+ stroke-width:1.6;filter:blur(1.3px) drop-shadow(0 0 1px var(--silver))
+}
 html.avero-palette-b :is(.positioning,.method).is-pulse-visible :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{animation-play-state:running}
+html.avero-palette-b :is(.positioning,.method).is-pulse-visible .line-base{animation-play-state:running}
+@keyframes avero-line-breathe{0%,100%{opacity:.82}50%{opacity:1}}
 @keyframes avero-line-pulse{
  0%{stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0}
- 6%{opacity:var(--pulse-opacity)}
- 86%{opacity:var(--pulse-opacity)}
+ 8%{opacity:calc(var(--pulse-opacity) * .55)}
+ 35%{opacity:var(--pulse-opacity)}
+ 65%{opacity:calc(var(--pulse-opacity) * .9)}
+ 86%{opacity:calc(var(--pulse-opacity) * .6)}
  94%,100%{stroke-dashoffset:calc(-1100px + var(--pulse-lag));opacity:0}
 }
 /* The three approved mobile segments pass one light along the full route. */
 @media(max-width:900px){
  html.avero-palette-b .positioning .pillar-mobile-segment .line-pulse{animation-name:avero-line-pulse-segment}
- .positioning .pillar-mobile-segment .line-pulse--tail{--pulse-length:220;--pulse-lag:180px}
- .positioning .pillar-mobile-segment .line-pulse--body{--pulse-length:130;--pulse-lag:65px}
- .positioning .pillar-mobile-segment .line-pulse--core{--pulse-length:60}
+ .positioning .pillar-mobile-segment .line-pulse--tail{--pulse-length:170;--pulse-lag:115px}
+ .positioning .pillar-mobile-segment :is(.line-pulse--body,.line-pulse--halo){--pulse-length:90;--pulse-lag:30px}
+ .positioning .pillar-mobile-segment .line-pulse--core{--pulse-length:40}
  .positioning .pillar--movement{--pulse-delay:1.9s}
  .positioning .pillar--results{--pulse-delay:3.8s}
+ html.avero-palette-b .positioning .pillar-node:after{--node-at:.019}
 }
 @keyframes avero-line-pulse-segment{
  0%{stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0}
- 2%{opacity:var(--pulse-opacity)}
- 24%{opacity:var(--pulse-opacity)}
+ 2%{opacity:calc(var(--pulse-opacity) * .55)}
+ 10%{opacity:var(--pulse-opacity)}
+ 24%{opacity:calc(var(--pulse-opacity) * .6)}
  29%,100%{stroke-dashoffset:calc(-1100px + var(--pulse-lag));opacity:0}
 }
+html.avero-palette-b .method .line-node-energy,html.avero-palette-b .positioning .pillar-node:after{
+ --node-color:var(--silver);opacity:0;pointer-events:none;
+ animation:avero-node-energy var(--pulse-cycle) linear calc(var(--pulse-delay) + (var(--node-at) - .08) * var(--pulse-cycle)) infinite;animation-play-state:paused
+}
+html.avero-palette-b .method .line-node-energy{fill:var(--node-color);stroke:none;filter:drop-shadow(0 0 2px var(--node-color))}
+html.avero-palette-b .positioning .pillar-node:after{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--node-color);box-shadow:0 0 2px 1px rgb(var(--glow-rgb)/.4)}
+html.avero-palette-b :is(.positioning,.method).is-pulse-visible .line-node-energy,html.avero-palette-b .positioning.is-pulse-visible .pillar-node:after{animation-play-state:running}
+@keyframes avero-node-energy{0%,25%,100%{opacity:0}5%{opacity:.18}8%{opacity:.72}13%{opacity:.35}}
 .collection-system.is-radial .collection-radial-face{opacity:var(--blade-presence,.64)}
 .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:pointer}
+.collection-transfer-layer{overflow:visible}
 @media(prefers-reduced-motion:reduce){
- :is(.positioning,.method) .line-pulse{display:none;animation:none!important}
+ :is(.positioning,.method) :is(.line-pulse,.line-node-energy),.positioning .pillar-node:after{display:none;animation:none!important}
+ html.avero-palette-b :is(.positioning,.method) .line-base{opacity:1;animation:none!important}
 }

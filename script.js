@@ -36,12 +36,24 @@ document.querySelectorAll('[data-project]').forEach(link => link.addEventListene
   document.querySelector('#mensagem').value = `Gostaria de conhecer a direção ${link.dataset.project} e adaptar esse conceito para o meu negócio.`;
 }));
 
-// Build 01.16B — decorative highlights never replace the structural paths/nodes.
+// Build 01.16B.1 — breathing base, compact energy and a response at each node.
 function createLinePulses() {
   const ns = 'http://www.w3.org/2000/svg';
+  const pillarRoutes = [];
+  function nearestProgress(path, x, y) {
+    const length = path.getTotalLength();
+    let best = 0, distance = Infinity;
+    for (let i = 0; i <= 240; i++) {
+      const point = path.getPointAtLength(length * i / 240);
+      const d = (point.x - x) ** 2 + (point.y - y) ** 2;
+      if (d < distance) { distance = d; best = i / 240; }
+    }
+    return best;
+  }
   document.querySelectorAll('.pillar-line, .pillar-mobile-segment, .method-path').forEach((svg, index) => {
     const source = svg.querySelector('path');
     if (!source) return;
+    source.classList.add('line-base');
     let defs = svg.querySelector('defs');
     if (!defs) { defs = document.createElementNS(ns, 'defs'); svg.prepend(defs); }
     const gradient = document.createElementNS(ns, 'linearGradient');
@@ -54,7 +66,7 @@ function createLinePulses() {
       gradient.append(stop);
     });
     defs.append(gradient);
-    ['tail', 'body', 'core'].forEach(part => {
+    ['halo', 'tail', 'body', 'core'].forEach(part => {
       const pulse = source.cloneNode(false);
       pulse.removeAttribute('id');
       pulse.setAttribute('class', `line-pulse line-pulse--${part}`);
@@ -62,7 +74,36 @@ function createLinePulses() {
       pulse.style.setProperty('--pulse-stroke', `url(#${id})`);
       svg.append(pulse);
     });
+    svg.querySelectorAll('.method-nodes circle').forEach((node, order) => {
+      const energy = node.cloneNode(false);
+      energy.setAttribute('class', 'line-node-energy');
+      const progress = nearestProgress(source, Number(node.getAttribute('cx')), Number(node.getAttribute('cy')));
+      energy.style.setProperty('--node-at', String(.94 * (100 + progress * 1000 - 5) / 1200));
+      if (order === 1 || order === 2) energy.style.setProperty('--node-color', 'var(--champagne-light)');
+      svg.append(energy);
+    });
+    if (svg.classList.contains('pillar-line')) pillarRoutes.push({ svg, source });
   });
+  // Measure only at initialization/resize; no geometry reads in an animation loop.
+  function positionPillarResponses() {
+    pillarRoutes.forEach(({ svg, source }) => {
+      if (!svg.getClientRects().length) return;
+      const inverse = source.getScreenCTM()?.inverse();
+      if (!inverse) return;
+      document.querySelectorAll('.pillar-node').forEach(node => {
+        const rect = node.getBoundingClientRect();
+        const point = new DOMPoint(rect.x + rect.width / 2, rect.y + rect.height / 2).matrixTransform(inverse);
+        const progress = nearestProgress(source, point.x, point.y);
+        node.style.setProperty('--node-at', String(.94 * (100 + progress * 1000 - 5) / 1200));
+      });
+    });
+  }
+  positionPillarResponses();
+  let measureFrame = null;
+  window.addEventListener('resize', () => {
+    if (measureFrame !== null) cancelAnimationFrame(measureFrame);
+    measureFrame = requestAnimationFrame(() => { measureFrame = null; positionPillarResponses(); });
+  }, { passive: true });
   // Hidden variants and sections consume no animation work; visible lines run
   // continuously, including while the visitor is stationary.
   if ('IntersectionObserver' in window) {
@@ -105,6 +146,7 @@ const collectionState = {
   wheelRotation: 0,
   transitionState: 'idle',
   destination: null,
+  queuedDestination: null,
   run: 0,
   pauseState: { manual: false, interaction: false, pointer: false, focus: false },
   reducedMotion: reducedMotion.matches,
@@ -123,9 +165,9 @@ const collectionRadialStep = 360 / collectionDirections.length;
 const collectionFrontGap = collectionRadialStep / 2;
 const collectionAmbientSpeed = 3.2; // degrees per second; one turn in 112.5 seconds.
 const collectionExtractionAngle = -60;
-const collectionTransferDuration = 780;
-const collectionReturnDelay = 180;
-const collectionTransferEasing = 'cubic-bezier(.25,.65,.2,1)';
+const collectionTransferDuration = 860;
+const collectionReturnDelay = 220;
+const collectionTransferEasing = 'cubic-bezier(.32,.05,.22,1)';
 const collectionImageReady = new Map();
 function prepareCollectionImage(direction) {
   if (!collectionImageReady.has(direction.image)) {
@@ -225,9 +267,9 @@ function renderCollectionRadial() {
   });
   updateCollectionDepth();
 }
-function collectionBladePresence(index) {
-  const angle = (index * collectionRadialStep + collectionState.wheelRotation) * Math.PI / 180;
-  return .42 + .30 * (1 + Math.cos(angle)) / 2;
+function collectionBladePresence(index, rotation = collectionState.wheelRotation) {
+  const angle = (index * collectionRadialStep + rotation) * Math.PI / 180;
+  return .28 + .26 * (1 + Math.cos(angle)) / 2;
 }
 function updateCollectionDepth() {
   collectionRadialBlades.forEach((blade, index) => {
@@ -346,44 +388,47 @@ async function navigateCollectionRadial(destination) {
   const startRotation = s.wheelRotation;
   const gateRotation = closestCollectionAngle(collectionExtractionAngle - sourceSlot * collectionRadialStep, startRotation);
   pauseCollectionInteraction();
-  const transfer = s.transfer = { oldActive, sourceSlot, oldActiveSlot, gateRotation, copyTimer: null, layer: null };
+  const transfer = s.transfer = { oldActive, sourceSlot, oldActiveSlot, gateRotation, endRotation: gateRotation, copyTimer: null, layer: null };
   s.destination = destination;
   s.transitionState = 'aligning';
   collectionSystem.setAttribute('aria-busy', 'true');
   collectionSystem.classList.add('is-rotating');
-  collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.setAttribute('aria-disabled', 'true'));
   if (s.reducedMotion || !s.visibilityState.document || !s.visibilityState.component || typeof collectionRadialRotor.animate !== 'function') {
     settleTransfer(); return;
   }
   try {
     const imageReady = prepareCollectionImage(collectionDirections[destination]);
     const distance = Math.abs(gateRotation - startRotation);
-    const duration = Math.round(distance < 30 ? distance * 280 / 30 : 280 + (distance - 30) * 220 / 150);
+    const duration = Math.round(distance < 30 ? distance * 260 / 30 : 260 + (distance - 30) * 180 / 150);
+    await imageReady;
+    if (s.run !== run) return;
     if (duration > 0) {
-      const alignment = collectionRadialRotor.animate([
-        { transform: `rotateY(${startRotation}deg)` },
-        { transform: `rotateY(${gateRotation}deg)` }
-      ], { duration, easing: 'cubic-bezier(.3,.55,.25,1)', fill: 'both' });
-      const faces = [...collectionRadialBlades[sourceSlot].querySelectorAll('.collection-radial-face')];
-      s.animations = [alignment, ...faces.map(face => face.animate([
-        { opacity: collectionBladePresence(sourceSlot) }, { opacity: .90 }
-      ], { duration, easing: 'ease-in-out', fill: 'both' }))];
+      // Hermite endpoint velocity joins the slow wheel drift instead of stopping.
+      const frames = Array.from({ length: 33 }, (_, index) => {
+        const t = index / 32, smooth = t * t * (3 - 2 * t);
+        const tangent = -collectionAmbientSpeed * duration / 1000;
+        const rotation = startRotation + (gateRotation - startRotation) * smooth + (t * t * t - t * t) * tangent;
+        return { offset: t, transform: `rotateY(${rotation}deg)` };
+      });
+      const alignment = collectionRadialRotor.animate(frames, { duration, easing: 'linear', fill: 'both' });
+      s.animations = [alignment, ...collectionRadialBlades.flatMap((blade, index) => [...blade.querySelectorAll('.collection-radial-face')].map(face => face.animate([
+        { opacity: collectionBladePresence(index, startRotation) },
+        { opacity: index === sourceSlot ? .82 : collectionBladePresence(index, gateRotation) }
+      ], { duration, easing: 'ease-in-out', fill: 'both' })))];
       await Promise.allSettled([alignment.finished]);
       if (s.run !== run) return;
     }
-    await imageReady;
-    if (s.run !== run) return;
     s.wheelRotation = gateRotation;
     collectionRadialRotor.style.transform = `rotateY(${gateRotation}deg)`;
     // Preserve the aligned face's presence until its proxy takes over.
-    collectionRadialBlades[sourceSlot].style.setProperty('--blade-presence', '.90');
-    collectionRadialBlades[sourceSlot].dataset.presence = '.90';
+    collectionRadialBlades[sourceSlot].style.setProperty('--blade-presence', '.82');
+    collectionRadialBlades[sourceSlot].dataset.presence = '.82';
     s.animations.forEach(animation => animation.cancel());
     s.animations = [];
     beginCollectionTransfer(transfer, destination, run);
     await Promise.allSettled(s.animations.map(animation => animation.finished));
   } finally {
-    if (s.run === run && s.transfer === transfer) settleTransfer();
+    if (s.run === run && s.transfer === transfer) settleTransfer(true, true);
   }
 }
 
@@ -437,7 +482,7 @@ function collectionTransferFrames(from, to, width, height, imageRatio, incoming)
       '--collection-transfer-crop-y': String(cover * height / h),
       borderRadius: `${radii.map(r => r * width / w + 'px').join(' ')} / ${radii.map(r => r * height / h + 'px').join(' ')}`,
       borderColor: t === 0 ? from.borderColor : to.borderColor,
-      opacity: incoming ? lerp(.90, 1, Math.min(1, t * 3)) : lerp(1, collectionBladePresence(collectionState.transfer.sourceSlot), shape)
+      opacity: incoming ? lerp(.82, 1, Math.min(1, t * 3)) : lerp(1, collectionBladePresence(collectionState.transfer.sourceSlot, collectionState.transfer.endRotation), shape)
     };
   });
 }
@@ -446,6 +491,13 @@ function beginCollectionTransfer(transfer, destination, run) {
   const oldPiece = collectionDirections[transfer.oldActive].piece;
   const highlight = measureTransferSurface(oldPiece.querySelector('.collection-piece-visual'));
   const face = measureTransferSurface(sourceBlade.querySelector('.collection-radial-front'), true);
+  transfer.endRotation = transfer.gateRotation - collectionAmbientSpeed * collectionTransferDuration / 1000;
+  // The returning piece lands on the wheel's future pose while the wheel keeps turning.
+  collectionRadialRotor.style.transform = `rotateY(${transfer.endRotation}deg)`;
+  const returnFace = measureTransferSurface(sourceBlade.querySelector('.collection-radial-front'), true);
+  collectionRadialRotor.style.transform = `rotateY(${transfer.gateRotation}deg)`;
+  transfer.scrollX = window.scrollX;
+  transfer.scrollY = window.scrollY;
   const layer = transfer.layer = document.createElement('div');
   layer.className = 'collection-transfer-layer';
   layer.setAttribute('aria-hidden', 'true');
@@ -458,7 +510,7 @@ function beginCollectionTransfer(transfer, destination, run) {
     proxy.style.width = `${highlight.width}px`;
     proxy.style.height = `${highlight.height}px`;
     const image = direction.piece.querySelector('img');
-    const frames = collectionTransferFrames(incoming ? face : highlight, incoming ? highlight : face, highlight.width, highlight.height, image.naturalWidth / image.naturalHeight, incoming);
+    const frames = collectionTransferFrames(incoming ? face : highlight, incoming ? highlight : returnFace, highlight.width, highlight.height, image.naturalWidth / image.naturalHeight, incoming);
     const visual = document.createElement('img');
     visual.src = direction.image;
     visual.alt = '';
@@ -474,7 +526,15 @@ function beginCollectionTransfer(transfer, destination, run) {
   s.transitionState = 'transferring';
   collectionSystem.classList.remove('is-rotating');
   collectionSystem.classList.add('is-transferring');
-  s.animations = proxies.flatMap(({ proxy, visual, frames, incoming }) => {
+  const wheelDrift = collectionRadialRotor.animate([
+    { transform: `rotateY(${transfer.gateRotation}deg)` },
+    { transform: `rotateY(${transfer.endRotation}deg)` }
+  ], { duration: collectionTransferDuration, easing: 'linear', fill: 'both' });
+  const depthAnimations = collectionRadialBlades.flatMap((blade, index) => [...blade.querySelectorAll('.collection-radial-face')].map(face => face.animate([
+    { opacity: collectionBladePresence(index, transfer.gateRotation) },
+    { opacity: collectionBladePresence(index, transfer.endRotation) }
+  ], { duration: collectionTransferDuration, easing: 'linear', fill: 'both' })));
+  s.animations = [wheelDrift, ...depthAnimations, ...proxies.flatMap(({ proxy, visual, frames, incoming }) => {
     // The previous card remains fully on stage while extraction starts.
     const delay = incoming ? 0 : collectionReturnDelay;
     const timing = { duration: collectionTransferDuration - delay, delay, easing: collectionTransferEasing, fill: 'both' };
@@ -482,8 +542,8 @@ function beginCollectionTransfer(transfer, destination, run) {
     // Older engines can animate the image crop inside the same two visual proxies.
     if (!collectionTransferCropSupported) animations.push(visual.animate(frames.map(frame => ({ offset: frame.offset, transform: `scale(${frame['--collection-transfer-crop-x']},${frame['--collection-transfer-crop-y']})` })), timing));
     return animations;
-  });
-  const copyAt = Math.round(collectionTransferDuration * .58);
+  })];
+  const copyAt = Math.round(collectionTransferDuration * .68);
   s.animations.push(oldPiece.querySelector('.collection-piece-copy').animate([
     { opacity: 1 }, { opacity: 1, offset: .7 }, { opacity: .72 }
   ], { duration: copyAt, fill: 'both' }));
@@ -497,14 +557,14 @@ function beginCollectionTransfer(transfer, destination, run) {
     ], { duration: 180, easing: 'ease-out', fill: 'both' }));
   }, copyAt);
 }
-function settleTransfer(announce = true) {
+function settleTransfer(announce = true, continuous = false) {
   const s = collectionState, transfer = s.transfer;
   if (!transfer) return;
   s.run++;
   clearTimeout(transfer.copyTimer);
   s.animations.forEach(animation => animation.cancel());
   s.animations = [];
-  s.wheelRotation = transfer.gateRotation;
+  s.wheelRotation = transfer.endRotation;
   const changed = s.activeIndex !== s.destination;
   if (changed) s.activeIndex = s.destination;
   [radialBladeContent[transfer.sourceSlot], radialBladeContent[transfer.oldActiveSlot]] = [transfer.oldActive, s.activeIndex];
@@ -522,13 +582,26 @@ function settleTransfer(announce = true) {
   collectionSystem.classList.remove('is-transferring', 'is-rotating');
   collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
   arrangeCollection(announce && changed);
-  pauseCollectionInteraction();
-  resumeCollectionInteraction(0);
+  clearTimeout(s.resumeTimer);
+  s.pauseState.interaction = false;
+  collectionSystem.classList.remove('is-interacting');
+  if (continuous) s.ambientElapsed = 600;
+  syncCollectionAmbient();
+  // Coalesce rapid inputs into one next destination instead of dropping clicks.
+  if (s.queuedDestination !== null) queueMicrotask(() => {
+    if (s.transitionState !== 'idle') return;
+    const destination = s.queuedDestination;
+    s.queuedDestination = null;
+    if (destination !== null) navigateCollection(destination);
+  });
+}
+function collectionNavigationIndex() {
+  return collectionState.queuedDestination ?? collectionState.destination ?? collectionState.activeIndex;
 }
 function navigateCollection(index) {
   // Both layouts share the same physical exchange and single transition owner.
-  if (collectionState.transitionState !== 'idle') return;
   const destination = directionIndex(index);
+  if (collectionState.transitionState !== 'idle') { collectionState.queuedDestination = destination; return; }
   if (destination === collectionState.activeIndex) return;
   if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
   navigateCollectionRadial(destination);
@@ -543,17 +616,16 @@ function syncCollectionLayout() {
 collectionSystem.classList.add('is-enhanced');
 collectionNavigation.hidden = false;
 syncCollectionLayout();
-collectionSystem.querySelector('.collection-previous').addEventListener('click', () => navigateCollection(collectionState.activeIndex - 1));
-collectionSystem.querySelector('.collection-next').addEventListener('click', () => navigateCollection(collectionState.activeIndex + 1));
+collectionSystem.querySelector('.collection-previous').addEventListener('click', () => navigateCollection(collectionNavigationIndex() - 1));
+collectionSystem.querySelector('.collection-next').addEventListener('click', () => navigateCollection(collectionNavigationIndex() + 1));
 function collectionKeyboard(event) {
-  const destinations = { ArrowRight: collectionState.activeIndex + 1, ArrowLeft: collectionState.activeIndex - 1, Home: 0, End: collectionDirections.length - 1 };
+  const destinations = { ArrowRight: collectionNavigationIndex() + 1, ArrowLeft: collectionNavigationIndex() - 1, Home: 0, End: collectionDirections.length - 1 };
   if (event.key in destinations) { event.preventDefault(); navigateCollection(destinations[event.key]); }
 }
 collectionList.addEventListener('keydown', collectionKeyboard);
 collectionNavigation.addEventListener('keydown', collectionKeyboard);
 collectionAmbient.addEventListener('click', () => { collectionState.pauseState.manual = !collectionState.pauseState.manual; syncCollectionAmbient(); });
-collectionEngine.addEventListener('pointerenter', event => { if (event.pointerType === 'mouse') { collectionState.pauseState.pointer = true; syncCollectionAmbient(); } });
-collectionEngine.addEventListener('pointerleave', () => { collectionState.pauseState.pointer = false; syncCollectionAmbient(); });
+// Hover leaves the object alive; explicit pause and focus remain available.
 collectionList.addEventListener('focusin', () => { collectionState.pauseState.focus = true; syncCollectionAmbient(); });
 collectionList.addEventListener('focusout', event => { if (!collectionList.contains(event.relatedTarget)) { collectionState.pauseState.focus = false; syncCollectionAmbient(); } });
 collectionSystem.addEventListener('pointerdown', pauseCollectionInteraction);
@@ -562,9 +634,14 @@ window.addEventListener('pointerup', () => { if (collectionState.pauseState.inte
 window.addEventListener('pointercancel', () => { if (collectionState.pauseState.interaction) resumeCollectionInteraction(); }, { passive: true });
 collectionMobile.addEventListener('change', syncCollectionLayout);
 reducedMotion.addEventListener('change', () => { collectionState.reducedMotion = reducedMotion.matches; settleCollectionMotion(); });
-window.addEventListener('resize', syncCollectionLayout, { passive: true });
-// A fixed transfer must not drift away from its originals while the page scrolls.
-window.addEventListener('scroll', () => { if (collectionState.transfer) settleTransfer(); }, { passive: true });
+window.addEventListener('resize', () => {
+  // Mobile browser chrome can resize height during scroll without changing layout.
+  if (Math.abs(collectionList.clientWidth - collectionState.geometry.width) > .5) syncCollectionLayout();
+}, { passive: true });
+window.addEventListener('scroll', () => {
+  const transfer = collectionState.transfer;
+  if (transfer?.layer) transfer.layer.style.transform = `translate3d(${transfer.scrollX - window.scrollX}px,${transfer.scrollY - window.scrollY}px,0)`;
+}, { passive: true });
 document.addEventListener('visibilitychange', () => {
   collectionState.visibilityState.document = !document.hidden;
   if (document.hidden) settleCollectionMotion();
