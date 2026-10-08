@@ -1053,3 +1053,9 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
  /* Extend the cloud slightly; a two-axis fade reaches zero along every edge. */
  .perspective .perspective-eye:before{inset:-28% -48%;mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 22%,rgba(0,0,0,.8) 46%,rgba(0,0,0,.4) 68%,rgba(0,0,0,.12) 84%,transparent 100%);mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat}
 }
+
+/* Build 01.16A.2 — Extra breathing room for these two desktop titles only. */
+@media(min-width:901px){
+ .method .method-stages li:first-child .method-step-copy h3{position:relative;left:24px}
+ .method .method-stages li:nth-child(4) .method-step-copy h3{position:relative;left:12px}
+}
