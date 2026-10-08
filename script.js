@@ -59,7 +59,7 @@ const collectionCurrent = collectionSystem.querySelector('.collection-current');
 const collectionPosition = collectionSystem.querySelector('.collection-position');
 const collectionAnnouncement = collectionSystem.querySelector('.collection-announcement');
 const collectionAmbient = collectionSystem.querySelector('.collection-ambient-toggle');
-// Build 01.12.2 — one catalogue/state owner; desktop keeps its original FLIP path.
+// Build 01.15 — the approved radial catalogue now serves both compositions.
 const collectionState = {
   activeIndex: 0,
   wheelRotation: 0,
@@ -136,37 +136,43 @@ function createCollectionRadial() {
 }
 
 function measureCollection() {
-  if (!collectionMobile.matches) { collectionState.geometry = null; return; }
   const width = collectionList.clientWidth, height = collectionList.clientHeight;
-  const pageWidth = Math.min(width * .44, 240), pageHeight = pageWidth * 1.05;
-  const activeY = height * (matchMedia('(max-width: 430px)').matches ? .1 : .07);
-  const stageWidth = Math.min(width * .5, 260), radius = stageWidth * .37;
+  const compact = collectionMobile.matches;
+  const pageWidth = compact ? Math.min(width * .44, 240) : width * .66;
+  const pageHeight = pageWidth * (compact ? 1.05 : .625);
+  const activeY = height * (compact ? matchMedia('(max-width: 430px)').matches ? .1 : .07 : .15);
+  const stageWidth = compact ? Math.min(width * .5, 260) : width * .9;
+  const radius = stageWidth * (compact ? .37 : .42);
+  const stageHeight = compact ? pageHeight : height * .8;
+  // Desktop places the axis on the frame edge: the other half continues beyond it.
+  const stageLeft = compact ? width - stageWidth : width - stageWidth / 2;
+  const stageTop = compact ? activeY : activeY + pageHeight / 2 - stageHeight / 2;
   collectionState.geometry = {
     width, pageWidth, pageHeight, activeY, stageWidth, radius,
-    bladeWidth: radius * .44, bladeHeight: radius * 1.28,
-    camera: Math.min(1200, Math.max(800, width * 2.6))
+    bladeWidth: radius * (compact ? .44 : .52), bladeHeight: radius * (compact ? 1.28 : 1.3),
+    camera: compact ? Math.min(1200, Math.max(800, width * 2.6)) : Math.max(1300, width * 2.4)
   };
   collectionList.style.setProperty('--collection-page-width', `${pageWidth}px`);
   collectionList.style.setProperty('--collection-page-height', `${pageHeight}px`);
   collectionList.style.setProperty('--collection-active-y', `${activeY}px`);
   const g = collectionState.geometry;
   const properties = {
-    '--radial-stage-width': stageWidth, '--radial-stage-left': width - stageWidth,
-    '--radial-stage-top': activeY, '--radial-stage-height': pageHeight,
+    '--radial-stage-width': stageWidth, '--radial-stage-left': stageLeft,
+    '--radial-stage-top': stageTop, '--radial-stage-height': stageHeight,
     '--radial-radius': radius, '--radial-blade-width': g.bladeWidth,
     '--radial-blade-height': g.bladeHeight, '--radial-camera': g.camera
   };
   Object.entries(properties).forEach(([name, value]) => collectionRadialStage.style.setProperty(name, `${value}px`));
 }
 function renderCollectionRadial() {
-  if (!collectionMobile.matches || !collectionRadialRotor) return;
+  if (!collectionRadialRotor) return;
   collectionRadialRotor.style.transform = `rotateY(${collectionState.wheelRotation}deg)`;
   collectionRadialBlades.forEach((blade, index) => {
     blade.classList.toggle('is-active', radialBladeContent[index] === collectionState.activeIndex);
   });
 }
 function syncCollectionAmbient() {
-  collectionAmbient.hidden = !collectionMobile.matches || collectionState.reducedMotion;
+  collectionAmbient.hidden = collectionState.reducedMotion;
   const moving = canCollectionMove();
   collectionSystem.classList.toggle('is-resting', !moving);
   collectionAmbient.setAttribute('aria-pressed', String(collectionState.pauseState.manual));
@@ -182,7 +188,7 @@ function stopCollectionFrame() {
 }
 function canCollectionMove() {
   const s = collectionState;
-  return collectionMobile.matches && collectionRadialRotor && !s.reducedMotion &&
+  return collectionRadialRotor && !s.reducedMotion &&
     s.visibilityState.component && s.visibilityState.document && s.transitionState === 'idle' &&
     !Object.values(s.pauseState).some(Boolean);
 }
@@ -200,9 +206,8 @@ function collectionFrame(time) {
 }
 function arrangeCollection(announce = false) {
   collectionDirections.forEach((direction, index) => {
-    const offset = directionIndex(index - collectionState.activeIndex);
     const active = index === collectionState.activeIndex;
-    const slot = collectionMobile.matches ? active ? 0 : 'off' : offset <= 2 ? offset : offset >= collectionDirections.length - 2 ? offset - collectionDirections.length : 'off';
+    const slot = active ? 0 : 'off';
     direction.piece.dataset.slot = String(slot);
     delete direction.piece.dataset.wheelSlot;
     direction.piece.inert = !active;
@@ -424,47 +429,18 @@ function settleTransfer(announce = true) {
   pauseCollectionInteraction();
   resumeCollectionInteraction(450);
 }
-function navigateCollectionDesktop(destination) {
-  // Original desktop FLIP geometry, duration and immediate state update.
-  const before = collectionPieces.map(piece => ({ rect: piece.getBoundingClientRect(), visible: piece.dataset.slot !== 'off' }));
-  const forward = destination === directionIndex(collectionState.activeIndex + 1);
-  collectionState.activeIndex = destination;
-  arrangeCollection(true);
-  if (collectionState.reducedMotion || typeof collectionList.animate !== 'function') return;
-  collectionSystem.setAttribute('aria-busy', 'true');
-  collectionState.animations = collectionPieces.flatMap((piece, index) => {
-    if (piece.dataset.slot === 'off') return [];
-    const old = before[index], next = piece.getBoundingClientRect();
-    if (!old.visible) return [piece.animate([{ opacity: 0 }, { opacity: getComputedStyle(piece).opacity }], { duration: 660, easing: 'ease-out' })];
-    const dx = old.rect.left - next.left, dy = old.rect.top - next.top;
-    const scale = old.rect.width / next.width;
-    const frames = Array.from({ length: 9 }, (_, step) => {
-      const t = step / 8, arc = 4 * t * (1 - t);
-      return { transform: `translate(${dx * (1 - t)}px, ${dy * (1 - t) + (forward ? -18 : 18) * arc}px) scale(${scale + (1 - scale) * t})`, offset: t };
-    });
-    return [piece.animate(frames, { duration: 720, easing: 'cubic-bezier(.22,.72,.22,1)' })];
-  });
-  const running = collectionState.animations;
-  Promise.allSettled(running.map(animation => animation.finished)).then(() => {
-    if (collectionState.animations === running) { collectionState.animations = []; collectionSystem.removeAttribute('aria-busy'); }
-  });
-}
 function navigateCollection(index) {
-  // Ignore additional compact inputs until the single rotor has settled.
-  if (collectionMobile.matches && collectionState.transitionState !== 'idle') return;
-  if (!collectionMobile.matches) settleCollectionMotion(false);
+  // Both layouts share the same physical exchange and single transition owner.
+  if (collectionState.transitionState !== 'idle') return;
   const destination = directionIndex(index);
   if (destination === collectionState.activeIndex) return;
   if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
-  if (collectionMobile.matches) navigateCollectionRadial(destination);
-  else navigateCollectionDesktop(destination);
+  navigateCollectionRadial(destination);
 }
 function syncCollectionLayout() {
-  const enteringCompact = collectionMobile.matches && !collectionSystem.classList.contains('is-radial');
-  collectionSystem.classList.toggle('is-radial', collectionMobile.matches);
-  if (enteringCompact && !collectionRadialStage) collectionState.wheelRotation = closestCollectionRotation(collectionState.activeIndex);
-  if (collectionMobile.matches) createCollectionRadial();
-  if (collectionRadialStage) collectionRadialStage.hidden = !collectionMobile.matches;
+  collectionSystem.classList.add('is-radial');
+  if (!collectionRadialStage) collectionState.wheelRotation = closestCollectionRotation(collectionState.activeIndex);
+  createCollectionRadial();
   measureCollection();
   settleCollectionMotion();
 }

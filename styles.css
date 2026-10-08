@@ -981,3 +981,46 @@ html.avero-palette-b .footer-grid h3,
 html.avero-palette-b .footer-bottom span:first-child{color:var(--champagne-text)}
 html.avero-palette-b .footer-grid a:not(.brand):hover{color:var(--champagne-text)}
 html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:nth-last-child(-n+2){stop-color:var(--champagne-mid)}
+
+
+/* Build 01.15 — expanded radial library; approved compact geometry stays above. */
+@media(min-width:901px){
+ .collection .collection-layout{grid-template-columns:minmax(260px,.75fr) minmax(0,1.55fr);gap:48px}
+ .collection-system.is-enhanced.is-radial .collection-engine{overflow:clip}
+ .collection-system.is-enhanced.is-radial .collection-axis{display:none}
+ .collection-system.is-enhanced.is-radial .collection-piece:not([data-slot="0"]){display:none}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"]{left:0;top:var(--collection-active-y);width:var(--collection-page-width);max-width:none;transform:none;opacity:1;pointer-events:auto}
+ .collection-system.is-enhanced.is-radial .collection-piece .collection-piece-visual{height:var(--collection-page-height);aspect-ratio:auto;transform:none;animation:none!important}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy{margin-left:5%;width:90%;transition:none;opacity:1;visibility:visible}
+ .collection-system.is-radial .collection-radial-stage{position:absolute;left:var(--radial-stage-left);top:var(--radial-stage-top);width:var(--radial-stage-width);height:var(--radial-stage-height);perspective:var(--radial-camera);perspective-origin:50% 45%;pointer-events:none;user-select:none}
+ .collection-system.is-radial .collection-radial-tilt{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(-10deg)}
+ .collection-system.is-radial .collection-radial-rotor{position:absolute;inset:0;transform-style:preserve-3d}
+ .collection-system.is-radial.is-rotating .collection-radial-rotor,.collection-system.is-radial:not(.is-resting) .collection-radial-rotor{will-change:transform}
+ .collection-system.is-radial .collection-radial-blade{position:absolute;left:50%;top:50%;width:var(--radial-blade-width);height:var(--radial-blade-height);margin-left:calc(var(--radial-blade-width) / -2);margin-top:calc(var(--radial-blade-height) / -2);transform-style:preserve-3d;transform:rotateY(var(--blade-angle)) translateZ(var(--radial-radius)) rotateY(90deg);border-radius:2px}
+ .collection-system.is-radial .collection-radial-face{position:absolute;inset:0;overflow:hidden;border-radius:inherit;border:1px solid #8bb9d066;background:var(--nebula);box-shadow:inset 0 0 0 1px #050a1322;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+ .collection-system.is-radial .collection-radial-back{transform:rotateY(180deg)}
+ .collection-system.is-radial .collection-radial-face img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;filter:brightness(.86)}
+ .collection-system.is-radial .collection-radial-blade.is-active .collection-radial-face{border-color:#a2cce399}
+ .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:wait}
+ /* Build 01.12.4 — only visual images leave their originals during the crossing. */
+ .collection-system.is-radial .collection-radial-blade.is-transfer-hidden .collection-radial-face{visibility:hidden}
+ .collection-system.is-radial .collection-piece.is-transfer-highlight .collection-piece-visual img{opacity:0}
+ .collection-system.is-enhanced.is-radial .collection-piece.is-transfer-highlight:not([data-slot="0"]){display:block;visibility:hidden;opacity:0;pointer-events:none;left:0;top:var(--collection-active-y);width:var(--collection-page-width);height:var(--collection-page-height);max-width:none;transform:none}
+ .collection-transfer-layer{position:fixed;inset:0;z-index:50;overflow:clip;pointer-events:none}
+ .collection-transfer-proxy{position:absolute;left:0;top:0;transform-origin:0 0;overflow:hidden;pointer-events:none;backface-visibility:hidden;background-color:var(--nebula);border:1px solid #8bb9d066;will-change:transform}
+ .collection-transfer-proxy img{display:block;width:100%;height:100%;object-fit:cover;transform:scale(var(--collection-transfer-crop-x,1),var(--collection-transfer-crop-y,1));pointer-events:none}
+ .collection-transfer-proxy.is-incoming{z-index:2}
+ .collection-transfer-proxy.is-outgoing{z-index:1}
+ .collection-system.is-radial .collection-radial-tilt{transform:rotateX(-24deg)}
+ .collection-system.is-radial .collection-radial-stage{z-index:2}
+ .collection-system.is-radial .collection-radial-stage:before{content:"";position:absolute;left:50%;top:50%;width:4px;height:55%;transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(transparent,var(--line),transparent);opacity:.35}
+ .collection-system.is-radial .collection-radial-face{border-color:var(--border);background:var(--bg-secondary);box-shadow:inset 0 0 0 1px rgb(var(--background-rgb)/.2),0 6px 18px rgb(var(--background-rgb)/.4)}
+ .collection .collection-navigation{position:relative}
+ .collection .collection-ambient-toggle{position:absolute;right:0}
+ .perspective .perspective-eye{background:none;opacity:1;mask-image:none;mix-blend-mode:normal}
+ .perspective .perspective-eye:before{content:"";position:absolute;inset:-18% -35%;pointer-events:none;background:url('assets/avero-nebula-continuous-v1.webp') center 55%/cover no-repeat;opacity:.13;filter:var(--nebula-treatment);mask-image:linear-gradient(180deg,transparent,#000 25%,#000 70%,transparent);mask-repeat:no-repeat}
+ .perspective .perspective-eye:after{content:"";position:absolute;inset:0;pointer-events:none;background:url('assets/avero-eye-isolated-v1.webp') center/96% auto no-repeat;opacity:.70}
+}
+@media(min-width:901px) and (max-width:1100px){
+ .collection .collection-layout{grid-template-columns:minmax(245px,.75fr) minmax(0,1.55fr);gap:30px}
+}
