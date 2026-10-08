@@ -1082,6 +1082,9 @@ html.avero-palette-b :is(.positioning,.method).is-pulse-visible :is(.pillar-line
 /* The three approved mobile segments pass one light along the full route. */
 @media(max-width:900px){
  html.avero-palette-b .positioning .pillar-mobile-segment .line-pulse{animation-name:avero-line-pulse-segment}
+ .positioning .pillar-mobile-segment .line-pulse--tail{--pulse-length:220;--pulse-lag:180px}
+ .positioning .pillar-mobile-segment .line-pulse--body{--pulse-length:130;--pulse-lag:65px}
+ .positioning .pillar-mobile-segment .line-pulse--core{--pulse-length:60}
  .positioning .pillar--movement{--pulse-delay:1.9s}
  .positioning .pillar--results{--pulse-delay:3.8s}
 }

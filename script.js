@@ -242,6 +242,11 @@ function updateCollectionDepth() {
 function syncCollectionAmbient() {
   collectionAmbient.hidden = collectionState.reducedMotion;
   const moving = canCollectionMove();
+  if (moving) {
+    // Decode only adjacent directions ahead of interaction, reusing the asset cache.
+    prepareCollectionImage(collectionDirections[directionIndex(collectionState.activeIndex + 1)]);
+    prepareCollectionImage(collectionDirections[directionIndex(collectionState.activeIndex - 1)]);
+  }
   collectionSystem.classList.toggle('is-resting', !moving);
   collectionAmbient.setAttribute('aria-pressed', String(collectionState.pauseState.manual));
   collectionAmbient.setAttribute('aria-label', collectionState.pauseState.manual ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
