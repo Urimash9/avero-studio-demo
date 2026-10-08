@@ -1072,7 +1072,7 @@ html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-s
 .line-pulse--tail{--pulse-length:74;--pulse-lag:60;--pulse-opacity:.22}
 .line-pulse--body{--pulse-length:44;--pulse-lag:22;--pulse-opacity:.48}
 .line-pulse--core{--pulse-length:18;--pulse-lag:0;--pulse-opacity:1}
-:is(.positioning,.method).is-pulse-visible .line-pulse{animation-play-state:running}
+html.avero-palette-b :is(.positioning,.method).is-pulse-visible :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{animation-play-state:running}
 @keyframes avero-line-pulse{
  0%{stroke-dashoffset:calc(100 + var(--pulse-lag));opacity:0}
  6%{opacity:var(--pulse-opacity)}
@@ -1081,7 +1081,7 @@ html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-s
 }
 /* The three approved mobile segments pass one light along the full route. */
 @media(max-width:900px){
- .positioning .pillar-mobile-segment .line-pulse{animation-name:avero-line-pulse-segment}
+ html.avero-palette-b .positioning .pillar-mobile-segment .line-pulse{animation-name:avero-line-pulse-segment}
  .positioning .pillar--movement{--pulse-delay:1.9s}
  .positioning .pillar--results{--pulse-delay:3.8s}
 }
