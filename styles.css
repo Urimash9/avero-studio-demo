@@ -1,4 +1,46 @@
-:root{--cosmos:#050a13;--nebula:#0d1b2a;--blue:#4da3ff;--lume:#e8f2ff;--neutral:#a8b3c7;--border:rgba(149,183,215,.18);--container:1280px}
+:root{
+  --bg-primary:#07090D;
+  --bg-secondary:#0C1015;
+  --bg-depth:#10151B;
+  --surface:#12181E;
+  --surface-high:#141A20;
+  --text-primary:#F2F5F7;
+  --silver:#D8DFE6;
+  --text-secondary:#AAB4BF;
+  --text-muted:#77828D;
+  --line:#AAB4BF;
+  --accent-primary:#75BBC8;
+  --accent-secondary:#4DA3FF;
+  --accent-warm:var(--champagne-light);
+  --button-primary:#DDE4EA;
+  --button-primary-text:#07090D;
+  --button-hover:#C6DEE3;
+  --border:rgba(170,180,191,.28);
+  --control-border:#77828D;
+  --glow-rgb:117 187 200;
+  --material-rgb:216 223 230;
+  --project-light-rgb:196 175 139;
+  --warm-rgb:210 194 164;
+  --background-rgb:7 9 13;
+  --nebula-treatment:saturate(.38) brightness(.9);
+  --ambient-treatment:saturate(.32) brightness(.9);
+  --cosmos:var(--bg-primary);
+  --nebula:var(--bg-secondary);
+  --lume:var(--text-primary);
+  --neutral:var(--text-secondary);
+  --blue:var(--accent-primary);
+  --champagne-light:#D2C2A4;
+  --champagne-mid:#C4AF8B;
+  --champagne-muted:#9D8C72;
+  --champagne-text:var(--champagne-light);
+  --champagne-border:rgb(var(--warm-rgb)/.52);
+  --champagne-surface:rgb(var(--warm-rgb)/.055);
+  --champagne-glow:rgb(var(--warm-rgb)/.16);
+  --champagne-glow-soft:rgb(var(--warm-rgb)/.075);
+  --champagne-glow-node:rgb(var(--warm-rgb)/.5);
+  --champagne-hover:rgb(var(--warm-rgb)/.10);
+  --container:1280px;
+}
 *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:28px}body{margin:0;background:var(--cosmos);color:var(--lume);font-family:Montserrat,Arial,sans-serif;font-size:16px;line-height:1.45}a{color:inherit;text-decoration:none}button,input,textarea{font:inherit}button,a,input,textarea{-webkit-tap-highlight-color:transparent}button{cursor:pointer}a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:5px}img{max-width:100%}.container{width:min(calc(100% - 160px),var(--container));margin-inline:auto}.section-shell{position:relative;padding:36px 0 48px}.section-shell>.container{position:relative;z-index:1}.eyebrow{margin:0 0 24px;font-size:12px;font-weight:600;letter-spacing:.19em}.section-shell h2{font-size:40px;font-weight:500;line-height:1.13;letter-spacing:-.035em;margin:0 0 23px}.section-shell p{color:var(--neutral)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:19px;min-height:48px;padding:11px 23px;border:1px solid rgba(138,187,234,.48);border-radius:4px;font-size:14px;font-weight:500;line-height:1.3;transition:background .2s,border-color .2s,box-shadow .2s}.btn:hover{border-color:var(--blue);background-color:#0d1d2c;box-shadow:0 0 20px #4da3ff18}.btn-primary{background:#3a9df5;border-color:#3a9df5;color:#03101a;font-weight:600}.btn-primary:hover{background:#6cbaff;color:#020a10}.btn-outline{background:#020a1060}.actions{display:flex;gap:18px;flex-wrap:wrap}.circle-link{display:inline-grid;place-items:center;flex-shrink:0;width:36px;height:36px;border:1px solid #6eaadd;border-radius:50%;color:#83b8e7;background:transparent;font-size:20px;line-height:1}.circle-link:hover{background:#4da3ff20}.brand{display:inline-flex;align-items:baseline;gap:8px;white-space:nowrap}.brand span{font-size:32px;letter-spacing:-.045em;font-weight:600}.brand small{font-size:17px;font-weight:400}.site-header{position:absolute;inset:0 0 auto;z-index:10;padding:17px 0}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}.desktop-nav{display:flex;gap:30px;font-size:13px;color:#c9d2de}.desktop-nav a:hover{color:var(--blue)}.desktop-cta{min-height:43px;font-size:12px;padding-inline:24px}.menu-toggle,.mobile-nav{display:none}
 .hero{position:relative;isolation:isolate;min-height:710px;display:flex;align-items:center;padding:137px 0 43px}.hero-art{position:absolute;inset:0;z-index:-2;background:url('assets/avero-eye.png') center 48%/cover no-repeat}.hero-content{position:relative}.hero .eyebrow{margin-bottom:15px}.hero h1{font-size:72px;font-weight:600;line-height:.99;letter-spacing:-.05em;margin:0 0 22px}.hero h1 em{font-style:normal;color:#71b9fc}.lead{max-width:510px;margin:0 0 24px;font-size:20px;line-height:1.35;color:#c4cdd9}.hero .actions{gap:18px}.hero .btn{min-height:54px}.hero-signature{position:absolute;right:0;bottom:83px;padding-right:19px;border-right:1px solid #819bb040;font-size:11px;line-height:1.9;letter-spacing:.12em;color:#9aa7ba;text-align:right}.scroll-cue{display:inline-flex;align-items:center;gap:14px;margin-top:32px;font-size:10px;letter-spacing:.18em;color:#b3bfcb}.mouse{width:22px;height:34px;border:1px solid #8cadcd;border-radius:13px;position:relative}.mouse:before{content:"";position:absolute;width:2px;height:8px;left:9px;top:7px;border-radius:3px;background:#a9c8e3}.mouse:after{content:"";position:absolute;bottom:-12px;left:7px;width:6px;height:6px;border-bottom:1px solid #6aa0ca;border-right:1px solid #6aa0ca;transform:rotate(45deg)}
 
@@ -808,3 +850,134 @@ body{position:relative;isolation:isolate}
 @media(max-width:700px){
  .hero-content:before{top:calc(73px - 8%);bottom:calc(41px - 6%);mask-image:linear-gradient(180deg,transparent,#000 16%,#000 76%,transparent)}
 }
+
+/* Build 01.14 — official B material and section lighting.
+   Geometry, assets, image masks and motion remain in their approved rules above.
+   The class scopes the official palette so the archived lab can still compare A/C. */
+html.avero-palette-b body{background:var(--bg-primary);color:var(--text-primary)}
+html.avero-palette-b .page-flow span{filter:var(--ambient-treatment)}
+html.avero-palette-b .hero-art{background-color:var(--bg-primary);background-blend-mode:luminosity}
+html.avero-palette-b .hero-shade-layer{background:linear-gradient(90deg,var(--bg-primary) 15%,rgb(var(--background-rgb)/.88) 34%,transparent 60%),linear-gradient(0deg,var(--bg-primary),transparent 18%)}
+html.avero-palette-b .hero h1 em{color:var(--silver)}
+html.avero-palette-b .lead,html.avero-palette-b .hero .lead{color:var(--text-secondary)}
+html.avero-palette-b .hero-signature{color:var(--text-secondary);border-color:var(--border)}
+html.avero-palette-b .desktop-nav,html.avero-palette-b .scroll-cue{color:var(--text-secondary)}
+html.avero-palette-b .mouse,html.avero-palette-b .mouse:after{border-color:var(--line)}
+html.avero-palette-b .mouse:before{background:var(--line)}
+html.avero-palette-b .btn{border-color:var(--control-border)}
+html.avero-palette-b .btn:hover{border-color:var(--accent-primary);background-color:var(--surface-high);box-shadow:0 0 20px rgb(var(--glow-rgb)/.09)}
+html.avero-palette-b .btn-primary{background:var(--button-primary);border-color:var(--button-primary);color:var(--button-primary-text)}
+html.avero-palette-b .btn-primary:hover{background:var(--button-hover);border-color:var(--button-hover);color:var(--button-primary-text)}
+html.avero-palette-b .btn-outline{background:rgb(var(--background-rgb)/.38);color:var(--silver)}
+html.avero-palette-b .circle-link{border-color:var(--control-border);color:var(--silver);background:transparent}
+html.avero-palette-b .circle-link:hover{background:rgb(var(--glow-rgb)/.12);border-color:var(--accent-primary)}
+html.avero-palette-b :is(a,button,input,textarea,[tabindex]):focus-visible{outline-color:var(--accent-secondary)}
+html.avero-palette-b .menu-toggle{background:var(--bg-secondary);border-color:var(--control-border)}
+html.avero-palette-b .menu-toggle span{background:var(--silver)}
+html.avero-palette-b .mobile-nav:not([hidden]){background:var(--bg-secondary);border-color:var(--border)}
+html.avero-palette-b .positioning{background:radial-gradient(ellipse at 64% 72%,rgb(var(--material-rgb)/.025),transparent 62%)}
+html.avero-palette-b .positioning .copy-side p,html.avero-palette-b .positioning .pillars p{color:var(--text-secondary)}
+html.avero-palette-b .positioning .copy-side p:last-child{color:var(--silver)}
+html.avero-palette-b .positioning .pillar-index{color:var(--text-secondary)}
+html.avero-palette-b #position-trajectory-fade stop{stop-color:var(--line)}
+html.avero-palette-b .positioning .pillar-mobile-segment path{stroke:var(--line)}
+html.avero-palette-b .positioning .pillar-node{border-color:var(--silver);background:var(--accent-primary);box-shadow:0 0 10px rgb(var(--glow-rgb)/.1)}
+html.avero-palette-b .services{background:radial-gradient(ellipse at 51% 43%,rgb(var(--material-rgb)/.04),transparent 65%)}
+html.avero-palette-b .services .text-cta{color:var(--silver);border-color:var(--control-border)}
+html.avero-palette-b .services .service-card{--service-surface:var(--bg-primary)}
+html.avero-palette-b .services .service-visual{background-color:var(--bg-secondary)}
+html.avero-palette-b .services .service-visual:after{background:linear-gradient(0deg,var(--bg-primary) 0%,rgb(var(--background-rgb)/.72) 10%,transparent 46%)}
+html.avero-palette-b .services .service-copy{background:linear-gradient(180deg,transparent 0%,rgb(var(--background-rgb)/.88) 46px,rgb(var(--background-rgb)/.45));border-color:var(--border)}
+html.avero-palette-b .services .service-copy .num{color:var(--accent-primary)}
+html.avero-palette-b .services .service-copy small,html.avero-palette-b .services .service-copy p{color:var(--text-secondary)}
+html.avero-palette-b .services .service-copy .circle-link{border-color:var(--control-border);background:var(--bg-secondary);color:var(--silver)}
+html.avero-palette-b .services .service-copy .circle-link:hover{background:var(--surface-high);border-color:var(--accent-primary)}
+html.avero-palette-b .services .services-trajectory path{stroke:var(--line)}
+html.avero-palette-b .services .text-cta strong{color:var(--silver);text-decoration-color:var(--line)}
+html.avero-palette-b .services .service-card:hover .service-copy,html.avero-palette-b .services .service-card:focus-within .service-copy{border-left-color:var(--silver)}
+html.avero-palette-b .service-orbit-navigation button{background:var(--surface);border-color:var(--control-border);color:var(--silver)}
+html.avero-palette-b .service-orbit-navigation button:hover{background:var(--surface-high);border-color:var(--accent-primary)}
+html.avero-palette-b .service-orbit-current{color:var(--text-secondary)}
+html.avero-palette-b .service-orbit-current strong{color:var(--silver)}
+html.avero-palette-b .collection-engine:before{background:radial-gradient(ellipse at 63% 48%,rgb(var(--material-rgb)/.03),transparent 65%)}
+html.avero-palette-b #collection-orbit-fade stop{stop-color:var(--line)}
+html.avero-palette-b .collection-axis circle{fill:var(--accent-primary)}
+html.avero-palette-b .collection-piece-visual,html.avero-palette-b .collection-system.is-radial .collection-radial-face,html.avero-palette-b .collection-transfer-proxy{background-color:var(--bg-secondary);border-color:var(--border)}
+html.avero-palette-b .collection-system.is-radial .collection-radial-blade.is-active .collection-radial-face{border-color:var(--silver)}
+html.avero-palette-b .collection-piece-copy a{color:var(--silver)}
+html.avero-palette-b .collection-piece-copy a:hover{color:var(--text-primary)}
+html.avero-palette-b .collection-navigation .circle-link{background:var(--bg-secondary);border-color:var(--control-border)}
+html.avero-palette-b .collection-position,html.avero-palette-b .collection .collection-note,html.avero-palette-b .collection-ambient-toggle{color:var(--text-secondary)}
+html.avero-palette-b .collection-current{color:var(--silver)}
+html.avero-palette-b .projects{background:radial-gradient(ellipse at 78% 60%,rgb(var(--project-light-rgb)/.04),transparent 68%)}
+html.avero-palette-b .projects .projects-intro>p,html.avero-palette-b .project-identity p{color:var(--text-secondary)}
+html.avero-palette-b .projects .project-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.86),transparent 80%)}
+html.avero-palette-b .project-details{border-left-color:var(--line)}
+html.avero-palette-b .projects .project-tags{color:var(--text-secondary)}
+html.avero-palette-b .projects .project-tags span{border-color:var(--border)}
+html.avero-palette-b .projects .project-cta{color:var(--silver);border-color:var(--line)}
+html.avero-palette-b .projects .project-cta span{color:var(--accent-primary)}
+html.avero-palette-b .projects .all-projects{color:var(--silver)}
+html.avero-palette-b .project-pagination button{color:var(--text-secondary)}
+html.avero-palette-b .project-pagination button.active,html.avero-palette-b .project-pagination button[aria-current="true"]{color:var(--accent-primary);border-color:var(--accent-primary)}
+html.avero-palette-b .project-details{border-left-color:var(--champagne-muted)}
+html.avero-palette-b .projects .project-cta{border-color:var(--champagne-muted)}
+html.avero-palette-b .projects .project-cta span,html.avero-palette-b .project-pagination button.active{color:var(--champagne-light);border-color:var(--champagne-muted)}
+html.avero-palette-b .method .method-intro>p,html.avero-palette-b .method .method-step-copy p,html.avero-palette-b .method .method-index,html.avero-palette-b .method .method-closure{color:var(--text-secondary)}
+html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop{stop-color:var(--line)}
+html.avero-palette-b .method .method-nodes circle{fill:var(--accent-primary);stroke:var(--line);filter:drop-shadow(0 0 2px rgb(var(--glow-rgb)/.2))}
+html.avero-palette-b .method .method-nodes circle:nth-child(3){fill:var(--champagne-light);stroke:var(--champagne-muted);filter:drop-shadow(0 0 2px rgb(var(--warm-rgb)/.2))}
+html.avero-palette-b .perspective .perspective-copy h3{color:var(--silver)}
+html.avero-palette-b .perspective .perspective-closure,html.avero-palette-b .perspective .perspective-sign,html.avero-palette-b .perspective .perspective-sign p{color:var(--text-secondary)}
+html.avero-palette-b .contact{background:radial-gradient(ellipse at 28% 48%,rgb(var(--material-rgb)/.035),transparent 70%)}
+html.avero-palette-b .contact-card{background:var(--bg-secondary);border-color:var(--border)}
+html.avero-palette-b .contact-card input,html.avero-palette-b .contact-card textarea{background:var(--surface);border-color:var(--control-border);color:var(--text-primary)}
+html.avero-palette-b .contact-card input::placeholder,html.avero-palette-b .contact-card textarea::placeholder{color:var(--text-secondary)}
+html.avero-palette-b .contact-card input:focus,html.avero-palette-b .contact-card textarea:focus{border-color:var(--accent-secondary);box-shadow:0 0 0 2px rgb(var(--glow-rgb)/.16)}
+html.avero-palette-b .chips button{background:var(--surface);border-color:var(--control-border);color:var(--text-secondary)}
+html.avero-palette-b .chips button[aria-pressed="true"]{background:rgb(var(--glow-rgb)/.13);border-color:var(--accent-primary);color:var(--silver)}
+html.avero-palette-b .contact-note span{color:var(--accent-primary)}
+html.avero-palette-b .contact-note span{color:var(--champagne-light)}
+html.avero-palette-b .contact-card{border-color:rgb(var(--warm-rgb)/.25)}
+html.avero-palette-b .footer{background-color:var(--bg-primary)}
+html.avero-palette-b .footer-grid p,html.avero-palette-b .footer-bottom{color:var(--text-secondary)}
+html.avero-palette-b .footer-grid .footer-tagline{color:var(--silver)}
+html.avero-palette-b .footer-grid .footer-tagline{color:var(--champagne-light)}
+@media(max-width:700px){
+html.avero-palette-b .hero-content:before{filter:var(--nebula-treatment)}
+html.avero-palette-b .services .service-visual{background:transparent}
+html.avero-palette-b .services .service-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.25),transparent 24%)}
+}
+@media(max-width:900px){
+html.avero-palette-b .perspective .perspective-eye:before{filter:var(--nebula-treatment)}
+html.avero-palette-b .collection-engine:before{background:radial-gradient(ellipse at 67% 40%,rgb(var(--material-rgb)/.03),transparent 48%)}
+}
+html.avero-palette-b .services .service-card[data-orbit-slot="0"] .service-copy small{color:var(--champagne-mid)}
+html.avero-palette-b .services .service-card[data-orbit-slot="0"]:is(:hover,:focus-within) .service-copy{border-left-color:var(--champagne-mid)}
+html.avero-palette-b .collection-current{color:var(--champagne-text)}
+html.avero-palette-b .projects{background:radial-gradient(ellipse at 78% 60%,var(--champagne-glow),transparent 68%)}
+html.avero-palette-b .project-details{border-left-color:var(--champagne-mid)}
+html.avero-palette-b .projects .project-tags span:first-child{color:var(--champagne-text)}
+html.avero-palette-b .projects .project-tags span+span{border-left-color:var(--champagne-border)}
+html.avero-palette-b .projects .project-cta{border-color:var(--champagne-mid)}
+html.avero-palette-b .projects .project-cta span,
+html.avero-palette-b .project-pagination button:is(.active,[aria-current="true"]){color:var(--champagne-text);border-color:var(--champagne-mid)}
+html.avero-palette-b .projects .project-cta:hover{color:var(--champagne-text)}
+html.avero-palette-b .method{background:radial-gradient(ellipse at 83% 48%,var(--champagne-glow-soft),transparent 58%)}
+html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:last-child{stop-color:var(--champagne-mid)}
+html.avero-palette-b .method .method-nodes circle:is(:nth-child(2),:nth-child(3)){fill:var(--champagne-text);stroke:var(--champagne-mid);filter:drop-shadow(0 0 5px var(--champagne-glow-node))}
+html.avero-palette-b .method .method-stages li:is(:nth-child(2),:nth-child(3)) .method-index{color:var(--champagne-text)}
+html.avero-palette-b .contact{background:radial-gradient(ellipse at 72% 55%,var(--champagne-glow),transparent 68%)}
+html.avero-palette-b .contact-card{background:linear-gradient(135deg,var(--champagne-surface),transparent 70%),var(--bg-secondary);border-color:var(--champagne-border);box-shadow:0 0 44px var(--champagne-glow-soft)}
+html.avero-palette-b .contact-card h3{color:var(--champagne-text)}
+html.avero-palette-b .contact-note span{color:var(--champagne-text)}
+html.avero-palette-b .contact .btn-outline{border-color:var(--champagne-muted)}
+html.avero-palette-b .contact .btn-outline span,
+html.avero-palette-b .contact .whatsapp span{color:var(--champagne-text)}
+html.avero-palette-b .contact :is(.btn-outline,.chips button):hover{border-color:var(--champagne-mid);background-color:var(--champagne-hover)}
+html.avero-palette-b .footer{background:radial-gradient(ellipse at 86% 35%,var(--champagne-glow-soft),transparent 65%),var(--bg-primary)}
+html.avero-palette-b .footer-grid .footer-tagline,
+html.avero-palette-b .footer-grid h3,
+html.avero-palette-b .footer-bottom span:first-child{color:var(--champagne-text)}
+html.avero-palette-b .footer-grid a:not(.brand):hover{color:var(--champagne-text)}
+html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:nth-last-child(-n+2){stop-color:var(--champagne-mid)}

@@ -1,5 +1,6 @@
 /* COLOR LAB ONLY. Loaded after styles.css in the review iframe.
-   No dimensions, layout, paths, masks, transforms, timing or asset changes. */
+   No dimensions, layout, masks, transforms, timing or asset changes.
+   B alone uses the Method continuity refinement documented in Build 01.14. */
 html[data-color-lab]{
   --bg-primary:#07090D;
   --bg-secondary:#0C1015;
@@ -197,8 +198,8 @@ html[data-color-lab][data-theme="b"] .projects .project-cta span,
 html[data-color-lab][data-theme="b"] .project-pagination button:is(.active,[aria-current="true"]){color:var(--champagne-text);border-color:var(--champagne-mid)}
 html[data-color-lab][data-theme="b"] .projects .project-cta:hover{color:var(--champagne-text)}
 
-/* Second warm chapter: two nodes and only the far-right gradient endpoint.
-   Other stops remain silver, and every path coordinate remains approved. */
+/* Second warm chapter: two nodes and a brief silver-to-champagne fade.
+   B geometry is isolated in color-lab.js; A/C retain their V2 paths. */
 html[data-color-lab][data-theme="b"] .method{background:radial-gradient(ellipse at 83% 48%,var(--champagne-glow-soft),transparent 58%)}
 html[data-color-lab][data-theme="b"] :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:last-child{stop-color:var(--champagne-mid)}
 html[data-color-lab][data-theme="b"] .method .method-nodes circle:is(:nth-child(2),:nth-child(3)){fill:var(--champagne-text);stroke:var(--champagne-mid);filter:drop-shadow(0 0 5px var(--champagne-glow-node))}

@@ -1,6 +1,6 @@
 'use strict';
 
-// One copy of the current Home, unchanged on disk. Only the lab adds its CSS.
+// The approved Home is the shared layout; review themes remain isolated here.
 const frame = document.querySelector('#lab-preview');
 const buttons = [...document.querySelectorAll('[data-theme]')];
 const widthControl = document.querySelector('#lab-width');
@@ -65,7 +65,7 @@ function updateTheme() {
   if (ready && !homeReview) {
     frame.contentDocument.documentElement.dataset.theme = theme;
     updateMethodLab();
-    status.textContent = `${theme.toUpperCase()} — ${names[theme]} · comparação cromática, sem aplicação na Home oficial`;
+    status.textContent = `${theme.toUpperCase()} — ${names[theme]} · referência cromática · B é a paleta oficial; C é histórico`;
   }
   if (homeReview) {
     buttons.forEach(button => {button.disabled = true; button.setAttribute('aria-pressed', 'false');});
