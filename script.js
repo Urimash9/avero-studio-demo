@@ -189,9 +189,10 @@ const collectionRadialStep = 360 / collectionDirections.length;
 const collectionFrontGap = collectionRadialStep / 2;
 const collectionAmbientSpeed = 3.2; // degrees per second; one turn in 112.5 seconds.
 const collectionExtractionAngle = -60;
-const collectionTransferDuration = 860;
-const collectionReturnDelay = 220;
-const collectionTransferEasing = 'cubic-bezier(.32,.05,.22,1)';
+const collectionTransferDuration = 900;
+const collectionReturnDelay = 120;
+const collectionTransferOverlap = 160;
+const collectionTransferEasing = 'cubic-bezier(.32,.12,.28,.92)';
 const collectionImageReady = new Map();
 function prepareCollectionImage(direction) {
   if (!collectionImageReady.has(direction.image)) {
@@ -267,7 +268,7 @@ function measureCollection() {
   const stageLeft = compact ? width - stageWidth : width - stageWidth / 2;
   const stageTop = compact ? activeY : (height - stageHeight) / 2;
   collectionState.geometry = {
-    width, pageWidth, pageHeight, activeY, stageWidth, radius,
+    width, height, pageWidth, pageHeight, activeY, stageWidth, radius,
     bladeWidth: radius * (compact ? .44 : .52), bladeHeight: radius * (compact ? 1.28 : 1.04),
     camera: compact ? Math.min(1200, Math.max(800, width * 2.6)) : Math.max(1300, width * 2.4)
   };
@@ -329,7 +330,7 @@ function stopCollectionFrame() {
 function canCollectionMove() {
   const s = collectionState;
   return collectionRadialRotor && !s.reducedMotion &&
-    s.visibilityState.component && s.visibilityState.document && s.transitionState === 'idle' &&
+    s.visibilityState.component && s.visibilityState.document && ['idle', 'preparing'].includes(s.transitionState) &&
     !Object.values(s.pauseState).some(Boolean);
 }
 function collectionFrame(time) {
@@ -409,57 +410,34 @@ async function navigateCollectionRadial(destination) {
   const s = collectionState, run = ++s.run, oldActive = s.activeIndex;
   const sourceSlot = radialBladeContent.indexOf(destination);
   const oldActiveSlot = radialBladeContent.indexOf(oldActive);
-  const startRotation = s.wheelRotation;
-  const gateRotation = closestCollectionAngle(collectionExtractionAngle - sourceSlot * collectionRadialStep, startRotation);
-  pauseCollectionInteraction();
-  const transfer = s.transfer = { oldActive, sourceSlot, oldActiveSlot, gateRotation, endRotation: gateRotation, copyTimer: null, layer: null };
+  const transfer = s.transfer = { oldActive, sourceSlot, oldActiveSlot, endRotation: s.wheelRotation, layer: null };
   s.destination = destination;
-  s.transitionState = 'aligning';
+  s.transitionState = 'preparing';
   collectionSystem.setAttribute('aria-busy', 'true');
-  collectionSystem.classList.add('is-rotating');
   if (s.reducedMotion || !s.visibilityState.document || !s.visibilityState.component || typeof collectionRadialRotor.animate !== 'function') {
     settleTransfer(); return;
   }
   try {
-    const imageReady = prepareCollectionImage(collectionDirections[destination]);
-    const distance = Math.abs(gateRotation - startRotation);
-    const duration = Math.round(distance < 30 ? distance * 260 / 30 : 260 + (distance - 30) * 180 / 150);
-    if (duration > 0) {
-      // Hermite endpoint velocity joins the slow wheel drift instead of stopping.
-      const frames = Array.from({ length: 33 }, (_, index) => {
-        const t = index / 32, smooth = t * t * (3 - 2 * t);
-        const tangent = -collectionAmbientSpeed * duration / 1000;
-        const rotation = startRotation + (gateRotation - startRotation) * smooth + (t * t * t - t * t) * tangent;
-        return { offset: t, transform: `rotateY(${rotation}deg)` };
-      });
-      const alignment = collectionRadialRotor.animate(frames, { duration, easing: 'linear', fill: 'both' });
-      s.animations = [alignment, ...collectionRadialBlades.flatMap((blade, index) => [...blade.querySelectorAll('.collection-radial-face')].map(face => face.animate([
-        { opacity: collectionBladePresence(index, startRotation) },
-        { opacity: index === sourceSlot ? .82 : collectionBladePresence(index, gateRotation) }
-      ], { duration, easing: 'ease-in-out', fill: 'both' })))];
-      await Promise.allSettled([alignment.finished]);
-      if (s.run !== run) return;
-    }
-    // If decoding takes longer than alignment, continue drifting instead of freezing.
-    s.wheelRotation = gateRotation;
-    collectionRadialRotor.style.transform = `rotateY(${gateRotation}deg)`;
-    s.animations.forEach(animation => animation.cancel());
-    const decodeDrift = collectionRadialRotor.animate([
-      { transform: `rotateY(${gateRotation}deg)` },
-      { transform: `rotateY(${gateRotation - collectionAmbientSpeed * 60}deg)` }
-    ], { duration: 60000, easing: 'linear', fill: 'both' });
-    s.animations = [decodeDrift];
-    await imageReady;
+    // Keep the current card and ambient wheel alive while a cold asset decodes.
+    await prepareCollectionImage(collectionDirections[destination]);
     if (s.run !== run) return;
-    transfer.gateRotation = gateRotation - collectionAmbientSpeed * Number(decodeDrift.currentTime || 0) / 1000;
-    transfer.endRotation = transfer.gateRotation;
-    s.wheelRotation = transfer.gateRotation;
-    collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
-    // Preserve the aligned face's presence until its proxy takes over.
-    collectionRadialBlades[sourceSlot].style.setProperty('--blade-presence', '.82');
-    collectionRadialBlades[sourceSlot].dataset.presence = '.82';
-    s.animations.forEach(animation => animation.cancel());
-    s.animations = [];
+    const startRotation = s.wheelRotation;
+    const ramp = Math.min(1, s.ambientElapsed / 600);
+    const velocity = canCollectionMove() ? -collectionAmbientSpeed * ramp * ramp * (3 - 2 * ramp) : 0;
+    pauseCollectionInteraction();
+    const gateRotation = closestCollectionAngle(collectionExtractionAngle - sourceSlot * collectionRadialStep, startRotation);
+    const distance = Math.abs(gateRotation - startRotation);
+    const alignmentDuration = Math.round(Math.max(180, Math.min(440, 180 + distance * 260 / 180)));
+    transfer.startAt = alignmentDuration - collectionTransferOverlap;
+    transfer.duration = transfer.startAt + collectionTransferDuration;
+    transfer.rotationAt = time => {
+      if (time >= alignmentDuration) return gateRotation - collectionAmbientSpeed * (time - alignmentDuration) / 1000;
+      const t = Math.max(0, time / alignmentDuration), smooth = t * t * (3 - 2 * t);
+      return startRotation + (gateRotation - startRotation) * smooth +
+        (t * t * t - 2 * t * t + t) * velocity * alignmentDuration / 1000 +
+        (t * t * t - t * t) * -collectionAmbientSpeed * alignmentDuration / 1000;
+    };
+    transfer.endRotation = transfer.rotationAt(transfer.duration);
     beginCollectionTransfer(transfer, destination, run);
     await Promise.allSettled(s.animations.map(animation => animation.finished));
   } finally {
@@ -499,15 +477,22 @@ function transferMatrix(points, width, height) {
   const d = p1[1] - p0[1] + g * p1[1], e = p3[1] - p0[1] + h * p3[1];
   return `matrix3d(${[a / width, d / width, 0, g / width, b / height, e / height, 0, h / height, 0, 0, 1, 0, p0[0], p0[1], 0, 1].join(',')})`;
 }
-function collectionTransferFrames(from, to, width, height, imageRatio, incoming) {
+function collectionTransferFrames(from, to, width, height, imageRatio, incoming, duration) {
   const center = surface => surface.points.reduce((sum, p) => [sum[0] + p[0] / 4, sum[1] + p[1] / 4], [0, 0]);
   const a = center(from), b = center(to), lerp = (x, y, t) => x + (y - x) * t;
   const arc = incoming ? -Math.min(18, height * .12) : height * .3;
-  return Array.from({ length: 17 }, (_, index) => {
-    const t = index / 16, shape = t * t * (3 - 2 * t);
-    const depth = incoming ? 1 : 1 - .35 * 4 * t * (1 - t);
-    const cx = lerp(a[0], b[0], t), cy = lerp(a[1], b[1], t) + 4 * t * (1 - t) * arc;
-    const points = from.points.map((p, i) => [cx + lerp(p[0] - a[0], to.points[i][0] - b[0], shape) * depth, cy + lerp(p[1] - a[1], to.points[i][1] - b[1], shape) * depth]);
+  return Array.from({ length: 33 }, (_, index) => {
+    const t = index / 32, shape = t * t * (3 - 2 * t), bow = Math.sin(Math.PI * t) ** 2;
+    const depth = incoming ? 1 : 1 - .35 * bow;
+    // Endpoint tangents match the moving wheel; easing is applied only once.
+    const points = from.points.map((p, i) => p.map((value, axis) => {
+      const startTangent = from.next ? (from.next.points[i][axis] - value) / 8 * duration / (.12 / .32) : 0;
+      const endTangent = to.previous ? (to.points[i][axis] - to.previous.points[i][axis]) / 8 * duration / (.08 / .72) : 0;
+      const center = lerp(a[axis], b[axis], shape);
+      const point = lerp(value, to.points[i][axis], shape) +
+        (t * t * t - 2 * t * t + t) * startTangent + (t * t * t - t * t) * endTangent;
+      return center + (point - center) * depth + (axis === 1 ? bow * arc : 0);
+    }));
     const w = lerp(from.width, to.width, shape), h = lerp(from.height, to.height, shape);
     const cover = Math.max((w - 2) / imageRatio, h - 2) / Math.max((width - 2) / imageRatio, height - 2);
     const radii = from.radii.map((r, i) => lerp(r, to.radii[i], shape));
@@ -525,12 +510,16 @@ function beginCollectionTransfer(transfer, destination, run) {
   const s = collectionState, sourceBlade = collectionRadialBlades[transfer.sourceSlot];
   const oldPiece = collectionDirections[transfer.oldActive].piece;
   const highlight = measureTransferSurface(oldPiece.querySelector('.collection-piece-visual'));
-  const face = measureTransferSurface(sourceBlade.querySelector('.collection-radial-front'), true);
-  transfer.endRotation = transfer.gateRotation - collectionAmbientSpeed * collectionTransferDuration / 1000;
-  // The returning piece lands on the wheel's future pose while the wheel keeps turning.
-  collectionRadialRotor.style.transform = `rotateY(${transfer.endRotation}deg)`;
-  const returnFace = measureTransferSurface(sourceBlade.querySelector('.collection-radial-front'), true);
-  collectionRadialRotor.style.transform = `rotateY(${transfer.gateRotation}deg)`;
+  const measureFaceAt = time => {
+    collectionRadialRotor.style.transform = `rotateY(${transfer.rotationAt(time)}deg)`;
+    return measureTransferSurface(sourceBlade.querySelector('.collection-radial-front'), true);
+  };
+  // Four endpoint measurements, before playback; no layout reads in animation frames.
+  const face = measureFaceAt(transfer.startAt);
+  face.next = measureFaceAt(transfer.startAt + 8);
+  const returnFace = measureFaceAt(transfer.duration);
+  returnFace.previous = measureFaceAt(transfer.duration - 8);
+  collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
   transfer.scrollX = window.scrollX;
   transfer.scrollY = window.scrollY;
   const layer = transfer.layer = document.createElement('div');
@@ -544,8 +533,10 @@ function beginCollectionTransfer(transfer, destination, run) {
     proxy.dataset.direction = direction.id;
     proxy.style.width = `${highlight.width}px`;
     proxy.style.height = `${highlight.height}px`;
+    if (incoming) proxy.style.opacity = '0';
     const image = direction.piece.querySelector('img');
-    const frames = collectionTransferFrames(incoming ? face : highlight, incoming ? highlight : returnFace, highlight.width, highlight.height, image.naturalWidth / image.naturalHeight, incoming);
+    const duration = collectionTransferDuration - (incoming ? 0 : collectionReturnDelay);
+    const frames = collectionTransferFrames(incoming ? face : highlight, incoming ? highlight : returnFace, highlight.width, highlight.height, image.naturalWidth / image.naturalHeight || 4 / 3, incoming, duration);
     const visual = document.createElement('img');
     visual.src = direction.image;
     visual.alt = '';
@@ -553,53 +544,68 @@ function beginCollectionTransfer(transfer, destination, run) {
     visual.setAttribute('aria-hidden', 'true');
     proxy.append(visual);
     layer.append(proxy);
-    return { proxy, visual, frames, incoming };
+    return { proxy, visual, frames, incoming, duration };
   });
   document.body.append(layer);
-  sourceBlade.classList.add('is-transfer-hidden');
-  [oldPiece, collectionDirections[destination].piece].forEach(piece => piece.classList.add('is-transfer-highlight'));
+  collectionDirections[destination].piece.classList.add('is-transfer-highlight');
   s.transitionState = 'transferring';
-  collectionSystem.classList.remove('is-rotating');
   collectionSystem.classList.add('is-transferring');
-  const wheelDrift = collectionRadialRotor.animate([
-    { transform: `rotateY(${transfer.gateRotation}deg)` },
-    { transform: `rotateY(${transfer.endRotation}deg)` }
-  ], { duration: collectionTransferDuration, easing: 'linear', fill: 'both' });
-  const depthAnimations = collectionRadialBlades.flatMap((blade, index) => [...blade.querySelectorAll('.collection-radial-face')].map(face => face.animate([
-    { opacity: collectionBladePresence(index, transfer.gateRotation) },
-    { opacity: collectionBladePresence(index, transfer.endRotation) }
-  ], { duration: collectionTransferDuration, easing: 'linear', fill: 'both' })));
-  s.animations = [wheelDrift, ...depthAnimations, ...proxies.flatMap(({ proxy, visual, frames, incoming }) => {
-    // The previous card remains fully on stage while extraction starts.
-    const delay = incoming ? 0 : collectionReturnDelay;
-    const timing = { duration: collectionTransferDuration - delay, delay, easing: collectionTransferEasing, fill: 'both' };
-    const animations = [proxy.animate(frames, timing)];
-    // Older engines can animate the image crop inside the same two visual proxies.
-    if (!collectionTransferCropSupported) animations.push(visual.animate(frames.map(frame => ({ offset: frame.offset, transform: `scale(${frame['--collection-transfer-crop-x']},${frame['--collection-transfer-crop-y']})` })), timing));
-    return animations;
-  })];
-  const copyAt = Math.round(collectionTransferDuration * .68);
-  s.animations.push(oldPiece.querySelector('.collection-piece-copy').animate([
-    { opacity: 1 }, { opacity: 1, offset: .7 }, { opacity: .72 }
-  ], { duration: copyAt, fill: 'both' }));
-  // Copy changes as the incoming surface becomes dominant, without blank text.
-  transfer.copyTimer = setTimeout(() => {
+  const clock = document.timeline.currentTime;
+  const animate = (element, frames, timing) => {
+    const animation = element.animate(frames, timing);
+    // Resize/visibility can cancel any handle, including the late copy crossfade.
+    animation.finished.catch(() => {});
+    animation.startTime = clock;
+    s.animations.push(animation);
+    return animation;
+  };
+  // Alignment, extraction and drift share one uninterrupted wheel animation.
+  animate(collectionRadialRotor, Array.from({ length: 65 }, (_, index) => {
+    const offset = index / 64;
+    return { offset, transform: `rotateY(${transfer.rotationAt(offset * transfer.duration)}deg)` };
+  }), { duration: transfer.duration, easing: 'linear', fill: 'both' });
+  collectionRadialBlades.forEach((blade, index) => {
+    const frames = [{ opacity: collectionBladePresence(index, s.wheelRotation) }];
+    if (index === transfer.sourceSlot) frames.push({ offset: transfer.startAt / transfer.duration, opacity: .82 });
+    frames.push({ opacity: collectionBladePresence(index, transfer.endRotation) });
+    blade.querySelectorAll('.collection-radial-face').forEach(surface => animate(surface, frames, { duration: transfer.duration, easing: 'linear', fill: 'both' }));
+  });
+  // The original face hands off on the same clock as the incoming proxy.
+  animate(sourceBlade, [{ visibility: 'visible' }, { visibility: 'hidden' }], { duration: transfer.startAt, fill: 'forwards' });
+  proxies.forEach(({ proxy, visual, frames, incoming, duration }) => {
+    const delay = transfer.startAt + (incoming ? 0 : collectionReturnDelay);
+    const timing = { duration, delay, easing: collectionTransferEasing, fill: incoming ? 'forwards' : 'both' };
+    animate(proxy, frames, timing);
+    // Match the face image's brightness at the handoff, without changing rotor styles.
+    animate(visual, [{ filter: `brightness(${incoming ? .86 : 1})` }, { filter: `brightness(${incoming ? 1 : .86})` }], timing);
+    if (!collectionTransferCropSupported) animate(visual, frames.map(frame => ({ offset: frame.offset, transform: `scale(${frame['--collection-transfer-crop-x']},${frame['--collection-transfer-crop-y']})` })), timing);
+  });
+  // Keep a stable stage behind the travelling surfaces until the new card arrives.
+  animate(oldPiece.querySelector('img'), [{ opacity: 1 }, { opacity: 1, offset: .35 }, { opacity: 0, offset: .72 }, { opacity: 0 }], { delay: transfer.startAt, duration: collectionTransferDuration, fill: 'both' });
+  const copyAt = transfer.startAt + Math.round(collectionTransferDuration * .72);
+  const copyCue = animate(oldPiece.querySelector('.collection-piece-copy'), [
+    { opacity: 1 }, { opacity: 1, offset: .85 }, { opacity: .72 }
+  ], { duration: copyAt, fill: 'both' });
+  // An animation-clock milestone keeps copy/counter/ARIA together, even after a busy frame.
+  copyCue.finished.then(() => {
     if (s.run !== run || s.transfer !== transfer) return;
     s.activeIndex = destination;
     arrangeCollection(true);
-    s.animations.push(collectionDirections[destination].piece.querySelector('.collection-piece-copy').animate([
+    const copy = animate(collectionDirections[destination].piece.querySelector('.collection-piece-copy'), [
       { opacity: .72 }, { opacity: 1 }
-    ], { duration: 180, easing: 'ease-out', fill: 'both' }));
-  }, copyAt);
+    ], { duration: 180, easing: 'ease-out', fill: 'both' });
+    copy.startTime = clock + copyAt;
+  }, () => {});
 }
+
 function settleTransfer(announce = true, continuous = false) {
   const s = collectionState, transfer = s.transfer;
   if (!transfer) return;
   s.run++;
-  clearTimeout(transfer.copyTimer);
   s.animations.forEach(animation => animation.cancel());
   s.animations = [];
-  s.wheelRotation = transfer.endRotation;
+  // Preparing may have kept drifting while the image decoded.
+  if (transfer.rotationAt) s.wheelRotation = transfer.endRotation;
   const changed = s.activeIndex !== s.destination;
   if (changed) s.activeIndex = s.destination;
   [radialBladeContent[transfer.sourceSlot], radialBladeContent[transfer.oldActiveSlot]] = [transfer.oldActive, s.activeIndex];
@@ -620,7 +626,7 @@ function settleTransfer(announce = true, continuous = false) {
   clearTimeout(s.resumeTimer);
   s.pauseState.interaction = false;
   collectionSystem.classList.remove('is-interacting');
-  if (continuous) s.ambientElapsed = 600;
+  s.ambientElapsed = continuous ? 600 : 0;
   syncCollectionAmbient();
   // Coalesce rapid inputs into one next destination instead of dropping clicks.
   if (s.queuedDestination !== null) queueMicrotask(() => {
@@ -663,15 +669,13 @@ collectionAmbient.addEventListener('click', () => { collectionState.pauseState.m
 // Hover leaves the object alive; explicit pause and focus remain available.
 collectionList.addEventListener('focusin', () => { collectionState.pauseState.focus = true; syncCollectionAmbient(); });
 collectionList.addEventListener('focusout', event => { if (!collectionList.contains(event.relatedTarget)) { collectionState.pauseState.focus = false; syncCollectionAmbient(); } });
-collectionSystem.addEventListener('pointerdown', pauseCollectionInteraction);
-// A release outside the component must not leave its interaction pause latched.
-window.addEventListener('pointerup', () => { if (collectionState.pauseState.interaction) resumeCollectionInteraction(); }, { passive: true });
-window.addEventListener('pointercancel', () => { if (collectionState.pauseState.interaction) resumeCollectionInteraction(); }, { passive: true });
+// Pointer/touch navigation owns its exchange; a press never freezes the ambient wheel.
 collectionMobile.addEventListener('change', syncCollectionLayout);
 reducedMotion.addEventListener('change', () => { collectionState.reducedMotion = reducedMotion.matches; settleCollectionMotion(); });
 window.addEventListener('resize', () => {
   // Mobile browser chrome can resize height during scroll without changing layout.
-  if (Math.abs(collectionList.clientWidth - collectionState.geometry.width) > .5) syncCollectionLayout();
+  if (Math.abs(collectionList.clientWidth - collectionState.geometry.width) > .5 ||
+    (!collectionMobile.matches && Math.abs(collectionList.clientHeight - collectionState.geometry.height) > .5)) syncCollectionLayout();
 }, { passive: true });
 window.addEventListener('scroll', () => {
   const transfer = collectionState.transfer;
