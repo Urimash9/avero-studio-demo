@@ -36,10 +36,22 @@ document.querySelectorAll('[data-project]').forEach(link => link.addEventListene
   document.querySelector('#mensagem').value = `Gostaria de conhecer a direção ${link.dataset.project} e adaptar esse conceito para o meu negócio.`;
 }));
 
-// Build 01.16B.1 — breathing base, compact energy and a response at each node.
+// Build 01.16B.3 — a tapered energy envelope on the approved, unchanged paths.
 function createLinePulses() {
   const ns = 'http://www.w3.org/2000/svg';
   const pillarRoutes = [];
+  // Same distance/time knots as the CSS travel keyframes; node peaks follow
+  // the head even through the small acceleration in the middle of the route.
+  function pulseArrival(progress) {
+    const travel = [[0, -100], [.25, 225], [.5, 570], [.75, 905], [.94, 1180]];
+    const distance = progress * 1000 - 6;
+    for (let i = 1; i < travel.length; i++) {
+      const [time, position] = travel[i];
+      const [previousTime, previousPosition] = travel[i - 1];
+      if (distance <= position) return previousTime + (time - previousTime) * (distance - previousPosition) / (position - previousPosition);
+    }
+    return .94;
+  }
   function nearestProgress(path, x, y) {
     const length = path.getTotalLength();
     let best = 0, distance = Infinity;
@@ -54,6 +66,10 @@ function createLinePulses() {
     const source = svg.querySelector('path');
     if (!source) return;
     source.classList.add('line-base');
+    const breath = source.cloneNode(false);
+    breath.removeAttribute('id');
+    breath.setAttribute('class', 'line-breath');
+    svg.append(breath);
     let defs = svg.querySelector('defs');
     if (!defs) { defs = document.createElementNS(ns, 'defs'); svg.prepend(defs); }
     const gradient = document.createElementNS(ns, 'linearGradient');
@@ -66,7 +82,9 @@ function createLinePulses() {
       gradient.append(stop);
     });
     defs.append(gradient);
-    ['halo', 'tail', 'body', 'core'].forEach(part => {
+    // Nested strokes share one leading edge. Their increasing opacity creates
+    // a luminous head and a graduated wake, rather than separate flat dashes.
+    ['halo', 'wake', 'tail', 'body', 'shoulder', 'head', 'core'].forEach(part => {
       const pulse = source.cloneNode(false);
       pulse.removeAttribute('id');
       pulse.setAttribute('class', `line-pulse line-pulse--${part}`);
@@ -78,7 +96,7 @@ function createLinePulses() {
       const energy = node.cloneNode(false);
       energy.setAttribute('class', 'line-node-energy');
       const progress = nearestProgress(source, Number(node.getAttribute('cx')), Number(node.getAttribute('cy')));
-      energy.style.setProperty('--node-at', String(.94 * (100 + progress * 1000 - 5) / 1200));
+      energy.style.setProperty('--node-at', String(pulseArrival(progress)));
       if (order === 1 || order === 2) energy.style.setProperty('--node-color', 'var(--champagne-light)');
       svg.append(energy);
     });
@@ -94,18 +112,22 @@ function createLinePulses() {
         const rect = node.getBoundingClientRect();
         const point = new DOMPoint(rect.x + rect.width / 2, rect.y + rect.height / 2).matrixTransform(inverse);
         const progress = nearestProgress(source, point.x, point.y);
-        node.style.setProperty('--node-at', String(.94 * (100 + progress * 1000 - 5) / 1200));
+        node.style.setProperty('--node-at', String(pulseArrival(progress)));
       });
     });
   }
   positionPillarResponses();
+  let compactPillars = matchMedia('(max-width: 900px)').matches;
   let measureFrame = null;
   window.addEventListener('resize', () => {
     if (measureFrame !== null) cancelAnimationFrame(measureFrame);
     measureFrame = requestAnimationFrame(() => {
       positionPillarResponses();
-      // SVG variants start at different times when display changes; restart their
-      // decorative clocks together so node responses stay on the travelling pulse.
+      // Only the desktop/mobile pillar switch needs to reconcile its DOM nodes
+      // with a newly displayed SVG. Height-only resize must not restart energy.
+      const nextCompactPillars = matchMedia('(max-width: 900px)').matches;
+      if (nextCompactPillars === compactPillars) { measureFrame = null; return; }
+      compactPillars = nextCompactPillars;
       const sections = [...document.querySelectorAll('.positioning, .method')];
       sections.forEach(section => section.classList.add('is-line-reset'));
       document.querySelector('.line-base').getBoundingClientRect();
@@ -115,16 +137,7 @@ function createLinePulses() {
       });
     });
   }, { passive: true });
-  // Hidden variants and sections consume no animation work; visible lines run
-  // continuously, including while the visitor is stationary.
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => entries.forEach(entry => {
-      entry.target.classList.toggle('is-pulse-visible', entry.isIntersecting);
-    }), { rootMargin: '80px' }).observe(document.querySelector('.positioning'));
-    new IntersectionObserver(entries => entries.forEach(entry => {
-      entry.target.classList.toggle('is-pulse-visible', entry.isIntersecting);
-    }), { rootMargin: '80px' }).observe(document.querySelector('.method'));
-  } else document.querySelectorAll('.positioning, .method').forEach(section => section.classList.add('is-pulse-visible'));
+  // CSS owns the clocks: no scroll/intersection trigger and no per-frame JS.
 }
 createLinePulses();
 

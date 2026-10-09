@@ -1060,67 +1060,78 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
  .method .method-stages li:nth-child(4) .method-step-copy h3{position:relative;left:12px}
 }
 
-/* Build 01.16B.1 — stable geometry with breathing and compact energy. */
-.positioning,.method{--pulse-cycle:6.4s;--pulse-delay:0s}
-.method{--pulse-cycle:7.3s;--pulse-delay:-2.1s}
+/* Build 01.16B.3 — breathing structure and a luminous, tapered energy wake. */
+.positioning,.method{--pulse-cycle:6.4s;--pulse-delay:0s;--breath-cycle:5.2s}
+.method{--pulse-cycle:7.3s;--pulse-delay:-2.1s;--breath-cycle:6.1s}
 html.avero-palette-b :is(.positioning,.method) .line-base{
- animation:avero-line-breathe 4.8s ease-in-out infinite;animation-play-state:paused
+ animation:avero-line-breathe var(--breath-cycle) ease-in-out infinite
 }
-html.avero-palette-b .method .line-base{animation-duration:5.7s;animation-delay:-1.4s}
+html.avero-palette-b :is(.positioning,.method) .line-breath{
+ opacity:.08;filter:drop-shadow(0 0 1px var(--silver));pointer-events:none;
+ animation:avero-line-radiance var(--breath-cycle) ease-in-out infinite
+}
+html.avero-palette-b .method :is(.line-base,.line-breath){animation-delay:-1.4s}
 html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{
  fill:none;stroke:var(--pulse-stroke);stroke-width:1;stroke-opacity:1;vector-effect:non-scaling-stroke;stroke-linecap:round;
- stroke-dasharray:var(--pulse-length) 1200;stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0;
- filter:drop-shadow(0 0 1.4px var(--silver));pointer-events:none;
- animation:avero-line-pulse var(--pulse-cycle) linear var(--pulse-delay) infinite;animation-play-state:paused
+ stroke-dasharray:var(--pulse-length) calc(1800px - var(--pulse-length));stroke-dashoffset:calc(100px + var(--pulse-length));opacity:0;
+ pointer-events:none;animation:avero-line-pulse var(--pulse-cycle) linear var(--pulse-delay) infinite
 }
-.line-pulse--halo{--pulse-length:28;--pulse-lag:8px;--pulse-opacity:.5}
-.line-pulse--tail{--pulse-length:54;--pulse-lag:38px;--pulse-opacity:.2}
-.line-pulse--body{--pulse-length:28;--pulse-lag:8px;--pulse-opacity:.58}
-.line-pulse--core{--pulse-length:10;--pulse-lag:0px;--pulse-opacity:1}
+.line-pulse--halo{--pulse-length:60px;--pulse-opacity:.62}
+.line-pulse--wake{--pulse-length:112px;--pulse-opacity:.09}
+.line-pulse--tail{--pulse-length:88px;--pulse-opacity:.13}
+.line-pulse--body{--pulse-length:64px;--pulse-opacity:.19}
+.line-pulse--shoulder{--pulse-length:42px;--pulse-opacity:.29}
+.line-pulse--head{--pulse-length:24px;--pulse-opacity:.46}
+.line-pulse--core{--pulse-length:12px;--pulse-opacity:.88}
 html.avero-palette-b :is(.positioning,.method) :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse--halo{
- stroke-width:1.6;filter:blur(1.3px) drop-shadow(0 0 1px var(--silver))
+ stroke-width:1.8;filter:blur(1.1px) drop-shadow(0 0 .8px var(--silver))
 }
-html.avero-palette-b :is(.positioning,.method).is-pulse-visible :is(.pillar-line,.pillar-mobile-segment,.method-path) .line-pulse{animation-play-state:running}
-html.avero-palette-b :is(.positioning,.method).is-pulse-visible .line-base{animation-play-state:running}
-@keyframes avero-line-breathe{0%,100%{opacity:.82}50%{opacity:1}}
+@keyframes avero-line-breathe{0%,100%{opacity:.86}50%{opacity:1}}
+@keyframes avero-line-radiance{0%,100%{opacity:.06}50%{opacity:.16}}
 @keyframes avero-line-pulse{
- 0%{stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0}
- 8%{opacity:calc(var(--pulse-opacity) * .55)}
- 35%{opacity:var(--pulse-opacity)}
- 65%{opacity:calc(var(--pulse-opacity) * .9)}
- 86%{opacity:calc(var(--pulse-opacity) * .6)}
- 94%,100%{stroke-dashoffset:calc(-1100px + var(--pulse-lag));opacity:0}
+ 0%{stroke-dashoffset:calc(100px + var(--pulse-length));opacity:0}
+ 5%{opacity:calc(var(--pulse-opacity) * .72)}
+ 25%{stroke-dashoffset:calc(-225px + var(--pulse-length));opacity:var(--pulse-opacity)}
+ 50%{stroke-dashoffset:calc(-570px + var(--pulse-length));opacity:calc(var(--pulse-opacity) * .94)}
+ 75%{stroke-dashoffset:calc(-905px + var(--pulse-length));opacity:calc(var(--pulse-opacity) * .86)}
+ 88%{opacity:calc(var(--pulse-opacity) * .68)}
+ 94%,100%{stroke-dashoffset:calc(-1180px + var(--pulse-length));opacity:0}
 }
-/* The three approved mobile segments pass one light along the full route. */
+/* Three compact segments carry the same envelope sequentially, not three scanners. */
 @media(max-width:900px){
  html.avero-palette-b .positioning .pillar-mobile-segment .line-pulse{animation-name:avero-line-pulse-segment}
- .positioning .pillar-mobile-segment .line-pulse--tail{--pulse-length:170;--pulse-lag:115px}
- .positioning .pillar-mobile-segment :is(.line-pulse--body,.line-pulse--halo){--pulse-length:90;--pulse-lag:30px}
- .positioning .pillar-mobile-segment .line-pulse--core{--pulse-length:40}
+ .positioning .pillar-mobile-segment .line-pulse--halo{--pulse-length:160px}
+ .positioning .pillar-mobile-segment .line-pulse--wake{--pulse-length:300px}
+ .positioning .pillar-mobile-segment .line-pulse--tail{--pulse-length:236px}
+ .positioning .pillar-mobile-segment .line-pulse--body{--pulse-length:172px}
+ .positioning .pillar-mobile-segment .line-pulse--shoulder{--pulse-length:112px}
+ .positioning .pillar-mobile-segment .line-pulse--head{--pulse-length:64px}
+ .positioning .pillar-mobile-segment .line-pulse--core{--pulse-length:32px}
  .positioning .pillar--movement{--pulse-delay:1.9s}
  .positioning .pillar--results{--pulse-delay:3.8s}
- html.avero-palette-b .positioning .pillar-node:after{--node-at:.019}
+ html.avero-palette-b .positioning .pillar-node:after{--node-at:.0223}
 }
 @keyframes avero-line-pulse-segment{
- 0%{stroke-dashoffset:calc(100px + var(--pulse-lag));opacity:0}
- 2%{opacity:calc(var(--pulse-opacity) * .55)}
- 10%{opacity:var(--pulse-opacity)}
- 24%{opacity:calc(var(--pulse-opacity) * .6)}
- 29%,100%{stroke-dashoffset:calc(-1100px + var(--pulse-lag));opacity:0}
+ 0%{stroke-dashoffset:calc(100px + var(--pulse-length));opacity:0}
+ 1.5%{opacity:calc(var(--pulse-opacity) * .72)}
+ 7.713%{stroke-dashoffset:calc(-225px + var(--pulse-length));opacity:var(--pulse-opacity)}
+ 15.426%{stroke-dashoffset:calc(-570px + var(--pulse-length));opacity:calc(var(--pulse-opacity) * .94)}
+ 23.138%{stroke-dashoffset:calc(-905px + var(--pulse-length));opacity:calc(var(--pulse-opacity) * .86)}
+ 27%{opacity:calc(var(--pulse-opacity) * .68)}
+ 29%,100%{stroke-dashoffset:calc(-1180px + var(--pulse-length));opacity:0}
 }
 html.avero-palette-b .method .line-node-energy,html.avero-palette-b .positioning .pillar-node:after{
  --node-color:var(--silver);opacity:0;pointer-events:none;
- animation:avero-node-energy var(--pulse-cycle) linear calc(var(--pulse-delay) + (var(--node-at) - .08) * var(--pulse-cycle)) infinite;animation-play-state:paused
+ animation:avero-node-energy var(--pulse-cycle) linear calc(var(--pulse-delay) + (var(--node-at) - .04) * var(--pulse-cycle)) infinite
 }
-html.avero-palette-b .method .line-node-energy{fill:var(--node-color);stroke:none;filter:drop-shadow(0 0 2px var(--node-color))}
-html.avero-palette-b .positioning .pillar-node:after{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--node-color);box-shadow:0 0 2px 1px rgb(var(--glow-rgb)/.4)}
-html.avero-palette-b :is(.positioning,.method).is-pulse-visible .line-node-energy,html.avero-palette-b .positioning.is-pulse-visible .pillar-node:after{animation-play-state:running}
-@keyframes avero-node-energy{0%,25%,100%{opacity:0}5%{opacity:.18}8%{opacity:.72}13%{opacity:.35}}
-html.avero-palette-b :is(.positioning,.method).is-line-reset :is(.line-base,.line-pulse,.line-node-energy),html.avero-palette-b .positioning.is-line-reset .pillar-node:after{animation:none!important}
+html.avero-palette-b .method .line-node-energy{fill:var(--node-color);stroke:none;filter:drop-shadow(0 0 1.6px var(--node-color))}
+html.avero-palette-b .positioning .pillar-node:after{content:"";position:absolute;inset:-1px;border-radius:50%;background:var(--node-color);box-shadow:0 0 2px 1px rgb(var(--glow-rgb)/.35)}
+@keyframes avero-node-energy{0%,12%,100%{opacity:0}2%{opacity:.16}4%{opacity:.64}7%{opacity:.24}10%{opacity:.04}}
+html.avero-palette-b :is(.positioning,.method).is-line-reset :is(.line-base,.line-breath,.line-pulse,.line-node-energy),html.avero-palette-b .positioning.is-line-reset .pillar-node:after{animation:none!important}
 .collection-system.is-radial .collection-radial-face{opacity:var(--blade-presence,.64)}
 .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:pointer}
 .collection-transfer-layer{overflow:visible}
 @media(prefers-reduced-motion:reduce){
- :is(.positioning,.method) :is(.line-pulse,.line-node-energy),.positioning .pillar-node:after{display:none;animation:none!important}
+ :is(.positioning,.method) :is(.line-breath,.line-pulse,.line-node-energy),.positioning .pillar-node:after{display:none;animation:none!important}
  html.avero-palette-b :is(.positioning,.method) .line-base{opacity:1;animation:none!important}
 }
