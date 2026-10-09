@@ -428,6 +428,7 @@ async function navigateCollectionRadial(destination) {
     const gateRotation = closestCollectionAngle(collectionExtractionAngle - sourceSlot * collectionRadialStep, startRotation);
     const distance = Math.abs(gateRotation - startRotation);
     const alignmentDuration = Math.round(Math.max(180, Math.min(440, 180 + distance * 260 / 180)));
+    transfer.alignmentDuration = alignmentDuration;
     transfer.startAt = alignmentDuration - collectionTransferOverlap;
     transfer.duration = transfer.startAt + collectionTransferDuration;
     transfer.rotationAt = time => {
@@ -560,8 +561,12 @@ function beginCollectionTransfer(transfer, destination, run) {
     return animation;
   };
   // Alignment, extraction and drift share one uninterrupted wheel animation.
-  animate(collectionRadialRotor, Array.from({ length: 65 }, (_, index) => {
-    const offset = index / 64;
+  const wheelTimes = [...new Set([
+    ...Array.from({ length: 65 }, (_, index) => index / 64 * transfer.duration),
+    transfer.startAt, transfer.startAt + 8, transfer.alignmentDuration, transfer.duration - 8
+  ])].sort((a, b) => a - b);
+  animate(collectionRadialRotor, wheelTimes.map(time => {
+    const offset = time / transfer.duration;
     return { offset, transform: `rotateY(${transfer.rotationAt(offset * transfer.duration)}deg)` };
   }), { duration: transfer.duration, easing: 'linear', fill: 'both' });
   collectionRadialBlades.forEach((blade, index) => {
