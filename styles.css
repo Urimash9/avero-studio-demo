@@ -1060,7 +1060,7 @@ html.avero-palette-b :is(#method-desktop-fade,#method-mobile-fade,#method-phone-
  .method .method-stages li:nth-child(4) .method-step-copy{margin-left:58px}
  /* Occlude the deep page-flow only beneath the wheel, with soft outer edges. */
  .collection-system.is-enhanced.is-radial{isolation:isolate}
- .collection-system.is-enhanced.is-radial:before{content:"";position:absolute;inset:-16% 0 -10%;z-index:-1;pointer-events:none;background:var(--bg-primary);mask-image:linear-gradient(90deg,transparent 38%,#000 56%),linear-gradient(180deg,transparent,#000 15%,#000 85%,transparent);mask-composite:intersect;mask-repeat:no-repeat}
+ .collection-system.is-enhanced.is-radial:before{content:"";position:absolute;inset:-16% 0 -10%;z-index:-1;pointer-events:none;background:var(--bg-primary);mask-image:linear-gradient(90deg,transparent 24%,#000 40%),linear-gradient(180deg,transparent,#000 12%,#000 90%,transparent);mask-composite:intersect;mask-repeat:no-repeat}
 }
 
 /* Build 01.16B.3 — breathing structure and a luminous, tapered energy wake. */
