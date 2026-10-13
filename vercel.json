@@ -2,6 +2,9 @@
   "framework": null,
   "buildCommand": null,
   "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/servicos/landing-pages", "destination": "/servicos/landing-pages/index.html" }
+  ],
   "headers": [
     { "source": "/(.*)", "headers": [
       { "key": "X-Content-Type-Options", "value": "nosniff" },
