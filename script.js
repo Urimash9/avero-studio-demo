@@ -689,6 +689,8 @@ collectionEngine.addEventListener('pointermove', event => {
   const dx = Math.abs(event.clientX - gesture.x), dy = Math.abs(event.clientY - gesture.y);
   if (!gesture.horizontal && dx > 12 && dx > dy * 1.35) {
     gesture.horizontal = true;
+    // A pointer gesture must not retain the keyboard's deliberate ambient pause.
+    if (document.activeElement === collectionList) collectionList.blur();
     collectionEngine.setPointerCapture(event.pointerId);
   }
   if (gesture.horizontal && event.cancelable) event.preventDefault();

@@ -44,3 +44,23 @@ continuam na máquina de estados existente.
 - Sem aparelho físico ou Safari/iOS neste ambiente.
 
 Sem merge, alteração de main ou promoção para produção.
+
+## QA em preview
+
+- Chromium / Home oficial no Color Lab: 360, 375, 390, 412, 430, 768, 900 e 901px,
+  sem overflow horizontal. Os 12 universos foram percorridos e carregados.
+- Em 390px o destaque passou de 147×155px para 335×223px; todos usam contain,
+  sem deformação, crop individual ou troca de arquivo. Títulos e CTA preservados.
+- Arraste real no navegador avançou Gastronomia → Arquitetura; botões,
+  Home/End e retorno anterior conferidos. Menu abre/fecha com Escape.
+- A intenção de gesto horizontal remove o foco do container de teclado quando
+  necessário, para não reter sua pausa deliberada do ambiente. Foco de CTA e
+  navegação por teclado preservados; esse comportamento tem teste de regressão.
+- Comparação DOM com a base em 1024, 1280 e 1440px: visual, posição do card,
+  dimensão da lista, raio/câmera/inclinação/posição do rotor, posições e alturas
+  de todas as seções da Home idênticos.
+- Sem erro da aplicação observado. Avisos de metadata da extensão do navegador
+  foram diferenciados dos logs do site. Sem proxies ou aria-busy residuais.
+- Capturas separadas de antes/depois em 390px disponibilizadas para homologação.
+- Touch coberto no harness de eventos; arraste em Chromium. Safari/iPhone e
+  Android físicos não estavam disponíveis. Não houve nova avaliação criativa.
