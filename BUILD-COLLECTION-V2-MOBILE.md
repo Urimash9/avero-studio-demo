@@ -56,6 +56,14 @@ Não houve reexportação, recriação, distorção, troca de arquivo ou de orde
   decode, resize/viewport, reduced motion e endpoints/crop da transferência aprovados.
 - Script, Color Lab, HTML e todos os assets idênticos à base `9e673f1`.
 - Acima de 900px não existe alteração nova de enquadramento ou geometria.
-- Homologação visual será feita no preview; sem aparelho físico/Safari disponível.
+- Chromium / Home oficial em 360, 390, 430, 900, 901, 1024, 1280 e 1440px:
+  mesmas medidas, posições, geometria do rotor e alturas de todas as seções da base,
+  sem overflow. Desktop conserva também o object-position central original.
+- Os 12 universos foram percorridos em 390px; arquivos carregados, ordem,
+  contador e focos conferidos. Próximo/anterior, Home e resize testados.
+- Foco e origem de escala das duas imagens temporárias conferidos durante a troca.
+- Arraste horizontal conserva o item ativo, como na base sem swipe/drag.
+  Sem erros da aplicação observados; avisos da extensão do navegador separados.
+- Sem aparelho físico ou Safari/iOS disponível; mobile validado em iframe Chromium.
 
 Hero e demais seções preservadas. Main intacta; sem merge ou promoção a produção.
