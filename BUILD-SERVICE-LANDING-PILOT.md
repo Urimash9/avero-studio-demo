@@ -74,7 +74,25 @@ Nenhuma mudança em `styles.css`, `script.js`, assets, conteúdos ou outras áre
 
 ## Homologação
 
-Breakpoints previstos: 390, 430, 768, 1024, 1280 e 1440px.
-Validação de navegador registrada após a inspeção do preview.
-Limite do ambiente: sem Safari/iOS ou aparelhos físicos.
+- Chromium, página publicada dentro do enquadramento do Color Lab sem override:
+  **390, 430, 768, 1024, 1280 e 1440px**. Sem overflow horizontal,
+  imagens quebradas ou texto ultrapassando sua caixa.
+- Método Prisma carregado em todas as larguras, proporção 4:3 e contain preservados.
+  Hero, conteúdo editorial, entrega, valor e encerramento inspecionados em mobile
+  e desktop. Header/footer usam a mesma identidade aprovada.
+- Clique mobile no CTA da Home e navegação por teclado desktop levam à rota
+  publicada no mesmo contexto; URL sem extensão e sem redirect para outra página.
+- CTA principal e CTA final chegam a `/#contato`, com o formulário existente;
+  retorno para Serviços chega a `/#servicos`. Nenhuma mensagem enviada.
+- Menu mobile abre, Escape fecha e devolve foco. Tab chega ao link de retorno
+  com outline visível. Links de navegação conservam as âncoras da Home.
+- Home em 390px conserva exatamente as posições/alturas das oito seções do
+  checkpoint, inclusive Coleção, Método e contato. Comparação dos arquivos
+  confirma ausência de mudanças visuais e em assets em qualquer breakpoint.
+- Sem erro da aplicação observado; avisos de metadata da extensão separados.
+- O projeto não possui etapa de build. Checks de sintaxe, HTTP, recursos,
+  semântica, isolamento e diff aprovados; preview de implementação READY.
+- Reduced motion herdado do stylesheet aprovado; sem animação nova. Não foi
+  emulada a preferência do sistema operacional.
+- Limite do ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
 
