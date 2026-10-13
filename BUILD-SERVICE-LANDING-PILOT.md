@@ -110,6 +110,17 @@ Nenhuma mudança em `styles.css`, `script.js`, assets, conteúdos ou outras áre
 - Sem blur, animação, overlay, elemento extra, JavaScript ou asset novo.
 - Nenhuma alteração de geometria, spacing, tipografia, CTA, conteúdo,
   estrutura, HTML, header, footer, imagem principal ou Home.
-- Checks de sintaxe e diff aprovados. Homologação do novo fundo no preview
-  será registrada após a validação das seis larguras solicitadas.
+- `node --check script.js` e `git diff --check` aprovados.
+- QA do preview em **390, 430, 768, 1024, 1280 e 1440px**: mesmos valores
+  de altura da página, dimensões/tipografia de H1 e dimensões do asset das
+  medições aprovadas da base. Zero overflow e textos fora da caixa.
+- Imagem carregada e íntegra em todas as larguras; cores de texto preservadas.
+  Campo champagne computado pelo navegador nas seis larguras.
+- Hero/transições/encerramento desktop e Hero/transição mobile inspecionados:
+  presença difusa, legibilidade preservada e sem banding evidente observado.
+- Sem erros da aplicação observados; avisos da extensão separados.
+- HTTP local da Home e do CSS interno com status 200. Comparação com a base:
+  CSS anterior integralmente preservado antes do bloco novo; HTML, JS, assets,
+  rotas e Home idênticos. Sem nova animação ou alteração de reduced motion.
+- Limite: Chromium/iframe, sem Safari/iOS ou aparelho físico.
 
