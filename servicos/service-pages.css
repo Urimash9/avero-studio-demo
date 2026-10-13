@@ -122,3 +122,25 @@
  .service-page .service-invitation-copy p{font-size:14px}
  .service-page .service-invitation-copy .btn{font-size:12px;padding:14px 16px;max-width:100%;text-align:left}
 }
+
+/* Continuous atmosphere behind the approved page; no section boxes or overlay. */
+.service-page main{
+ --service-atmosphere-span:780px;
+ --service-atmosphere-depth:610px;
+ --service-atmosphere-edge:.095;
+ --service-atmosphere-middle:.075;
+ background-image:
+  linear-gradient(180deg,var(--bg-primary),transparent 180px,transparent calc(100% - 120px),var(--bg-primary)),
+  radial-gradient(ellipse var(--service-atmosphere-span) var(--service-atmosphere-depth) at 104% 13%,rgb(var(--warm-rgb)/var(--service-atmosphere-edge)) 0%,rgb(var(--warm-rgb)/.032) 38%,rgb(var(--warm-rgb)/.008) 66%,transparent 88%),
+  radial-gradient(ellipse var(--service-atmosphere-span) var(--service-atmosphere-depth) at -10% 49%,rgb(var(--warm-rgb)/var(--service-atmosphere-middle)) 0%,rgb(var(--warm-rgb)/.025) 36%,transparent 82%),
+  radial-gradient(ellipse var(--service-atmosphere-span) var(--service-atmosphere-depth) at 104% 81%,rgb(var(--warm-rgb)/var(--service-atmosphere-edge)) 0%,rgb(var(--warm-rgb)/.032) 38%,rgb(var(--warm-rgb)/.008) 66%,transparent 88%);
+ background-repeat:no-repeat;
+}
+@media(max-width:900px){
+ .service-page main{
+  --service-atmosphere-span:92vw;
+  --service-atmosphere-depth:480px;
+  --service-atmosphere-edge:.065;
+  --service-atmosphere-middle:.045;
+ }
+}

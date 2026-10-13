@@ -96,3 +96,20 @@ Nenhuma mudança em `styles.css`, `script.js`, assets, conteúdos ou outras áre
   emulada a preferência do sistema operacional.
 - Limite do ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
 
+## Refino aprovado de escopo — atmosfera champagne
+
+- Base: `05dbcd396eab43458d4a8e9bbc7446e09ee90bfc`, mesma branch.
+- Alterado somente o background de `main` em `servicos/service-pages.css`.
+- Três gradientes elípticos largos nas bordas, em 13%, 49% e 81% da altura
+  do conteúdo principal. Formam um campo contínuo entre seções, sem caixas.
+- Cor herdada de `--warm-rgb` (champagne oficial da Home); presença máxima
+  .095 nas bordas e .075 no campo intermediário desktop. Até 900px,
+  .065/.045, com área proporcional à largura para manter o mobile limpo.
+- Stops intermediários suaves; fade adicional no início/fim do main mantém
+  o encontro com header/footer discreto. Footer não recebe a camada nova.
+- Sem blur, animação, overlay, elemento extra, JavaScript ou asset novo.
+- Nenhuma alteração de geometria, spacing, tipografia, CTA, conteúdo,
+  estrutura, HTML, header, footer, imagem principal ou Home.
+- Checks de sintaxe e diff aprovados. Homologação do novo fundo no preview
+  será registrada após a validação das seis larguras solicitadas.
+
