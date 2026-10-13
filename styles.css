@@ -1133,6 +1133,16 @@ html.avero-palette-b .positioning .pillar-node:after{content:"";position:absolut
 html.avero-palette-b :is(.positioning,.method).is-line-reset :is(.line-base,.line-breath,.line-pulse,.line-node-energy),html.avero-palette-b .positioning.is-line-reset .pillar-node:after{animation:none!important}
 .collection-system.is-radial .collection-radial-face{opacity:var(--blade-presence,.64)}
 .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:pointer}
+
+/* Coleção V2 mobile: complete artwork above, compact radial library beside copy. */
+@media(max-width:900px){
+ .collection-system.is-enhanced.is-radial .collection-pieces{height:auto;aspect-ratio:3/2;box-sizing:content-box;padding-bottom:172px}
+ .collection-system.is-enhanced.is-radial .collection-engine{touch-action:pan-y pinch-zoom}
+ .collection-system.is-enhanced.is-radial .collection-piece .collection-piece-visual{aspect-ratio:3/2}
+ .collection-system.is-enhanced.is-radial .collection-piece img{object-fit:contain;object-position:center;user-select:none;-webkit-user-select:none}
+ .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy{width:calc(66% - 18px);margin-left:0;padding-top:14px}
+ .collection-system.is-enhanced.is-radial .collection-piece-copy h3{font-size:16px;line-height:1.4}
+}
 .collection-transfer-layer{overflow:visible}
 @media(prefers-reduced-motion:reduce){
  :is(.positioning,.method) :is(.line-breath,.line-pulse,.line-node-energy),.positioning .pillar-node:after{display:none;animation:none!important}
