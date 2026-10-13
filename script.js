@@ -258,16 +258,15 @@ function createCollectionRadial() {
 function measureCollection() {
   const width = collectionList.clientWidth, height = collectionList.clientHeight;
   const compact = collectionMobile.matches;
-  // Mobile gives the complete 3:2 composition the full stage width.
-  const pageWidth = compact ? width : width * .66;
-  const pageHeight = pageWidth * (compact ? 2 / 3 : .625);
-  const activeY = compact ? 24 : height * .15;
-  const stageWidth = compact ? Math.min(width * .34, 180) : width * .98;
+  const pageWidth = compact ? Math.min(width * .44, 240) : width * .66;
+  const pageHeight = pageWidth * (compact ? 1.05 : .625);
+  const activeY = height * (compact ? matchMedia('(max-width: 430px)').matches ? .1 : .07 : .15);
+  const stageWidth = compact ? Math.min(width * .5, 260) : width * .98;
   const radius = stageWidth * (compact ? .37 : .42);
-  const stageHeight = compact ? stageWidth * .78 : height * .8;
+  const stageHeight = compact ? pageHeight : height * .8;
   // Desktop places the axis on the frame edge: the other half continues beyond it.
   const stageLeft = compact ? width - stageWidth : width - stageWidth / 2;
-  const stageTop = compact ? activeY + pageHeight + 22 : (height - stageHeight) / 2;
+  const stageTop = compact ? activeY : (height - stageHeight) / 2;
   collectionState.geometry = {
     width, height, pageWidth, pageHeight, activeY, stageWidth, radius,
     bladeWidth: radius * (compact ? .44 : .52), bladeHeight: radius * (compact ? 1.28 : 1.04),
@@ -671,45 +670,6 @@ function collectionKeyboard(event) {
 }
 collectionList.addEventListener('keydown', collectionKeyboard);
 collectionNavigation.addEventListener('keydown', collectionKeyboard);
-// Mobile swipe/drag feeds the existing exchange; vertical scroll stays native.
-let collectionGesture = null;
-function cancelCollectionGesture() {
-  const gesture = collectionGesture;
-  collectionGesture = null;
-  if (gesture && collectionEngine.hasPointerCapture?.(gesture.id)) collectionEngine.releasePointerCapture(gesture.id);
-}
-collectionEngine.addEventListener('pointerdown', event => {
-  if (!collectionMobile.matches || event.isPrimary === false || event.button !== 0 ||
-    event.target.closest('a,button,input,textarea,select')) return;
-  collectionGesture = { id: event.pointerId, x: event.clientX, y: event.clientY, horizontal: false };
-});
-collectionEngine.addEventListener('pointermove', event => {
-  const gesture = collectionGesture;
-  if (!gesture || event.pointerId !== gesture.id) return;
-  const dx = Math.abs(event.clientX - gesture.x), dy = Math.abs(event.clientY - gesture.y);
-  if (!gesture.horizontal && dx > 12 && dx > dy * 1.35) {
-    gesture.horizontal = true;
-    // A pointer gesture must not retain the keyboard's deliberate ambient pause.
-    if (document.activeElement === collectionList) collectionList.blur();
-    collectionEngine.setPointerCapture(event.pointerId);
-  }
-  if (gesture.horizontal && event.cancelable) event.preventDefault();
-});
-collectionEngine.addEventListener('pointerup', event => {
-  const gesture = collectionGesture;
-  if (!gesture || event.pointerId !== gesture.id) return;
-  const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
-  const threshold = Math.max(36, Math.min(64, collectionEngine.clientWidth * .13));
-  cancelCollectionGesture();
-  if (collectionMobile.matches && gesture.horizontal && Math.abs(dx) >= threshold && Math.abs(dx) > Math.abs(dy) * 1.35) {
-    navigateCollection(collectionNavigationIndex() + (dx < 0 ? 1 : -1));
-  }
-});
-collectionEngine.addEventListener('pointercancel', cancelCollectionGesture);
-collectionEngine.addEventListener('lostpointercapture', cancelCollectionGesture);
-collectionEngine.addEventListener('dragstart', event => { if (collectionMobile.matches) event.preventDefault(); });
-collectionMobile.addEventListener('change', cancelCollectionGesture);
-window.addEventListener('resize', cancelCollectionGesture, { passive: true });
 collectionAmbient.addEventListener('click', () => { collectionState.pauseState.manual = !collectionState.pauseState.manual; syncCollectionAmbient(); });
 // Hover leaves the object alive; explicit pause and focus remain available.
 collectionList.addEventListener('focusin', () => { collectionState.pauseState.focus = true; syncCollectionAmbient(); });

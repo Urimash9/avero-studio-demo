@@ -1133,18 +1133,24 @@ html.avero-palette-b .positioning .pillar-node:after{content:"";position:absolut
 html.avero-palette-b :is(.positioning,.method).is-line-reset :is(.line-base,.line-breath,.line-pulse,.line-node-energy),html.avero-palette-b .positioning.is-line-reset .pillar-node:after{animation:none!important}
 .collection-system.is-radial .collection-radial-face{opacity:var(--blade-presence,.64)}
 .collection-system.is-radial .collection-navigation button[aria-disabled="true"]{cursor:pointer}
-
-/* Coleção V2 mobile: complete artwork above, compact radial library beside copy. */
-@media(max-width:900px){
- .collection-system.is-enhanced.is-radial .collection-pieces{height:auto;aspect-ratio:3/2;box-sizing:content-box;padding-bottom:172px}
- .collection-system.is-enhanced.is-radial .collection-engine{touch-action:pan-y pinch-zoom}
- .collection-system.is-enhanced.is-radial .collection-piece .collection-piece-visual{aspect-ratio:3/2}
- .collection-system.is-enhanced.is-radial .collection-piece img{object-fit:contain;object-position:center;user-select:none;-webkit-user-select:none}
- .collection-system.is-enhanced.is-radial .collection-piece[data-slot="0"] .collection-piece-copy{width:calc(66% - 18px);margin-left:0;padding-top:14px}
- .collection-system.is-enhanced.is-radial .collection-piece-copy h3{font-size:16px;line-height:1.4}
-}
 .collection-transfer-layer{overflow:visible}
 @media(prefers-reduced-motion:reduce){
  :is(.positioning,.method) :is(.line-breath,.line-pulse,.line-node-energy),.positioning .pillar-node:after{display:none;animation:none!important}
  html.avero-palette-b :is(.positioning,.method) .line-base{opacity:1;animation:none!important}
+}
+/* V2 mobile: image framing only; the approved card and rotor geometry stays intact. */
+@media(max-width:900px){
+ :is(.collection-piece,.collection-radial-face,.collection-transfer-proxy) img{object-position:var(--collection-mobile-focal,50% 50%);transform-origin:var(--collection-mobile-focal,50% 50%)}
+ img[src$="COLECAO-AVERO-01-GASTRONOMIA.png"]{--collection-mobile-focal:35% 50%}
+ img[src$="COLECAO-AVERO-02-ARQUITETURA-INTERIORES.png"]{--collection-mobile-focal:0% 50%}
+ img[src$="COLECAO-AVERO-03-HOTELARIA.png"]{--collection-mobile-focal:52% 50%}
+ img[src$="COLECAO-AVERO-04-ESTETICA-BELEZA.png"]{--collection-mobile-focal:40% 50%}
+ img[src$="COLECAO-AVERO-05-SAUDE.jpg"]{--collection-mobile-focal:35% 50%}
+ img[src$="COLECAO-AVERO-06-MODA.png"]{--collection-mobile-focal:25% 50%}
+ img[src$="COLECAO-AVERO-07-VAREJO.png"]{--collection-mobile-focal:48% 50%}
+ img[src$="COLECAO-AVERO-08-BARBEARIA.png"]{--collection-mobile-focal:42% 50%}
+ img[src$="COLECAO-AVERO-09-COQUETELARIA.jpg"]{--collection-mobile-focal:50% 50%}
+ img[src$="COLECAO-AVERO-10-MOVEIS-PLANEJADOS.png"]{--collection-mobile-focal:40% 50%}
+ img[src$="COLECAO-AVERO-11-INSTITUCIONAL-PREMIUM.jpg"]{--collection-mobile-focal:52% 50%}
+ img[src$="COLECAO-AVERO-12-SOLUCAO-TECNOLOGICA-COMERCIAL.png"]{--collection-mobile-focal:55% 50%}
 }
