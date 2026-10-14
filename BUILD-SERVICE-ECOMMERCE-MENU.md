@@ -60,9 +60,50 @@ e responsividade preservados. Nenhuma alteração visual na Home.
 
 ## Validação
 
-O registro de QA será completado com evidência do preview em 390, 430, 768,
-1024, 1280 e 1440px. Checks técnicos: `node --check script.js`,
-`node --check servicos/service-pages.js` e `git diff --check`.
+Checks locais aprovados:
+- `node --check script.js`, `node --check servicos/service-pages.js`
+  e `git diff --check`.
+- HTML: um H1, sete H2, sequência semântica da jornada, IDs únicos,
+  alt text, recursos e âncoras válidos; nenhum formulário novo.
+- Header/footer idênticos aos da piloto. Home idêntica à base salvo
+  os dois atributos do CTA comercial; rotas/cabeçalhos anteriores preservados.
+- CSS/JS globais e internos anteriores, HTMLs aprovados e todos os assets
+  byte a byte iguais à base.
+- HTTP local: Home, CSS/JS, HTML novo e Casa Ocre retornaram 200 completos.
+  Não há etapa de build neste projeto.
 
-Reduced motion herdado do sistema aprovado; novos elementos estáticos.
+QA executado no preview Vercel READY, em Chromium e no enquadramento do
+Color Lab existente em modo Home oficial, sem overrides de tema:
+
+| Largura | Overflow horizontal | Casa Ocre inteira |
+| --- | --- | --- |
+| 390px | 0px | 326 × 245px |
+| 430px | 0px | 366 × 275px |
+| 768px | 0px | 560 × 420px |
+| 1024px | 0px | 458 × 344px |
+| 1280px | 0px | 563 × 422px |
+| 1440px | 0px | 652 × 489px |
+
+Dimensões exibidas arredondadas. Asset original carregado em 1536 × 1152,
+`object-fit: contain` e transformação `none` em todas as larguras.
+Nenhum título, descrição, rótulo de entrega ou botão excedeu sua caixa.
+Hero, contextos, valor, jornada e encerramento inspecionados em desktop/mobile.
+
+- Enter no CTA da Home a 1280px e clique a 390px abrem a rota na mesma aba.
+- CTA principal/final chegam a `/#contato`, com o formulário existente.
+  Retorno chega a `/#servicos`. Nenhuma mensagem ou dado de teste enviado.
+- Menu abre com seis links corretos; Escape fecha e devolve foco.
+  Tab entre CTA/retorno exibe outline visível de 2px.
+- Home a 390px mantém exatamente as posições/alturas das oito seções da base.
+- Ambas as rotas anteriores abertas no mesmo preview: títulos/imagens corretos,
+  zero overflow e ausência do novo CSS comercial.
+- Console revisado: nenhum erro da aplicação observado. Mensagens de metadata
+  da extensão do navegador foram separadas de erros do site.
+- Cores computadas de título, copy, eyebrow e CTA correspondem aos tokens B;
+  champagne difuso herdado, mais leve no mobile. Legibilidade preservada.
+- Reduced motion herdado do sistema aprovado; conteúdo novo completamente
+  estático (zero animações no CSS computado). Preferência do sistema operacional
+  não emulada; sem motion novo para remover.
+
 Limite do ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
+Casa Ocre é uma aplicação conceitual, não uma loja operante nesta página.
