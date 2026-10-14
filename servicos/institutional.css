@@ -1,0 +1,101 @@
+/* Institutional service: an individual composition on the approved internal-page system. */
+.service-page--institutional .institutional-hero{position:relative;padding:110px 0 50px}
+.service-page--institutional .service-breadcrumb{margin-bottom:30px}
+.service-page--institutional .institutional-hero>.container>.eyebrow{color:var(--champagne-light);font-size:11px;margin-bottom:20px}
+.service-page--institutional .institutional-heading{display:grid;grid-template-columns:1.55fr 1fr;gap:64px;align-items:end}
+.service-page--institutional h1{margin:0;font-size:clamp(38px,3.7vw,53px);line-height:1.12;letter-spacing:-.045em;max-width:26ch}
+.service-page--institutional h1 em{color:var(--champagne-light)}
+.service-page--institutional .institutional-heading>p{font-size:15px;line-height:1.8;color:var(--text-secondary);max-width:370px;margin:0 0 6px}
+.service-page--institutional .institutional-stage{position:relative;isolation:isolate;display:grid;grid-template-columns:1.4fr 1fr;gap:72px;align-items:center;margin-top:36px}
+.service-page--institutional .institutional-stage-copy{grid-column:2;grid-row:1;padding-left:24px;border-left:1px solid var(--champagne-border)}
+.service-page--institutional .institutional-sign{font-size:clamp(20px,2vw,27px);line-height:1.4;letter-spacing:-.025em;font-weight:400;color:var(--silver);margin:0 0 30px;max-width:18ch}
+.service-page--institutional .institutional-stage-copy .btn{font-size:12px;min-height:52px;gap:14px;padding-inline:18px;max-width:100%;text-align:left}
+.service-page--institutional .institutional-stage-copy .service-return{display:flex;width:fit-content;margin-top:14px;font-size:11px}
+.service-page--institutional .institutional-visual{grid-column:1;grid-row:1;position:relative;width:100%;max-width:600px;margin:0;padding:0 8px 0 0;min-width:0}
+.service-page--institutional .institutional-visual:before{content:"";position:absolute;inset:14px -5px 35px 14px;background:linear-gradient(135deg,var(--surface),var(--bg-secondary));border:1px solid var(--border);clip-path:polygon(0 0,94% 0,100% 8%,100% 100%,0 100%);z-index:-1}
+.service-page--institutional .institutional-visual img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;box-shadow:0 20px 55px rgb(var(--background-rgb)/.5)}
+.service-page--institutional .institutional-visual figcaption{display:flex;justify-content:space-between;gap:18px;font-size:10px;color:var(--text-secondary);line-height:1.7;margin-top:19px}
+.service-page--institutional .institutional-visual figcaption strong{font-weight:500;color:var(--champagne-light)}
+.service-page--institutional .institutional-route{position:absolute;inset:-5% -2% -6% 1%;width:101%;height:111%;pointer-events:none;z-index:-2;overflow:visible}
+.service-page--institutional .institutional-route path{fill:none;stroke:url(#institutional-route-light);stroke-width:1;vector-effect:non-scaling-stroke}
+.service-page--institutional .institutional-route circle{fill:var(--champagne-light);opacity:.45}
+.service-page--institutional .institutional-definition .container{border-top:1px solid var(--border);padding-top:40px}
+.service-page--institutional .institutional-organizes>.container{display:grid;grid-template-columns:.75fr 1.25fr;gap:70px;align-items:start}
+.service-page--institutional .institutional-organizes h2{max-width:14ch}
+.service-page--institutional .institutional-organizer{position:relative;margin:0;padding-left:28px}
+.service-page--institutional .institutional-organizer:before{content:"";position:absolute;left:0;top:14px;bottom:20px;width:1px;background:linear-gradient(var(--silver),var(--champagne-border) 75%,transparent)}
+.service-page--institutional .institutional-organizer>div{position:relative;padding:0 0 24px;margin:0 0 24px;border-bottom:1px solid var(--border)}
+.service-page--institutional .institutional-organizer>div:before{content:"";position:absolute;left:-31px;top:7px;width:7px;height:7px;border:1px solid var(--champagne-light);border-radius:50%;background:var(--bg-primary)}
+.service-page--institutional .institutional-organizer>div:nth-child(2){margin-left:6%}
+.service-page--institutional .institutional-organizer>div:nth-child(3){margin-left:12%;margin-bottom:0;padding-bottom:0;border:0}
+.service-page--institutional .institutional-organizer>div:nth-child(2):before{left:calc(-31px - 6% / .94)}
+.service-page--institutional .institutional-organizer>div:nth-child(3):before{left:calc(-31px - 12% / .88)}
+.service-page--institutional .institutional-organizer dt{font-size:18px;font-weight:500;line-height:1.3;margin-bottom:12px;color:var(--silver)}
+.service-page--institutional .institutional-organizer dd{margin:0;font-size:14px;line-height:1.85;color:var(--text-secondary);max-width:460px}
+.service-page--institutional .institutional-fit .service-body-copy p strong{display:block;color:var(--silver);font-weight:500;margin-bottom:4px}
+.service-page--institutional .institutional-fit .service-body-copy p{font-size:14px;line-height:1.85;margin-bottom:23px}
+.service-page--institutional .institutional-value{padding-block:85px}
+.service-page--institutional .institutional-value h2{font-size:clamp(36px,4vw,54px);line-height:1.14;letter-spacing:-.045em;max-width:27ch}
+.service-page--institutional .institutional-value h2 em{font-style:normal;color:var(--champagne-light)}
+.service-page--institutional .institutional-value .institutional-value-copy{margin:30px 0 0 auto;padding-left:22px;border-left:1px solid var(--champagne-border);max-width:440px;font-size:15px;line-height:1.85;color:var(--text-secondary)}
+.service-page--institutional .institutional-social>.container{border-top:1px solid var(--border);padding-top:40px}
+.service-page--institutional .institutional-social h2{display:grid;grid-template-columns:1fr 1fr;gap:70px;font-size:clamp(28px,3vw,41px);line-height:1.3}
+.service-page--institutional .institutional-social h2>span{max-width:15ch}
+.service-page--institutional .institutional-social h2>span:last-child{color:var(--champagne-light);padding-left:32px;border-left:1px solid var(--border)}
+.service-page--institutional .institutional-social .institutional-social-copy{margin:29px 0 0 auto;max-width:490px;color:var(--text-secondary);font-size:15px;line-height:1.85}
+@media(max-width:1100px){
+ .service-page--institutional .institutional-heading{gap:40px;grid-template-columns:1.35fr 1fr}
+ .service-page--institutional .institutional-stage{gap:42px}
+ .service-page--institutional .institutional-stage-copy{padding-left:18px}
+ .service-page--institutional .institutional-organizes>.container{gap:45px}
+}
+@media(max-width:900px){
+ .service-page--institutional .institutional-hero{padding:104px 0 40px}
+ .service-page--institutional .institutional-heading{grid-template-columns:1fr;gap:21px}
+ .service-page--institutional h1{font-size:clamp(36px,5.4vw,46px);max-width:29ch}
+ .service-page--institutional .institutional-heading>p{max-width:550px}
+ .service-page--institutional .institutional-stage{grid-template-columns:1.3fr 1fr;gap:30px;margin-top:28px}
+ .service-page--institutional .institutional-sign{font-size:21px;margin-bottom:20px}
+ .service-page--institutional .institutional-stage-copy .btn{font-size:11px;padding-inline:13px;gap:10px}
+ .service-page--institutional .institutional-organizes>.container{grid-template-columns:.85fr 1.15fr;gap:35px}
+ .service-page--institutional .institutional-organizer dd{font-size:13px}
+ .service-page--institutional .institutional-value{padding-block:64px}
+ .service-page--institutional .institutional-value h2{font-size:39px}
+ .service-page--institutional .institutional-social h2{font-size:31px;gap:35px}
+}
+@media(max-width:600px){
+ .service-page--institutional .institutional-hero{padding:99px 0 30px}
+ .service-page--institutional .service-breadcrumb{margin-bottom:26px}
+ .service-page--institutional .institutional-hero>.container>.eyebrow{font-size:10px;margin-bottom:16px}
+ .service-page--institutional h1{font-size:clamp(33px,9.2vw,39px);line-height:1.14;max-width:25ch}
+ .service-page--institutional .institutional-heading{gap:20px}
+ .service-page--institutional .institutional-heading>p{font-size:15px;margin:0}
+ .service-page--institutional .institutional-stage{grid-template-columns:1fr;gap:30px;margin-top:24px}
+ .service-page--institutional .institutional-stage-copy{grid-column:auto;grid-row:auto;padding:0;border:0}
+ .service-page--institutional .institutional-sign{display:none}
+ .service-page--institutional .institutional-stage-copy .btn{font-size:12px;padding:14px 16px;gap:12px}
+ .service-page--institutional .institutional-stage-copy .service-return{margin-top:9px}
+ .service-page--institutional .institutional-visual{grid-column:auto;grid-row:auto;padding-right:8px}
+ .service-page--institutional .institutional-visual:before{inset:9px 0 32px 9px}
+ .service-page--institutional .institutional-visual figcaption{font-size:9px;gap:12px;margin-top:16px}
+ .service-page--institutional .institutional-route{inset:42% 0 -2%;width:100%;height:60%;opacity:.65}
+ .service-page--institutional .institutional-definition .container{padding-top:30px}
+ .service-page--institutional .institutional-organizes>.container{grid-template-columns:1fr;gap:28px}
+ .service-page--institutional .institutional-organizes h2{max-width:18ch}
+ .service-page--institutional .institutional-organizer{padding-left:22px}
+ .service-page--institutional .institutional-organizer>div:before{left:-25px}
+ .service-page--institutional .institutional-organizer>div:nth-child(2){margin-left:18px}
+ .service-page--institutional .institutional-organizer>div:nth-child(3){margin-left:36px}
+ .service-page--institutional .institutional-organizer>div:nth-child(2):before{left:-43px}
+ .service-page--institutional .institutional-organizer>div:nth-child(3):before{left:-61px}
+ .service-page--institutional .institutional-organizer dt{font-size:17px;margin-bottom:9px}
+ .service-page--institutional .institutional-organizer dd{font-size:14px}
+ .service-page--institutional .institutional-fit .service-body-copy p{font-size:15px;line-height:1.8}
+ .service-page--institutional .institutional-value{padding-block:54px}
+ .service-page--institutional .institutional-value h2{font-size:clamp(32px,8.6vw,38px);max-width:19ch}
+ .service-page--institutional .institutional-value .institutional-value-copy{margin-top:25px;padding-left:18px;font-size:14px;max-width:310px}
+ .service-page--institutional .institutional-social>.container{padding-top:30px}
+ .service-page--institutional .institutional-social h2{font-size:23px;grid-template-columns:1fr 1fr;gap:17px;letter-spacing:-.035em}
+ .service-page--institutional .institutional-social h2>span:last-child{padding-left:17px}
+ .service-page--institutional .institutional-social .institutional-social-copy{font-size:14px;margin-top:23px}
+}

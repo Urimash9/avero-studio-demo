@@ -3,7 +3,8 @@
   "buildCommand": null,
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/servicos/landing-pages", "destination": "/servicos/landing-pages/index.html" }
+    { "source": "/servicos/landing-pages", "destination": "/servicos/landing-pages/index.html" },
+    { "source": "/servicos/sites-institucionais", "destination": "/servicos/sites-institucionais/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
