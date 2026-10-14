@@ -88,10 +88,11 @@ em modo Home oficial, sem overrides de tema:
 - Revisão visual de hero, organização em camadas, valor, complementaridade e CTA;
   textos legíveis, sem colisões ou enquadramento cortado.
 - Identificado espaço insuficiente para o rótulo “Planejamento” a 1024px;
-  coluna local ampliada para 115px somente entre 901 e 1100px. Revalidação
-  do preview final deve confirmar que o rótulo cabe integralmente.
+  coluna local ampliada para 115px somente entre 901 e 1100px. Revalidado
+  no preview atualizado a 1024px: os três rótulos têm largura visual/scroll
+  de 115/115px; zero overflow e nenhum texto excedendo sua coluna.
 - Entrada pela seta da Home via Enter (1280px) e clique (390px), na mesma aba.
-- CTA final chega a `/#contato` e ao formulário existente; retorno chega
+- CTA principal e final chegam a `/#contato` e ao formulário existente; retorno chega
   a `/#servicos`. Sem formulário novo ou envio de dados de teste.
 - Menu mobile: abre, seis links corretos, Escape fecha e devolve o foco.
 - Tab entre CTA/retorno mostra outline visível de 2px.
