@@ -121,4 +121,19 @@ Casa Ocre é uma aplicação conceitual, não uma loja operante nesta página.
 - Mudam somente o SVG decorativo e suas regras `.commerce-current`.
   Asset, imagem, suporte recortado, posição, copy, CTA, fundo champagne,
   espaçamentos, jornada, demais seções e páginas aprovadas preservados.
-- QA desta correção será registrado após conferir o preview.
+- QA no preview READY: 390, 430, 768, 1024, 1280 e 1440px, zero overflow,
+  imagens carregadas e nenhum texto fora de sua caixa.
+- Altura da página, dimensões/tipografia do H1 e dimensões da imagem iguais
+  às medições da base em todas as seis larguras. Asset não modificado.
+- Desktop: SVG de 164/205/215 × 24px em 1024/1280/1440px, respectivamente;
+  caixa decorativa totalmente acima do asset, com intervalo mínimo de 20px.
+  Um path aberto, nenhum círculo. Revisão visual confirma ausência de contorno
+  envolvente ou competição com o conteúdo da Casa Ocre.
+- Mobile/tablet: `display: none` em 390, 430 e 768px; asset limpo e íntegro.
+- `node --check script.js` e `git diff --check` aprovados. HTTP local de
+  HTML/CSS/asset com 200. Console sem erro da aplicação; aviso da extensão
+  do navegador sobre metadata separado.
+- Comparação de fonte: fora do SVG `.commerce-current` e suas regras, HTML/CSS
+  integralmente idênticos à base. Home, páginas anteriores, estilos/scripts
+  comuns, configuração e assets permanecem iguais. Sem motion novo.
+- Limite: Chromium/iframe; sem Safari/iOS ou aparelhos físicos nesta correção.
