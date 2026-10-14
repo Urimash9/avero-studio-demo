@@ -14,9 +14,8 @@
 .service-page--commerce .commerce-visual img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;box-shadow:0 24px 65px rgb(var(--background-rgb)/.55)}
 .service-page--commerce .commerce-visual figcaption{display:flex;justify-content:space-between;gap:20px;margin-top:20px;font-size:10px;line-height:1.7;color:var(--text-secondary)}
 .service-page--commerce .commerce-visual figcaption strong{font-weight:500;color:var(--champagne-light)}
-.service-page--commerce .commerce-current{position:absolute;left:-7%;top:-9%;width:121%;height:119%;z-index:-2;pointer-events:none;overflow:visible}
+.service-page--commerce .commerce-current{position:absolute;left:14px;top:-32px;width:clamp(135px,16vw,215px);height:24px;z-index:-2;pointer-events:none}
 .service-page--commerce .commerce-current path{fill:none;stroke:url(#commerce-current-light);stroke-width:1;vector-effect:non-scaling-stroke}
-.service-page--commerce .commerce-current circle{fill:var(--champagne-light);opacity:.5}
 .service-page--commerce .commerce-contexts .commerce-context-heading{display:grid;grid-template-columns:1fr 1.2fr;gap:70px;align-items:end;margin-bottom:42px}
 .service-page--commerce .commerce-context-heading>p{color:var(--text-secondary);font-size:15px;line-height:1.8;max-width:450px;margin:0}
 .service-page--commerce .commerce-paths{position:relative;margin:0 0 0 10%;padding-left:34px;border-left:1px solid var(--champagne-border)}
@@ -62,6 +61,7 @@
  .service-page--commerce h1{font-size:clamp(39px,6.1vw,48px);max-width:23ch}
  .service-page--commerce .service-summary{max-width:570px}
  .service-page--commerce .commerce-visual{grid-column:auto;grid-row:auto;width:86%;max-width:620px;justify-self:end}
+ .service-page--commerce .commerce-current{display:none}
  .service-page--commerce .commerce-contexts .commerce-context-heading{gap:35px;grid-template-columns:1fr 1.2fr}
  .service-page--commerce .commerce-paths,.service-page--commerce .commerce-path-common{margin-left:0}
  .service-page--commerce .commerce-paths>div:first-child{margin-right:0}
@@ -81,7 +81,6 @@
  .service-page--commerce .commerce-visual{width:100%;padding:9px 0 0 9px}
  .service-page--commerce .commerce-visual:before{inset:0 9px 34px 0}
  .service-page--commerce .commerce-visual figcaption{margin-top:17px;font-size:9px;gap:15px}
- .service-page--commerce .commerce-current{left:-5%;top:-5%;width:112%;height:112%}
  .service-page--commerce .commerce-contexts .commerce-context-heading{grid-template-columns:1fr;gap:22px;margin-bottom:29px}
  .service-page--commerce .commerce-context-heading>p{font-size:14px}
  .service-page--commerce .commerce-paths{padding-left:23px}

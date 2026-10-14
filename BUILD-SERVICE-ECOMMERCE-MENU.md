@@ -107,3 +107,18 @@ Hero, contextos, valor, jornada e encerramento inspecionados em desktop/mobile.
 
 Limite do ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
 Casa Ocre é uma aplicação conceitual, não uma loja operante nesta página.
+
+## Correção cirúrgica — gesto gráfico junto à Casa Ocre
+
+- Base: `72420982faf917b38fead5a0f766e487bc2295fe`, mesma branch.
+- A antiga curva envolvente e seu ponto decorativo foram substituídos por
+  um único arco curto e aberto, acima do canto superior esquerdo do visual.
+- SVG local de 260 × 44, largura de 135–215px e altura de 24px; posição
+  absoluta acima da figura, sem interferir no fluxo ou nas dimensões da imagem.
+- Gradiente prata/champagne com extremos transparentes e opacidade máxima .22.
+  Sem trecho inferior, círculo, moldura curva ou animação nova.
+- Até 900px, o SVG não é exibido: mobile e tablet empilhado ficam sem essa linha.
+- Mudam somente o SVG decorativo e suas regras `.commerce-current`.
+  Asset, imagem, suporte recortado, posição, copy, CTA, fundo champagne,
+  espaçamentos, jornada, demais seções e páginas aprovadas preservados.
+- QA desta correção será registrado após conferir o preview.
