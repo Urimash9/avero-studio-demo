@@ -34,8 +34,26 @@ O stylesheet anterior permanece integralmente preservado antes do bloco novo.
 
 ## QA
 
-Referência anterior registrada em 320, 360, 390, 430, 768, 900, 1024,
-1280 e 1440px. QA do tratamento será registrado após conferir o preview.
-Checks: `node --check script.js` e `git diff --check`.
+Referência anterior e preview READY comparados em **320, 360, 390, 430, 768,
+900, 1024, 1280 e 1440px**:
+- Zero overflow horizontal, quatro imagens carregadas em todas as larguras.
+- Altura/posição da seção idênticas à base.
+- Medidas/posições de cards, microheadlines, títulos e imagens idênticas à base.
+- Tipografia (tamanho, peso, line-height e tracking) e opacidade dos cards iguais.
+- Pseudofundo computado pelo navegador, com bordas transparentes, sem filter
+  ou backdrop-filter. Cor champagne claro e sombra local nas quatro frases.
+- Revisão visual de cada frase no mobile e da composição orbital desktop:
+  leitura mais clara, sem box duro, interferência em títulos/CTAs ou mudança
+  nos recortes/fragmentação.
+- Avanço orbital por Enter funcional; slots, nome acessível do botão e
+  indicação de destaque atualizados corretamente.
+- CTA SEO abriu a rota interna na mesma aba. Zero seletores do tratamento
+  na página interna, altura mobile igual à base (6041px) e zero overflow.
+- Console sem erro da aplicação observado; avisos de metadata da extensão
+  do navegador separados de erros do site.
+- `node --check script.js` e `git diff --check` aprovados.
+- Comparação de fonte confirmou preservação integral do CSS anterior,
+  HTML/JS, assets, configuração e quatro páginas internas.
+
 Sem motion novo; suporte existente a reduced motion preservado.
 Ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
