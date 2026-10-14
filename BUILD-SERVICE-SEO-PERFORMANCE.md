@@ -64,10 +64,61 @@ efeitos, espaçamentos e responsividade idênticos à base.
 
 ## Validação e limitações
 
-QA previsto no preview em 390, 430, 768, 1024, 1280 e 1440px e revisão das
-quatro rotas. Evidência será registrada após a inspeção.
-Checks: `node --check script.js`, `node --check servicos/service-pages.js`
-e `git diff --check`.
+Checks locais aprovados:
+- `node --check script.js`, `node --check servicos/service-pages.js`
+  e `git diff --check`.
+- Um H1, oito H2, IDs únicos, alt text, recursos e âncoras válidos;
+  nenhum formulário novo. Header/footer idênticos nas quatro páginas.
+- Home idêntica à base salvo os dois atributos do CTA SEO.
+- HTML/CSS das três páginas anteriores, CSS/JS comuns e todos os assets
+  byte a byte iguais à base. Rotas/configuração anteriores preservadas.
+- HTTP local: Home, CSS/JS, Atlas Rank e os quatro HTMLs de Serviço com
+  200 completos. Projeto sem etapa de build.
 
-Reduced motion herdado do sistema aprovado; todos os novos elementos estáticos.
-Ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
+QA executado no preview READY em Chromium, com o iframe de revisão existente
+em modo Home oficial, sem overrides de tema:
+
+| Largura | Overflow horizontal | Atlas Rank inteiro |
+| --- | --- | --- |
+| 390px | 0px | 321 × 241px |
+| 430px | 0px | 361 × 271px |
+| 768px | 0px | 572 × 429px |
+| 1024px | 0px | 483 × 363px |
+| 1280px | 0px | 560 × 420px |
+| 1440px | 0px | 560 × 420px |
+
+Dimensões arredondadas. Imagem carregada em 1536 × 1152, `object-fit: contain`
+e transformação `none`. Nenhum título, copy, rótulo, passo ou botão excede sua caixa.
+Hero, pilares, entrega, valor, fluxo técnico, transparência e CTA inspecionados
+em mobile/desktop. Contraste e cores computadas preservam os tokens oficiais B.
+
+- Entrada pelo CTA da Home via Enter em 1280px e clique em 390px, mesma aba.
+- CTA principal/final chegam a `/#contato`, com o formulário existente;
+  retorno chega a `/#servicos`. Nenhuma mensagem ou dado de teste enviado.
+- Menu abre com seis links; Escape fecha e devolve foco. Tab entre CTA/retorno
+  mostra outline visível de 2px.
+- Home em 390px mantém as posições/alturas aprovadas de todas as oito seções.
+- Console sem erros da aplicação observados; mensagens de metadata da extensão
+  do navegador separadas de erros do site.
+- Zero animações no CSS computado do conteúdo. Reduced motion herdado do
+  sistema aprovado; preferência do sistema operacional não emulada.
+
+## QA entre as quatro páginas
+
+Todas abertas pelos respectivos CTAs da Home, no mesmo preview, e revisadas
+em 390 e 1280px: títulos/assets corretos, header/footer presentes, mesma
+navegação e zero overflow. Brand do header com largura 155/185px, respectivamente.
+
+| Rota | Asset | CSS de SEO nas páginas anteriores |
+| --- | --- | --- |
+| `/servicos/landing-pages` | Método Prisma | Ausente |
+| `/servicos/sites-institucionais` | Lunara Interiores | Ausente |
+| `/servicos/ecommerce-cardapios` | Casa Ocre | Ausente |
+| `/servicos/seo-performance` | Atlas Rank | Exclusivo desta rota |
+
+Alturas das três páginas anteriores iguais às medições aprovadas. Arco aberto
+da Casa Ocre preservado, sem retorno da elipse. Quatro links da Home sem `target`,
+rotas sem extensão atendidas e retorno aos Serviços funcional.
+
+Limite do ambiente: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
+Atlas Rank contém dados ilustrativos do asset aprovado, não resultados medidos.
