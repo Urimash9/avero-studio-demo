@@ -72,8 +72,35 @@ Link de Landing Pages e todos os outros cards permanecem iguais.
 
 ## QA e limitações
 
-Breakpoints previstos: 390, 430, 768, 1024, 1280 e 1440px.
-QA de navegador será registrado após a inspeção do preview.
-Reduced motion herdado do sistema aprovado; todos os novos elementos são estáticos.
-Ambiente de homologação: Chromium/iframe, sem Safari/iOS ou aparelhos físicos.
+QA executado no preview Vercel em Chromium, usando o iframe de revisão existente
+em modo Home oficial, sem overrides de tema:
+
+| Largura | Overflow horizontal | Lunara inteira, sem deformação |
+| --- | --- | --- |
+| 390px | 0px | 327 × 245px |
+| 430px | 0px | 367 × 275px |
+| 768px | 0px | 351 × 263px |
+| 1024px | 0px | 505 × 379px |
+| 1280px | 0px | 592 × 444px |
+| 1440px | 0px | 592 × 444px |
+
+- Asset carregado em 1536 × 1152, `object-fit: contain`, transformação `none`.
+- Revisão visual de hero, organização em camadas, valor, complementaridade e CTA;
+  textos legíveis, sem colisões ou enquadramento cortado.
+- Identificado espaço insuficiente para o rótulo “Planejamento” a 1024px;
+  coluna local ampliada para 115px somente entre 901 e 1100px. Revalidação
+  do preview final deve confirmar que o rótulo cabe integralmente.
+- Entrada pela seta da Home via Enter (1280px) e clique (390px), na mesma aba.
+- CTA final chega a `/#contato` e ao formulário existente; retorno chega
+  a `/#servicos`. Sem formulário novo ou envio de dados de teste.
+- Menu mobile: abre, seis links corretos, Escape fecha e devolve o foco.
+- Tab entre CTA/retorno mostra outline visível de 2px.
+- Home em 390px conserva a geometria aprovada de todas as seções.
+- Console revisado: nenhum erro da aplicação; somente mensagens da extensão
+  do ambiente de navegador sobre envio de metadados.
+- Os três campos champagne são herdados da piloto, mais leves no mobile.
+- Reduced motion herdado do sistema aprovado; todos os novos elementos são
+  estáticos e a leitura do CSS computado confirmou zero animações no conteúdo.
+  Preferência do sistema operacional não emulada neste ambiente.
+- Sem Safari/iOS ou aparelhos físicos; homologação responsiva em Chromium.
 
