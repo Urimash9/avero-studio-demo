@@ -1,0 +1,96 @@
+/* SEO & Performance only: precise structure on the approved AVERO service system. */
+.service-page--seo .seo-hero{position:relative;padding:110px 0 46px}
+.service-page--seo .service-breadcrumb{margin-bottom:29px}
+.service-page--seo .seo-hero>.container>.eyebrow{color:var(--champagne-light);font-size:11px;margin-bottom:20px}
+.service-page--seo h1{font-size:clamp(38px,3.7vw,53px);line-height:1.12;letter-spacing:-.045em;max-width:36ch;margin:0}
+.service-page--seo h1 em{color:var(--champagne-light)}
+.service-page--seo .seo-hero-stage{display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;align-items:center;margin-top:31px}
+.service-page--seo .service-summary{font-size:15px;max-width:370px}
+.service-page--seo .service-hero-actions{margin-top:28px;gap:12px}
+.service-page--seo .service-hero-actions .btn{font-size:12px;max-width:100%;padding-inline:17px;text-align:left}
+.service-page--seo .seo-visual{position:relative;width:100%;max-width:560px;justify-self:end;margin:0;min-width:0}
+.service-page--seo .seo-visual:before,.service-page--seo .seo-visual:after{content:"";position:absolute;width:34px;height:34px;pointer-events:none;opacity:.5}
+.service-page--seo .seo-visual:before{top:-12px;right:-12px;border-top:1px solid var(--border);border-right:1px solid var(--border)}
+.service-page--seo .seo-visual:after{left:-12px;bottom:42px;border-left:1px solid var(--champagne-border);border-bottom:1px solid var(--champagne-border)}
+.service-page--seo .seo-visual img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;box-shadow:0 22px 60px rgb(var(--background-rgb)/.5)}
+.service-page--seo .seo-visual figcaption{display:flex;justify-content:space-between;gap:18px;margin-top:20px;color:var(--text-secondary);font-size:10px;line-height:1.7}
+.service-page--seo .seo-visual figcaption strong{font-weight:500;color:var(--champagne-light)}
+.service-page--seo .seo-pillar-pair{display:grid;grid-template-columns:1fr 1fr;gap:100px;margin:36px 0 0;padding-top:36px;border-top:1px solid var(--champagne-border)}
+.service-page--seo .seo-pillar-pair>div{position:relative}
+.service-page--seo .seo-pillar-pair>div:before{content:"";position:absolute;top:-36px;left:0;width:1px;height:22px;background:var(--champagne-border)}
+.service-page--seo .seo-pillar-pair>div:last-child{padding-top:44px}
+.service-page--seo .seo-pillar-pair>div:last-child:before{height:66px}
+.service-page--seo .seo-pillar-pair dt{font-size:21px;line-height:1.4;font-weight:500;color:var(--silver);margin-bottom:16px}
+.service-page--seo .seo-pillar-pair dd{margin:0;color:var(--text-secondary);font-size:15px;line-height:1.85;max-width:465px}
+.service-page--seo .seo-pillar-pair dd strong{display:block;color:var(--champagne-light);font-weight:400;font-size:14px;line-height:1.8;margin-bottom:11px}
+.service-page--seo .seo-context .service-body-copy p{font-size:15px;line-height:1.85;margin-bottom:23px}
+.service-page--seo .seo-context .service-body-copy p:last-child{margin-bottom:0}
+.service-page--seo .seo-context .service-body-copy>.eyebrow{color:var(--champagne-light);font-size:10px;margin-bottom:18px}
+.service-page--seo .seo-context .service-body-copy strong{display:block;color:var(--silver);font-weight:500;margin-bottom:4px}
+.service-page--seo .seo-value{padding-block:82px}
+.service-page--seo .seo-value>.container{display:grid;grid-template-columns:.85fr 1.3fr;gap:80px;align-items:end;border-top:1px solid var(--border);padding-top:42px}
+.service-page--seo .seo-value h2{grid-column:2;grid-row:1;font-size:clamp(36px,4vw,54px);line-height:1.15;letter-spacing:-.045em;max-width:20ch}
+.service-page--seo .seo-value h2 em{font-style:normal;color:var(--champagne-light)}
+.service-page--seo .seo-value p{grid-column:1;grid-row:1;color:var(--text-secondary);font-size:15px;line-height:1.85;margin:0;max-width:360px}
+.service-page--seo .seo-flow{margin-top:35px;position:relative}
+.service-page--seo .seo-flow ol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px;list-style:none;margin:0;padding:0}
+.service-page--seo .seo-flow:before{content:"";position:absolute;top:4px;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--border),var(--champagne-border) 75%,transparent)}
+.service-page--seo .seo-flow li{position:relative;padding-top:27px;min-width:0}
+.service-page--seo .seo-flow li:before{content:"";position:absolute;top:1px;left:0;width:7px;height:7px;border:1px solid var(--champagne-light);border-radius:50%;background:var(--bg-primary)}
+.service-page--seo .seo-flow h3{font-size:11px;line-height:1.6;letter-spacing:.1em;color:var(--silver);font-weight:500;margin:0 0 10px}
+.service-page--seo .seo-flow p{font-size:13px;line-height:1.8;color:var(--text-secondary);max-width:22ch;margin:0}
+.service-page--seo .seo-transparency h2{font-size:clamp(28px,2.7vw,38px);max-width:24ch}
+.service-page--seo .seo-transparency .service-body-copy p{font-size:15px}
+@media(max-width:1100px){
+ .service-page--seo .seo-hero-stage{gap:42px;grid-template-columns:.9fr 1.1fr}
+ .service-page--seo .seo-pillar-pair{gap:65px}
+ .service-page--seo .seo-value>.container{gap:45px}
+ .service-page--seo .seo-flow ol{gap:20px}
+ .service-page--seo .seo-flow h3{letter-spacing:.06em}
+}
+@media(max-width:900px){
+ .service-page--seo .seo-hero{padding:104px 0 40px}
+ .service-page--seo h1{font-size:clamp(36px,5.3vw,46px);max-width:32ch}
+ .service-page--seo .seo-hero-stage{grid-template-columns:1fr;gap:30px;margin-top:26px}
+ .service-page--seo .service-summary{max-width:560px}
+ .service-page--seo .seo-visual{width:86%;max-width:580px;margin-right:12px}
+ .service-page--seo .seo-pillar-pair{gap:45px}
+ .service-page--seo .seo-pillar-pair dd{font-size:14px}
+ .service-page--seo .seo-value{padding-block:64px}
+ .service-page--seo .seo-value>.container{gap:35px;grid-template-columns:1fr 1.3fr;padding-top:32px}
+ .service-page--seo .seo-value h2{font-size:37px}
+ .service-page--seo .seo-value p{font-size:14px}
+ .service-page--seo .seo-flow ol{gap:18px}
+ .service-page--seo .seo-flow h3{font-size:10px;letter-spacing:.03em}
+ .service-page--seo .seo-flow p{font-size:12px}
+}
+@media(max-width:600px){
+ .service-page--seo .seo-hero{padding:99px 0 32px}
+ .service-page--seo .seo-hero>.container>.eyebrow{font-size:10px;margin-bottom:18px}
+ .service-page--seo h1{font-size:clamp(33px,8.8vw,39px);line-height:1.14;max-width:25ch}
+ .service-page--seo .seo-hero-stage{gap:29px;margin-top:23px}
+ .service-page--seo .service-hero-actions{margin-top:24px;gap:8px}
+ .service-page--seo .service-hero-actions .btn{padding:14px 16px;font-size:11px;gap:12px}
+ .service-page--seo .seo-visual{width:calc(100% - 14px);margin-right:7px}
+ .service-page--seo .seo-visual:before{top:-7px;right:-7px;width:23px;height:23px}
+ .service-page--seo .seo-visual:after{left:-7px;bottom:38px;width:23px;height:23px}
+ .service-page--seo .seo-visual figcaption{font-size:9px;gap:13px;margin-top:17px}
+ .service-page--seo .seo-visual figcaption span{max-width:22ch;text-align:right}
+ .service-page--seo .seo-pillar-pair{grid-template-columns:1fr;gap:29px;padding:0 0 0 23px;border-top:0;border-left:1px solid var(--champagne-border);margin-top:29px}
+ .service-page--seo .seo-pillar-pair>div:last-child{padding-top:0}
+ .service-page--seo .seo-pillar-pair>div:before,.service-page--seo .seo-pillar-pair>div:last-child:before{left:-23px;top:12px;width:13px;height:1px}
+ .service-page--seo .seo-pillar-pair dt{font-size:19px;margin-bottom:12px}
+ .service-page--seo .seo-pillar-pair dd strong{font-size:13px}
+ .service-page--seo .seo-value{padding-block:52px}
+ .service-page--seo .seo-value>.container{grid-template-columns:1fr;gap:25px;padding-top:30px}
+ .service-page--seo .seo-value h2{grid-column:auto;grid-row:auto;font-size:clamp(32px,8.6vw,38px)}
+ .service-page--seo .seo-value p{grid-column:auto;grid-row:auto;max-width:320px}
+ .service-page--seo .seo-flow{margin-top:28px;padding-left:5px}
+ .service-page--seo .seo-flow:before{top:4px;bottom:0;left:5px;right:auto;width:1px;height:auto;background:linear-gradient(var(--champagne-border),var(--border))}
+ .service-page--seo .seo-flow ol{grid-template-columns:1fr;gap:25px}
+ .service-page--seo .seo-flow li{padding:0 0 0 25px}
+ .service-page--seo .seo-flow li:before{left:-3px;top:5px}
+ .service-page--seo .seo-flow h3{font-size:11px;letter-spacing:.08em;margin-bottom:7px}
+ .service-page--seo .seo-flow p{font-size:14px;max-width:29ch}
+ .service-page--seo .seo-transparency h2{font-size:28px;max-width:22ch}
+}

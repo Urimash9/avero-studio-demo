@@ -5,7 +5,8 @@
   "rewrites": [
     { "source": "/servicos/landing-pages", "destination": "/servicos/landing-pages/index.html" },
     { "source": "/servicos/sites-institucionais", "destination": "/servicos/sites-institucionais/index.html" },
-    { "source": "/servicos/ecommerce-cardapios", "destination": "/servicos/ecommerce-cardapios/index.html" }
+    { "source": "/servicos/ecommerce-cardapios", "destination": "/servicos/ecommerce-cardapios/index.html" },
+    { "source": "/servicos/seo-performance", "destination": "/servicos/seo-performance/index.html" }
   ],
   "headers": [
     { "source": "/(.*)", "headers": [
