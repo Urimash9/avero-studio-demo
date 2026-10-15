@@ -11,7 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="assets/avero-eye.png" type="image/png">
-  <link rel="preload" as="image" href="assets/avero-eye-isolated-v1.webp">
+  <link rel="preload" as="image" href="assets/avero-eye-isolated-v1.webp" media="(max-width:900px)">
+  <link rel="preload" as="image" href="assets/hero-eye-frame-official.png" media="(min-width:901px)">
+  <link rel="preload" as="image" href="assets/hero-eye-iris-official.png" media="(min-width:901px)">
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -28,7 +30,7 @@
 </header>
 <main id="main" tabindex="-1">
   <section class="hero" aria-labelledby="hero-title">
-    <!-- Official mobile symbol: the complete image remains the static fallback. -->
+    <!-- Desktop uses the supplied frame and iris; the approved mobile symbol stays static. -->
     <div class="hero-art" aria-hidden="true" data-hero-layer="base">
       <span class="hero-nebula-layer" data-hero-layer="atmosphere"></span>
       <span class="hero-eye-layer" data-hero-layer="official-eye">

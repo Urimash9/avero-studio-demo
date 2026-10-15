@@ -1176,6 +1176,14 @@ html.avero-palette-b #servicos .service-kicker small:before{
  .hero-eye-structure{z-index:2;mask-image:var(--hero-eye-frame)}
  .hero-eye-iris{transform:translate3d(0,0,0)}
 }
+/* The supplied cut layers replace the raster window only on desktop.
+   This stationary aperture follows the frame opening; only its iris child moves. */
+@media(min-width:901px){
+ .hero .hero-nebula-layer{background-image:url('assets/hero-nebula-official.png')}
+ .hero .hero-eye-structure{background-image:url('assets/hero-eye-frame-official.png');mask-image:none}
+ .hero .hero-eye-iris-window{mask-image:url('assets/hero-eye-aperture-mask.svg');mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat}
+ .hero .hero-eye-iris{inset:auto;left:30.9%;top:11.5%;width:44%;aspect-ratio:1;background-image:url('assets/hero-eye-iris-official.png')}
+}
 @media(min-width:901px) and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
  .hero.has-eye-motion .hero-eye-iris{display:block;transform:translate3d(var(--hero-look-x,0px),var(--hero-look-y,0px),0);will-change:transform}
 }
