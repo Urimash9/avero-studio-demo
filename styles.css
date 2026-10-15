@@ -1179,7 +1179,7 @@ html.avero-palette-b #servicos .service-kicker small:before{
 /* The supplied cut layers replace the raster window only on desktop.
    This stationary aperture follows the frame opening; only its iris child moves. */
 @media(min-width:901px){
- .hero .hero-nebula-layer{inset:-40% -28% -32% -14%;background-image:url('assets/hero-nebula-official.png');background-position:65% 58%;opacity:.46;mask-image:radial-gradient(ellipse 68% 61% at 60% 44%,#000 12%,rgb(0 0 0/.9) 38%,rgb(0 0 0/.45) 66%,transparent 100%)}
+ .hero .hero-nebula-layer{inset:-38% -36% -45% -18%;background-image:url('assets/hero-nebula-official.png');background-position:65% 60%;opacity:.50;mask-image:radial-gradient(ellipse 60% 56% at 63% 46%,#000 10%,rgb(0 0 0/.88) 35%,rgb(0 0 0/.38) 64%,transparent 100%)}
  .hero .hero-eye-structure{background-image:url('assets/hero-eye-frame-official.png');mask-image:none}
  .hero .hero-eye-iris-window{mask-image:url('assets/hero-eye-aperture-mask.svg');mask-size:100% 100%;mask-position:center;mask-repeat:no-repeat}
  .hero .hero-eye-iris{inset:auto;left:30.9%;top:11.5%;width:44%;aspect-ratio:1;background-image:url('assets/hero-eye-iris-official.png')}
@@ -1189,4 +1189,16 @@ html.avero-palette-b #servicos .service-kicker small:before{
 }
 @media(prefers-reduced-motion:reduce){
  .hero .hero-eye-iris{transform:translate3d(0,0,0);will-change:auto}
+}
+
+/* Desktop finishing only: the approved layout and mobile remain unchanged. */
+@media(min-width:901px){
+ /* Keep the same high-resolution wordmark and exact box; improve downsampling contrast. */
+ body:not(.service-page) .site-header .brand-art img{image-rendering:-webkit-optimize-contrast;filter:contrast(1.08)}
+ /* Use the existing empty space below the Hero content; no new flow height. */
+ html.avero-palette-b .hero .hero-signature{top:calc(100% - 12px);bottom:auto;left:0;right:0;margin:0;padding:0;border:0;display:flex;align-items:center;justify-content:center;gap:18px;font-size:12px;line-height:2;letter-spacing:.16em;color:var(--champagne-light);text-align:center}
+ .hero .hero-signature br{display:none}
+ .hero .hero-signature span+br+span:before{content:"";display:inline-block;width:3px;height:3px;margin-right:18px;vertical-align:middle;border-radius:50%;background:currentColor;opacity:.6}
+ /* Broad, static pools of silver/champagne fade to zero before the section boundary. */
+ .hero .hero-art:after{content:"";position:absolute;inset:56% 0 0;pointer-events:none;background:radial-gradient(ellipse 40% 45% at 64% 54%,rgb(186 195 205/.065),transparent 100%),radial-gradient(ellipse 35% 42% at 39% 66%,rgb(194 170 138/.045),transparent 100%)}
 }

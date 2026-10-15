@@ -880,8 +880,8 @@ syncServiceOrbit();
     focus = {
       x: shape.left + shape.width * .538,
       y: shape.top + shape.height * .565,
-      radiusX: Math.max(1, shape.width * .42),
-      radiusY: Math.max(1, shape.height * .7),
+      radiusX: Math.max(1, shape.width * .30),
+      radiusY: Math.max(1, shape.height * .52),
       maxX: Math.min(13, shape.width * .013),
       maxY: Math.min(8, shape.height * .018)
     };
