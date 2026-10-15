@@ -861,93 +861,109 @@ reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) sett
 window.addEventListener('resize', settleServiceOrbit, { passive: true });
 syncServiceOrbit();
 
-// Hero only — bounded, frame-rate-independent observation of the cursor.
-// The fixed official structure always remains visible; enhancement moves only the clipped iris.
+// Hero only — real mouse input moves the iris inside the fixed official frame.
 (function initHeroEye() {
   const hero = document.querySelector('.hero');
-  const art = hero?.querySelector('.hero-art');
-  if (!art || !hero.querySelector('.hero-eye-iris')) return;
-  const desktop = matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
+  const iris = hero?.querySelector('.hero-eye-iris');
+  const eye = hero?.querySelector('.hero-eye-layer');
+  if (!iris || !eye) return;
+  // Input is checked per event: a secondary mouse also works on hybrid computers.
+  const desktop = matchMedia('(min-width: 901px)');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
-  let enabled = false, visible = true, inside = false, bounds, boundsDirty = true;
-  let frame = 0, lastTime = 0, idleTime = 0, idleWeight = 1;
+  let enabled = false, visible = true, inside = false, bounds, focus, boundsDirty = true;
+  let frame = 0, lastTime = 0;
   let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
-  const clamp = (value, limit = 1) => Math.max(-limit, Math.min(limit, value));
 
   function measure() {
     bounds = hero.getBoundingClientRect();
+    const shape = eye.getBoundingClientRect();
+    focus = {
+      x: shape.left + shape.width * .538,
+      y: shape.top + shape.height * .565,
+      radiusX: Math.max(1, shape.width * .42),
+      radiusY: Math.max(1, shape.height * .7),
+      maxX: Math.min(13, shape.width * .013),
+      maxY: Math.min(8, shape.height * .018)
+    };
     boundsDirty = false;
-  }
-  function center() {
-    inside = false;
-    targetX = targetY = 0;
   }
   function stop(reset = false) {
     cancelAnimationFrame(frame);
     frame = lastTime = 0;
     if (reset) {
-      center();
-      currentX = currentY = idleTime = 0;
-      idleWeight = 1;
-      art.style.removeProperty('--hero-look-x');
-      art.style.removeProperty('--hero-look-y');
+      inside = false;
+      targetX = targetY = currentX = currentY = 0;
+      iris.style.removeProperty('--hero-look-x');
+      iris.style.removeProperty('--hero-look-y');
+      hero.classList.toggle('has-eye-motion', false);
     }
   }
   function tick(time) {
     frame = 0;
     if (!enabled || !visible || document.hidden) return;
-    const delta = lastTime ? Math.min(32, time - lastTime) : 16;
+    const delta = lastTime ? Math.min(50, time - lastTime) : 16;
     lastTime = time;
-    // 175ms time constant: gentle lag, no overshoot, independent of screen refresh rate.
-    const ease = 1 - Math.exp(-delta / 175);
+    // 165ms exponential response: continuous velocity, no bounce or overshoot.
+    const ease = 1 - Math.exp(-delta / 165);
     currentX += (targetX - currentX) * ease;
     currentY += (targetY - currentY) * ease;
-    idleWeight += ((inside ? .25 : 1) - idleWeight) * ease;
-    idleTime += delta / 1000;
-    const phase = idleTime * Math.PI * 2 / 14;
-    const x = clamp(currentX * 9 + Math.sin(phase) * .45 * idleWeight, 10);
-    const y = clamp(currentY * 6 + Math.sin(phase * .83) * .3 * idleWeight, 7);
-    // Variables live only on the decorative subtree, not on text or the whole page.
-    art.style.setProperty('--hero-look-x', `${x.toFixed(3)}px`);
-    art.style.setProperty('--hero-look-y', `${y.toFixed(3)}px`);
-    frame = requestAnimationFrame(tick);
+    iris.style.setProperty('--hero-look-x', `${currentX.toFixed(3)}px`);
+    iris.style.setProperty('--hero-look-y', `${currentY.toFixed(3)}px`);
+    if (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) > .015) {
+      frame = requestAnimationFrame(tick);
+    } else if (!inside) {
+      stop(true);
+    } else {
+      lastTime = 0;
+    }
   }
   function start() {
     if (enabled && visible && !document.hidden && !frame) frame = requestAnimationFrame(tick);
   }
+  function center() {
+    const needsReturn = inside || currentX !== 0 || currentY !== 0;
+    inside = false;
+    targetX = targetY = 0;
+    if (needsReturn) start();
+  }
   function configure() {
     enabled = desktop.matches && !reduce.matches;
-    hero.classList.toggle('has-eye-motion', enabled);
     boundsDirty = true;
-    center();
-    if (enabled) start(); else stop(true);
+    if (enabled) center(); else stop(true);
   }
   function observe(event) {
-    if (!enabled || !visible || event.pointerType === 'touch') return;
+    if (!enabled || !visible || document.hidden || event.pointerType !== 'mouse') return;
     if (boundsDirty) measure();
     if (!bounds.width || !bounds.height) return;
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) {
+      center();
+      return;
+    }
+    let x = (event.clientX - focus.x) / focus.radiusX;
+    let y = (event.clientY - focus.y) / focus.radiusY;
+    const radius = Math.max(1, Math.hypot(x, y));
+    targetX = x / radius * focus.maxX;
+    targetY = y / radius * focus.maxY;
     inside = true;
-    targetX = clamp((event.clientX - bounds.left) / bounds.width * 2 - 1);
-    targetY = clamp((event.clientY - bounds.top) / bounds.height * 2 - 1);
+    hero.classList.toggle('has-eye-motion', true);
     start();
   }
-  hero.addEventListener('pointerenter', event => { boundsDirty = true; observe(event); }, { passive: true });
-  hero.addEventListener('pointermove', observe, { passive: true });
-  hero.addEventListener('pointerleave', center, { passive: true });
-  hero.addEventListener('pointercancel', center, { passive: true });
+  // Capture includes mouse movement over the header or controls inside the Hero bounds.
+  window.addEventListener('pointermove', observe, { passive: true, capture: true });
+  window.addEventListener('pointerout', event => { if (!event.relatedTarget) center(); }, { passive: true });
+  window.addEventListener('pointercancel', center, { passive: true });
   window.addEventListener('blur', center);
   window.addEventListener('scroll', () => { boundsDirty = true; }, { passive: true });
   window.addEventListener('resize', configure, { passive: true });
-  document.addEventListener('visibilitychange', () => {
-    center();
-    if (document.hidden) stop(); else start();
-  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(true); });
   desktop.addEventListener('change', configure);
   reduce.addEventListener('change', configure);
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
-      if (visible) { boundsDirty = true; start(); } else { center(); stop(); }
+      boundsDirty = true;
+      if (!visible) stop(true);
     }).observe(hero);
   }
   configure();
