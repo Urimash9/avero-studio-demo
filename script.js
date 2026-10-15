@@ -862,7 +862,7 @@ window.addEventListener('resize', settleServiceOrbit, { passive: true });
 syncServiceOrbit();
 
 // Hero only — bounded, frame-rate-independent observation of the cursor.
-// The full official image is always present; enhancement never owns the fallback.
+// The fixed official structure always remains visible; enhancement moves only the clipped iris.
 (function initHeroEye() {
   const hero = document.querySelector('.hero');
   const art = hero?.querySelector('.hero-art');
@@ -905,8 +905,8 @@ syncServiceOrbit();
     idleWeight += ((inside ? .25 : 1) - idleWeight) * ease;
     idleTime += delta / 1000;
     const phase = idleTime * Math.PI * 2 / 14;
-    const x = clamp(currentX * 11 + Math.sin(phase) * .75 * idleWeight, 12);
-    const y = clamp(currentY * 9 + Math.sin(phase * .83) * .55 * idleWeight, 10);
+    const x = clamp(currentX * 9 + Math.sin(phase) * .45 * idleWeight, 10);
+    const y = clamp(currentY * 6 + Math.sin(phase * .83) * .3 * idleWeight, 7);
     // Variables live only on the decorative subtree, not on text or the whole page.
     art.style.setProperty('--hero-look-x', `${x.toFixed(3)}px`);
     art.style.setProperty('--hero-look-y', `${y.toFixed(3)}px`);
