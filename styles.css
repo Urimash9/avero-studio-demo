@@ -1164,3 +1164,24 @@ html.avero-palette-b #servicos .service-kicker small:before{
  content:"";position:absolute;inset:-10px -24px;z-index:-1;pointer-events:none;
  background:radial-gradient(ellipse closest-side,rgb(var(--background-rgb)/.88) 0%,rgb(var(--background-rgb)/.82) 65%,rgb(var(--background-rgb)/.7) 84%,transparent 100%)
 }
+
+/* Hero eye prototype — the exact lossless mobile assets; no content geometry changes. */
+@media(min-width:701px){
+ html.avero-palette-b .hero-art{background:none;pointer-events:none}
+ .hero .hero-nebula-layer{position:absolute;inset:-12% -10% -8% 10%;background:url('assets/avero-nebula-continuous-v1.webp') center 55%/cover no-repeat;opacity:.28;filter:var(--nebula-treatment);mask-image:radial-gradient(ellipse 58% 52% at 68% 48%,#000 20%,#000 42%,transparent 100%);pointer-events:none}
+ .hero .hero-eye-layer{top:46%;bottom:auto;aspect-ratio:2/1;background:none;mask-image:none;transform:translateY(-50%);pointer-events:none}
+ .hero-eye-structure,.hero-eye-iris{position:absolute;inset:0;background:url('assets/avero-eye-isolated-v1.webp') center/contain no-repeat;pointer-events:none}
+ /* A feathered window over the original pixels: no painted socket or replacement pupil.
+    The intact image below prevents holes and makes the centered composition identical. */
+ .hero-eye-iris{display:none;mask-image:radial-gradient(ellipse 18% 35% at 52% 56.5%,#000 72%,transparent 100%)}
+}
+@media(min-width:901px) and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+ .hero.has-eye-motion .hero-eye-layer{transform:translate3d(calc(var(--hero-look-x,0px)*.15),calc(var(--hero-look-y,0px)*.15),0) translateY(-50%);will-change:transform}
+ .hero.has-eye-motion .hero-eye-iris{display:block;transform:translate3d(var(--hero-look-x,0px),var(--hero-look-y,0px),0);will-change:transform}
+ .hero.has-eye-motion .hero-nebula-layer{transform:translate3d(calc(var(--hero-look-x,0px)*.045),calc(var(--hero-look-y,0px)*.045),0);will-change:transform}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero .hero-eye-iris{display:none}
+ .hero .hero-eye-layer{transform:translateY(-50%)}
+ .hero .hero-nebula-layer{transform:none;will-change:auto}
+}

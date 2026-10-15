@@ -860,3 +860,95 @@ orbitDesktop.addEventListener('change', syncServiceOrbit);
 reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settleServiceOrbit(); });
 window.addEventListener('resize', settleServiceOrbit, { passive: true });
 syncServiceOrbit();
+
+// Hero only — bounded, frame-rate-independent observation of the cursor.
+// The full official image is always present; enhancement never owns the fallback.
+(function initHeroEye() {
+  const hero = document.querySelector('.hero');
+  const art = hero?.querySelector('.hero-art');
+  if (!art || !hero.querySelector('.hero-eye-iris')) return;
+  const desktop = matchMedia('(min-width: 901px) and (hover: hover) and (pointer: fine)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  let enabled = false, visible = true, inside = false, bounds, boundsDirty = true;
+  let frame = 0, lastTime = 0, idleTime = 0, idleWeight = 1;
+  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+  const clamp = (value, limit = 1) => Math.max(-limit, Math.min(limit, value));
+
+  function measure() {
+    bounds = hero.getBoundingClientRect();
+    boundsDirty = false;
+  }
+  function center() {
+    inside = false;
+    targetX = targetY = 0;
+  }
+  function stop(reset = false) {
+    cancelAnimationFrame(frame);
+    frame = lastTime = 0;
+    if (reset) {
+      center();
+      currentX = currentY = idleTime = 0;
+      idleWeight = 1;
+      art.style.removeProperty('--hero-look-x');
+      art.style.removeProperty('--hero-look-y');
+    }
+  }
+  function tick(time) {
+    frame = 0;
+    if (!enabled || !visible || document.hidden) return;
+    const delta = lastTime ? Math.min(32, time - lastTime) : 16;
+    lastTime = time;
+    // 175ms time constant: gentle lag, no overshoot, independent of screen refresh rate.
+    const ease = 1 - Math.exp(-delta / 175);
+    currentX += (targetX - currentX) * ease;
+    currentY += (targetY - currentY) * ease;
+    idleWeight += ((inside ? .25 : 1) - idleWeight) * ease;
+    idleTime += delta / 1000;
+    const phase = idleTime * Math.PI * 2 / 14;
+    const x = clamp(currentX * 11 + Math.sin(phase) * .75 * idleWeight, 12);
+    const y = clamp(currentY * 9 + Math.sin(phase * .83) * .55 * idleWeight, 10);
+    // Variables live only on the decorative subtree, not on text or the whole page.
+    art.style.setProperty('--hero-look-x', `${x.toFixed(3)}px`);
+    art.style.setProperty('--hero-look-y', `${y.toFixed(3)}px`);
+    frame = requestAnimationFrame(tick);
+  }
+  function start() {
+    if (enabled && visible && !document.hidden && !frame) frame = requestAnimationFrame(tick);
+  }
+  function configure() {
+    enabled = desktop.matches && !reduce.matches;
+    hero.classList.toggle('has-eye-motion', enabled);
+    boundsDirty = true;
+    center();
+    if (enabled) start(); else stop(true);
+  }
+  function observe(event) {
+    if (!enabled || !visible || event.pointerType === 'touch') return;
+    if (boundsDirty) measure();
+    if (!bounds.width || !bounds.height) return;
+    inside = true;
+    targetX = clamp((event.clientX - bounds.left) / bounds.width * 2 - 1);
+    targetY = clamp((event.clientY - bounds.top) / bounds.height * 2 - 1);
+    start();
+  }
+  hero.addEventListener('pointerenter', event => { boundsDirty = true; observe(event); }, { passive: true });
+  hero.addEventListener('pointermove', observe, { passive: true });
+  hero.addEventListener('pointerleave', center, { passive: true });
+  hero.addEventListener('pointercancel', center, { passive: true });
+  window.addEventListener('blur', center);
+  window.addEventListener('scroll', () => { boundsDirty = true; }, { passive: true });
+  window.addEventListener('resize', configure, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    center();
+    if (document.hidden) stop(); else start();
+  });
+  desktop.addEventListener('change', configure);
+  reduce.addEventListener('change', configure);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+      if (visible) { boundsDirty = true; start(); } else { center(); stop(); }
+    }).observe(hero);
+  }
+  configure();
+})();
