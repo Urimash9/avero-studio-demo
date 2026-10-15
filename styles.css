@@ -1196,8 +1196,10 @@ html.avero-palette-b #servicos .service-kicker small:before{
  /* Keep the same high-resolution wordmark and exact box; improve downsampling contrast. */
  body:not(.service-page) .site-header .brand-art img{image-rendering:-webkit-optimize-contrast;filter:contrast(1.08)}
  /* Use the existing empty space below the Hero content; no new flow height. */
- html.avero-palette-b .hero .hero-signature{top:calc(100% - 12px);bottom:auto;left:0;right:0;margin:0;padding:0;border:0;font-size:12px;line-height:2;letter-spacing:.16em;word-spacing:.8em;color:var(--champagne-light);text-align:center}
+ html.avero-palette-b .hero .hero-signature{top:calc(100% - 12px);bottom:auto;left:0;right:0;margin:0;padding:0;border:0;font-size:12px;line-height:2;letter-spacing:.16em;word-spacing:1.05em;color:color-mix(in srgb,var(--champagne-light) 82%,var(--text-primary));text-align:center}
  .hero .hero-signature br{display:none}
+ /* Let the existing nebula linger lower; the final edge still dissolves to Cosmos. */
+ html.avero-palette-b .hero .hero-shade-layer{background:linear-gradient(90deg,var(--bg-primary) 15%,rgb(var(--background-rgb)/.88) 34%,transparent 60%),linear-gradient(0deg,var(--bg-primary),transparent 12%)}
  /* Broad, static pools of silver/champagne fade to zero before the section boundary. */
  .hero .hero-art:after{content:"";position:absolute;inset:56% 0 0;pointer-events:none;background:radial-gradient(ellipse 40% 45% at 64% 54%,rgb(186 195 205/.065),transparent 100%),radial-gradient(ellipse 35% 42% at 39% 66%,rgb(194 170 138/.045),transparent 100%)}
 }

@@ -882,8 +882,8 @@ syncServiceOrbit();
       y: shape.top + shape.height * .565,
       radiusX: Math.max(1, shape.width * .30),
       radiusY: Math.max(1, shape.height * .52),
-      maxX: Math.min(13, shape.width * .013),
-      maxY: Math.min(8, shape.height * .018)
+      maxX: Math.min(20, shape.width * .024),
+      maxY: Math.min(12, shape.height * .030)
     };
     boundsDirty = false;
   }
