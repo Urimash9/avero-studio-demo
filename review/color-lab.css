@@ -1,0 +1,227 @@
+/* COLOR LAB ONLY. Loaded after styles.css in the review iframe.
+   No dimensions, layout, masks, transforms, timing or asset changes.
+   B alone uses the Method continuity refinement documented in Build 01.14. */
+html[data-color-lab]{
+  --bg-primary:#07090D;
+  --bg-secondary:#0C1015;
+  --bg-depth:#10151B;
+  --surface:#12181E;
+  --surface-high:#141A20;
+  --text-primary:#F2F5F7;
+  --silver:#D8DFE6;
+  --text-secondary:#AAB4BF;
+  --text-muted:#77828D;
+  --line:#AAB4BF;
+  --accent-primary:#75BBC8;
+  --accent-secondary:#4DA3FF;
+  --accent-warm:#D8DFE6;
+  --button-primary:#DDE4EA;
+  --button-primary-text:#07090D;
+  --button-hover:#C6DEE3;
+  --border:rgba(170,180,191,.28);
+  --control-border:#77828D;
+  --glow-rgb:117 187 200;
+  --material-rgb:216 223 230;
+  --project-light-rgb:170 180 191;
+  --warm-rgb:216 223 230;
+  --background-rgb:7 9 13;
+  --nebula-treatment:saturate(.38) brightness(.9);
+  --ambient-treatment:saturate(.32) brightness(.9);
+  /* Compatibility aliases are confined to this review document. */
+  --cosmos:var(--bg-primary);
+  --nebula:var(--bg-secondary);
+  --lume:var(--text-primary);
+  --neutral:var(--text-secondary);
+  --blue:var(--accent-primary);
+}
+html[data-color-lab][data-theme="b"]{
+  --champagne-light:#D2C2A4;
+  --champagne-mid:#C4AF8B;
+  --champagne-muted:#9D8C72;
+  --accent-warm:var(--champagne-light);
+  --project-light-rgb:196 175 139;
+  --warm-rgb:210 194 164;
+  /* V2.1: illumination tokens stay local to B; A/C inherit no warm overrides. */
+  --champagne-text:var(--champagne-light);
+  --champagne-border:rgb(var(--warm-rgb)/.52);
+  --champagne-surface:rgb(var(--warm-rgb)/.055);
+  --champagne-glow:rgb(var(--warm-rgb)/.16);
+  --champagne-glow-soft:rgb(var(--warm-rgb)/.075);
+  --champagne-glow-node:rgb(var(--warm-rgb)/.5);
+  --champagne-hover:rgb(var(--warm-rgb)/.10);
+}
+html[data-color-lab][data-theme="c"]{
+  --accent-primary:#8FD6DD;
+  --accent-soft:#72B8C2;
+  --accent-pale:#B5E2E5;
+  --line:var(--accent-soft);
+  --button-primary:var(--accent-pale);
+  --button-hover:#D6ECEE;
+  --glow-rgb:143 214 221;
+  --nebula-treatment:saturate(.58) brightness(.9);
+  --ambient-treatment:saturate(.45) brightness(.9);
+}
+
+/* Remove only the review frame's native gutter so 390 means 390 usable pixels.
+   Wheel, touch, keyboard scrolling and the section control remain available. */
+html[data-color-lab]{scrollbar-width:none}
+html[data-color-lab]::-webkit-scrollbar{display:none}
+html[data-color-lab] body{background:var(--bg-primary);color:var(--text-primary)}
+html[data-color-lab] .page-flow span{filter:var(--ambient-treatment)}
+/* The desktop eye is a child of hero-art. Blend only its ambient background;
+   filtering the parent would also desaturate the eye, which must stay original. */
+html[data-color-lab] .hero-art{background-color:var(--bg-primary);background-blend-mode:luminosity}
+html[data-color-lab] .hero-shade-layer{background:linear-gradient(90deg,var(--bg-primary) 15%,rgb(var(--background-rgb)/.88) 34%,transparent 60%),linear-gradient(0deg,var(--bg-primary),transparent 18%)}
+html[data-color-lab] .hero h1 em{color:var(--silver)}
+html[data-color-lab][data-theme="c"] .hero h1 em{color:var(--accent-pale)}
+html[data-color-lab] .lead,html[data-color-lab] .hero .lead{color:var(--text-secondary)}
+html[data-color-lab] .hero-signature{color:var(--text-secondary);border-color:var(--border)}
+html[data-color-lab] .desktop-nav,html[data-color-lab] .scroll-cue{color:var(--text-secondary)}
+html[data-color-lab] .mouse,html[data-color-lab] .mouse:after{border-color:var(--line)}
+html[data-color-lab] .mouse:before{background:var(--line)}
+html[data-color-lab] .btn{border-color:var(--control-border)}
+html[data-color-lab] .btn:hover{border-color:var(--accent-primary);background-color:var(--surface-high);box-shadow:0 0 20px rgb(var(--glow-rgb)/.09)}
+html[data-color-lab] .btn-primary{background:var(--button-primary);border-color:var(--button-primary);color:var(--button-primary-text)}
+html[data-color-lab] .btn-primary:hover{background:var(--button-hover);border-color:var(--button-hover);color:var(--button-primary-text)}
+html[data-color-lab] .btn-outline{background:rgb(var(--background-rgb)/.38);color:var(--silver)}
+html[data-color-lab] .circle-link{border-color:var(--control-border);color:var(--silver);background:transparent}
+html[data-color-lab] .circle-link:hover{background:rgb(var(--glow-rgb)/.12);border-color:var(--accent-primary)}
+html[data-color-lab] :is(a,button,input,textarea,[tabindex]):focus-visible{outline-color:var(--accent-secondary)}
+html[data-color-lab] .menu-toggle{background:var(--bg-secondary);border-color:var(--control-border)}
+html[data-color-lab] .menu-toggle span{background:var(--silver)}
+html[data-color-lab] .mobile-nav:not([hidden]){background:var(--bg-secondary);border-color:var(--border)}
+
+/* Quiet positioning; no new layer, curve or change to pillar alternation. */
+html[data-color-lab] .positioning{background:radial-gradient(ellipse at 64% 72%,rgb(var(--material-rgb)/.025),transparent 62%)}
+html[data-color-lab] .positioning .copy-side p,html[data-color-lab] .positioning .pillars p{color:var(--text-secondary)}
+html[data-color-lab] .positioning .copy-side p:last-child{color:var(--silver)}
+html[data-color-lab] .positioning .pillar-index{color:var(--text-secondary)}
+html[data-color-lab] #position-trajectory-fade stop{stop-color:var(--line)}
+html[data-color-lab] .positioning .pillar-mobile-segment path{stroke:var(--line)}
+html[data-color-lab] .positioning .pillar-node{border-color:var(--silver);background:var(--accent-primary);box-shadow:0 0 10px rgb(var(--glow-rgb)/.1)}
+
+/* Service image pixels, existing alpha fragmentation and cuts stay untouched. */
+html[data-color-lab] .services{background:radial-gradient(ellipse at 51% 43%,rgb(var(--material-rgb)/.04),transparent 65%)}
+html[data-color-lab] .services .text-cta{color:var(--silver);border-color:var(--control-border)}
+html[data-color-lab] .services .service-card{--service-surface:var(--bg-primary)}
+html[data-color-lab] .services .service-visual{background-color:var(--bg-secondary)}
+html[data-color-lab] .services .service-visual:after{background:linear-gradient(0deg,var(--bg-primary) 0%,rgb(var(--background-rgb)/.72) 10%,transparent 46%)}
+html[data-color-lab] .services .service-copy{background:linear-gradient(180deg,transparent 0%,rgb(var(--background-rgb)/.88) 46px,rgb(var(--background-rgb)/.45));border-color:var(--border)}
+html[data-color-lab] .services .service-copy .num{color:var(--accent-primary)}
+html[data-color-lab] .services .service-copy small,html[data-color-lab] .services .service-copy p{color:var(--text-secondary)}
+html[data-color-lab] .services .service-copy .circle-link{border-color:var(--control-border);background:var(--bg-secondary);color:var(--silver)}
+html[data-color-lab] .services .service-copy .circle-link:hover{background:var(--surface-high);border-color:var(--accent-primary)}
+html[data-color-lab] .services .services-trajectory path{stroke:var(--line)}
+html[data-color-lab] .services .text-cta strong{color:var(--silver);text-decoration-color:var(--line)}
+html[data-color-lab] .services .service-card:hover .service-copy,html[data-color-lab] .services .service-card:focus-within .service-copy{border-left-color:var(--silver)}
+html[data-color-lab] .service-orbit-navigation button{background:var(--surface);border-color:var(--control-border);color:var(--silver)}
+html[data-color-lab] .service-orbit-navigation button:hover{background:var(--surface-high);border-color:var(--accent-primary)}
+html[data-color-lab] .service-orbit-current{color:var(--text-secondary)}
+html[data-color-lab] .service-orbit-current strong{color:var(--silver)}
+
+/* A neutral catalogue lets the twelve reference images supply their own color. */
+html[data-color-lab] .collection-engine:before{background:radial-gradient(ellipse at 63% 48%,rgb(var(--material-rgb)/.03),transparent 65%)}
+html[data-color-lab] #collection-orbit-fade stop{stop-color:var(--line)}
+html[data-color-lab] .collection-axis circle{fill:var(--accent-primary)}
+html[data-color-lab] .collection-piece-visual,html[data-color-lab] .collection-system.is-radial .collection-radial-face,html[data-color-lab] .collection-transfer-proxy{background-color:var(--bg-secondary);border-color:var(--border)}
+html[data-color-lab] .collection-system.is-radial .collection-radial-blade.is-active .collection-radial-face{border-color:var(--silver)}
+html[data-color-lab] .collection-piece-copy a{color:var(--silver)}
+html[data-color-lab] .collection-piece-copy a:hover{color:var(--text-primary)}
+html[data-color-lab] .collection-navigation .circle-link{background:var(--bg-secondary);border-color:var(--control-border)}
+html[data-color-lab] .collection-position,html[data-color-lab] .collection .collection-note,html[data-color-lab] .collection-ambient-toggle{color:var(--text-secondary)}
+html[data-color-lab] .collection-current{color:var(--silver)}
+
+/* Projects: secondary illumination in B, without tinting any mockup. */
+html[data-color-lab] .projects{background:radial-gradient(ellipse at 78% 60%,rgb(var(--project-light-rgb)/.04),transparent 68%)}
+html[data-color-lab] .projects .projects-intro>p,html[data-color-lab] .project-identity p{color:var(--text-secondary)}
+html[data-color-lab] .projects .project-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.86),transparent 80%)}
+html[data-color-lab] .project-details{border-left-color:var(--line)}
+html[data-color-lab] .projects .project-tags{color:var(--text-secondary)}
+html[data-color-lab] .projects .project-tags span{border-color:var(--border)}
+html[data-color-lab] .projects .project-cta{color:var(--silver);border-color:var(--line)}
+html[data-color-lab] .projects .project-cta span{color:var(--accent-primary)}
+html[data-color-lab] .projects .all-projects{color:var(--silver)}
+html[data-color-lab] .project-pagination button{color:var(--text-secondary)}
+html[data-color-lab] .project-pagination button.active,html[data-color-lab] .project-pagination button[aria-current="true"]{color:var(--accent-primary);border-color:var(--accent-primary)}
+html[data-color-lab][data-theme="b"] .project-details{border-left-color:var(--champagne-muted)}
+html[data-color-lab][data-theme="b"] .projects .project-cta{border-color:var(--champagne-muted)}
+html[data-color-lab][data-theme="b"] .projects .project-cta span,html[data-color-lab][data-theme="b"] .project-pagination button.active{color:var(--champagne-light);border-color:var(--champagne-muted)}
+
+/* Final approved Method paths/nodes remain at the same coordinates. */
+html[data-color-lab] .method .method-intro>p,html[data-color-lab] .method .method-step-copy p,html[data-color-lab] .method .method-index,html[data-color-lab] .method .method-closure{color:var(--text-secondary)}
+html[data-color-lab] :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop{stop-color:var(--line)}
+html[data-color-lab] .method .method-nodes circle{fill:var(--accent-primary);stroke:var(--line);filter:drop-shadow(0 0 2px rgb(var(--glow-rgb)/.2))}
+html[data-color-lab][data-theme="b"] .method .method-nodes circle:nth-child(3){fill:var(--champagne-light);stroke:var(--champagne-muted);filter:drop-shadow(0 0 2px rgb(var(--warm-rgb)/.2))}
+html[data-color-lab] .perspective .perspective-copy h3{color:var(--silver)}
+html[data-color-lab] .perspective .perspective-closure,html[data-color-lab] .perspective .perspective-sign,html[data-color-lab] .perspective .perspective-sign p{color:var(--text-secondary)}
+
+/* Material CTAs, conventional readable form fields, a very quiet ending. */
+html[data-color-lab] .contact{background:radial-gradient(ellipse at 28% 48%,rgb(var(--material-rgb)/.035),transparent 70%)}
+html[data-color-lab] .contact-card{background:var(--bg-secondary);border-color:var(--border)}
+html[data-color-lab] .contact-card input,html[data-color-lab] .contact-card textarea{background:var(--surface);border-color:var(--control-border);color:var(--text-primary)}
+html[data-color-lab] .contact-card input::placeholder,html[data-color-lab] .contact-card textarea::placeholder{color:var(--text-secondary)}
+html[data-color-lab] .contact-card input:focus,html[data-color-lab] .contact-card textarea:focus{border-color:var(--accent-secondary);box-shadow:0 0 0 2px rgb(var(--glow-rgb)/.16)}
+html[data-color-lab] .chips button{background:var(--surface);border-color:var(--control-border);color:var(--text-secondary)}
+html[data-color-lab] .chips button[aria-pressed="true"]{background:rgb(var(--glow-rgb)/.13);border-color:var(--accent-primary);color:var(--silver)}
+html[data-color-lab] .contact-note span{color:var(--accent-primary)}
+html[data-color-lab][data-theme="b"] .contact-note span{color:var(--champagne-light)}
+html[data-color-lab][data-theme="b"] .contact-card{border-color:rgb(var(--warm-rgb)/.25)}
+html[data-color-lab] .footer{background-color:var(--bg-primary)}
+html[data-color-lab] .footer-grid p,html[data-color-lab] .footer-bottom{color:var(--text-secondary)}
+html[data-color-lab] .footer-grid .footer-tagline{color:var(--silver)}
+html[data-color-lab][data-theme="b"] .footer-grid .footer-tagline{color:var(--champagne-light)}
+
+/* Neutralize the separate atmospheric layers, never the isolated eye. */
+@media(max-width:700px){
+  html[data-color-lab] .hero-content:before{filter:var(--nebula-treatment)}
+  html[data-color-lab] .services .service-visual{background:transparent}
+  html[data-color-lab] .services .service-visual:after{background:linear-gradient(0deg,rgb(var(--background-rgb)/.25),transparent 24%)}
+}
+@media(max-width:900px){
+  html[data-color-lab] .perspective .perspective-eye:before{filter:var(--nebula-treatment)}
+  html[data-color-lab] .collection-engine:before{background:radial-gradient(ellipse at 67% 40%,rgb(var(--material-rgb)/.03),transparent 48%)}
+}
+
+/* V2.1 — B only: cold opening, warm chapters, cold Perspective, warm ending.
+   Existing layers are recolored; no new geometry, image filter or animation. */
+html[data-color-lab][data-theme="b"] .services .service-card[data-orbit-slot="0"] .service-copy small{color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .services .service-card[data-orbit-slot="0"]:is(:hover,:focus-within) .service-copy{border-left-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .collection-current{color:var(--champagne-text)}
+
+/* First warm chapter: light outside the mockups, material details within copy. */
+html[data-color-lab][data-theme="b"] .projects{background:radial-gradient(ellipse at 78% 60%,var(--champagne-glow),transparent 68%)}
+html[data-color-lab][data-theme="b"] .project-details{border-left-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .projects .project-tags span:first-child{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .projects .project-tags span+span{border-left-color:var(--champagne-border)}
+html[data-color-lab][data-theme="b"] .projects .project-cta{border-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .projects .project-cta span,
+html[data-color-lab][data-theme="b"] .project-pagination button:is(.active,[aria-current="true"]){color:var(--champagne-text);border-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .projects .project-cta:hover{color:var(--champagne-text)}
+
+/* Second warm chapter: two nodes and a brief silver-to-champagne fade.
+   B geometry is isolated in color-lab.js; A/C retain their V2 paths. */
+html[data-color-lab][data-theme="b"] .method{background:radial-gradient(ellipse at 83% 48%,var(--champagne-glow-soft),transparent 58%)}
+html[data-color-lab][data-theme="b"] :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:last-child{stop-color:var(--champagne-mid)}
+html[data-color-lab][data-theme="b"] .method .method-nodes circle:is(:nth-child(2),:nth-child(3)){fill:var(--champagne-text);stroke:var(--champagne-mid);filter:drop-shadow(0 0 5px var(--champagne-glow-node))}
+html[data-color-lab][data-theme="b"] .method .method-stages li:is(:nth-child(2),:nth-child(3)) .method-index{color:var(--champagne-text)}
+
+/* Perspective deliberately receives no warm override. */
+html[data-color-lab][data-theme="b"] .contact{background:radial-gradient(ellipse at 72% 55%,var(--champagne-glow),transparent 68%)}
+html[data-color-lab][data-theme="b"] .contact-card{background:linear-gradient(135deg,var(--champagne-surface),transparent 70%),var(--bg-secondary);border-color:var(--champagne-border);box-shadow:0 0 44px var(--champagne-glow-soft)}
+html[data-color-lab][data-theme="b"] .contact-card h3{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .contact-note span{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .contact .btn-outline{border-color:var(--champagne-muted)}
+html[data-color-lab][data-theme="b"] .contact .btn-outline span,
+html[data-color-lab][data-theme="b"] .contact .whatsapp span{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .contact :is(.btn-outline,.chips button):hover{border-color:var(--champagne-mid);background-color:var(--champagne-hover)}
+
+/* Closing light stays in the background; the lateral eye is never tinted. */
+html[data-color-lab][data-theme="b"] .footer{background:radial-gradient(ellipse at 86% 35%,var(--champagne-glow-soft),transparent 65%),var(--bg-primary)}
+html[data-color-lab][data-theme="b"] .footer-grid .footer-tagline,
+html[data-color-lab][data-theme="b"] .footer-grid h3,
+html[data-color-lab][data-theme="b"] .footer-bottom span:first-child{color:var(--champagne-text)}
+html[data-color-lab][data-theme="b"] .footer-grid a:not(.brand):hover{color:var(--champagne-text)}
+
+/* Build 01.14 — warm right turn dissolves before the outer boundary.
+   Offsets/opacities are supplied by the lab; native Home SVG uses the same stops. */
+html[data-color-lab][data-theme="b"] :is(#method-desktop-fade,#method-mobile-fade,#method-phone-fade) stop:nth-last-child(-n+2){stop-color:var(--champagne-mid)}

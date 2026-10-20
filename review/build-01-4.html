@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AVERO — revisão da Build 01.4</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050a13;color:#e8f2ff;font:16px Arial,sans-serif}header{padding:16px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}h1{font-size:18px;margin:0}label{display:flex;align-items:center;gap:10px}select,a{font:inherit;color:inherit;background:#0d1b2a;border:1px solid #8caac8;border-radius:4px;padding:10px;min-height:44px}a{text-decoration:none}select:focus-visible,a:focus-visible{outline:2px solid #4da3ff;outline-offset:3px}p{margin:0;color:#bac6d8;font-size:14px}.frame-wrap{width:max-content;min-width:100%;padding:0 20px 20px}iframe{display:block;border:0;max-width:none;background:#050a13}
+</style>
+</head>
+<body>
+<header><h1>Posicionamento · Build 01.4</h1><label for="width">Largura <select id="width"><option>1440</option><option>1280</option><option>1024</option><option>900</option><option>768</option><option>430</option><option>390</option><option>360</option><option>320</option></select></label><a href="../index.html#posicionamento">Abrir Home</a><p>Prévia isolada para revisão. Use a rolagem interna para conferir Hero e Serviços.</p></header>
+<div class="frame-wrap"><iframe id="home" title="Home AVERO na largura selecionada" src="../index.html#posicionamento" width="1440" height="1000"></iframe></div>
+<script>
+const select=document.getElementById('width');const frame=document.getElementById('home');
+const requested=new URLSearchParams(location.search).get('width');
+if([...select.options].some(option=>option.value===requested))select.value=requested;
+function resize(){frame.width=select.value;frame.height=Number(select.value)<=430?'1250':'1000';}
+select.addEventListener('change',resize);resize();
+</script>
+</body>
+</html>

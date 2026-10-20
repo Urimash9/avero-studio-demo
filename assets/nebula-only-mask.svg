@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1536">
+  <defs>
+    <filter id="edge" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="24"/></filter>
+    <mask id="cloud" maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="1536">
+      <rect width="1536" height="1536" fill="white"/>
+      <path fill="black" filter="url(#edge)" d="M50 774 C235 601 435 391 645 352 C831 303 1022 350 1163 439 C1296 526 1384 681 1468 774 C1287 973 1040 1137 770 1137 C481 1148 222 995 50 774Z"/>
+    </mask>
+  </defs>
+  <rect width="1536" height="1536" fill="white" mask="url(#cloud)"/>
+</svg>

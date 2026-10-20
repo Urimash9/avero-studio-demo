@@ -1,0 +1,122 @@
+[
+  {
+    "ordem": 1,
+    "universo": "Gastronomia",
+    "arquivo": "IMAGENS/COLECAO-AVERO-01-GASTRONOMIA.png",
+    "origem": "Refinamento V2 · COLECAO-AVERO-01-GASTRONOMIA-V2.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 2326626,
+    "sha256": "9625ab9b689c8a2e9c21290eb58f80dcc25099a4ad089860147fe328be28f482"
+  },
+  {
+    "ordem": 2,
+    "universo": "Arquitetura Interiores",
+    "arquivo": "IMAGENS/COLECAO-AVERO-02-ARQUITETURA-INTERIORES.png",
+    "origem": "Coleção Avero V1 · COLECAO-AVERO-02-ARQUITETURA-INTERIORES.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 2479595,
+    "sha256": "9407b02fdc749cb93ff2412843804b0e5436920945a27fe4e6fdebc9e329e5b3"
+  },
+  {
+    "ordem": 3,
+    "universo": "Hotelaria",
+    "arquivo": "IMAGENS/COLECAO-AVERO-03-HOTELARIA.png",
+    "origem": "Refinamento V2 · COLECAO-AVERO-03-HOTELARIA-V2.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 2705700,
+    "sha256": "69675c890c9301eaf2c19cd642c20ee1c4c0809578757b79616bf88b0c14e046"
+  },
+  {
+    "ordem": 4,
+    "universo": "Estetica Beleza",
+    "arquivo": "IMAGENS/COLECAO-AVERO-04-ESTETICA-BELEZA.png",
+    "origem": "Refinamento V2 · COLECAO-AVERO-04-ESTETICA-BELEZA-V2.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 1822572,
+    "sha256": "7256ce7eb09313a70019ce6baccb880a97100baedc121b198b8193f4df59a9d5"
+  },
+  {
+    "ordem": 5,
+    "universo": "Saude",
+    "arquivo": "IMAGENS/COLECAO-AVERO-05-SAUDE.jpg",
+    "origem": "Recriação V2 aprovada · anexo 1000034472.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "JPEG",
+    "bytes": 202850,
+    "sha256": "bd9b8f99b05a0cb43ce84421293dbf493ab4e8761e09090ab3eb094e8b25772b"
+  },
+  {
+    "ordem": 6,
+    "universo": "Moda",
+    "arquivo": "IMAGENS/COLECAO-AVERO-06-MODA.png",
+    "origem": "Coleção Avero V1 · COLECAO-AVERO-06-MODA.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 2043679,
+    "sha256": "11f38c5d78973f9c277b07b2e71a981bf3773a1649132660689f6eb33759c765"
+  },
+  {
+    "ordem": 7,
+    "universo": "Varejo",
+    "arquivo": "IMAGENS/COLECAO-AVERO-07-VAREJO.png",
+    "origem": "Refinamento V2 · COLECAO-AVERO-07-VAREJO-V2.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 1894726,
+    "sha256": "1404bdf861adb1084d70cc5dadcb7a0e314582a8de24dceed0c35821fd8c78d5"
+  },
+  {
+    "ordem": 8,
+    "universo": "Barbearia",
+    "arquivo": "IMAGENS/COLECAO-AVERO-08-BARBEARIA.png",
+    "origem": "Coleção Avero V1 · COLECAO-AVERO-08-BARBEARIA.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 1955079,
+    "sha256": "09bee334cfc590e9086d8836ad64be7e2fe3fc17ac8be8faebd674118de85853"
+  },
+  {
+    "ordem": 9,
+    "universo": "Coquetelaria",
+    "arquivo": "IMAGENS/COLECAO-AVERO-09-COQUETELARIA.jpg",
+    "origem": "Recriação V2 aprovada · anexo 1000034474.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "JPEG",
+    "bytes": 261487,
+    "sha256": "b2a683f20f4d2f286a090ffda760ca8a48455ea7d0091fd56f769c3e51c46ef0"
+  },
+  {
+    "ordem": 10,
+    "universo": "Moveis Planejados",
+    "arquivo": "IMAGENS/COLECAO-AVERO-10-MOVEIS-PLANEJADOS.png",
+    "origem": "Refinamento V2 · COLECAO-AVERO-10-MOVEIS-PLANEJADOS-V2.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 1905309,
+    "sha256": "11b5f0d9d1de45746bf5e15aef0b287e2b9c0d1952db04b1825492d3f2b76e16"
+  },
+  {
+    "ordem": 11,
+    "universo": "Institucional Premium",
+    "arquivo": "IMAGENS/COLECAO-AVERO-11-INSTITUCIONAL-PREMIUM.jpg",
+    "origem": "Recriação V2 aprovada · anexo 1000034479.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "JPEG",
+    "bytes": 209359,
+    "sha256": "480c9638a311761cfd01ca8f80ae92bc875fa398f9e15c0527503bfdeadc76cf"
+  },
+  {
+    "ordem": 12,
+    "universo": "Solucao Tecnologica Comercial",
+    "arquivo": "IMAGENS/COLECAO-AVERO-12-SOLUCAO-TECNOLOGICA-COMERCIAL.png",
+    "origem": "Refinamento V2 · COLECAO-AVERO-12-SOLUCAO-TECNOLOGICA-COMERCIAL-V2.png",
+    "dimensoes": "1536x1024",
+    "formato_real": "PNG",
+    "bytes": 1277847,
+    "sha256": "5f96a27526ecfde2caa2fa6d5e3d2f38371e3468cb996dfefa265a295896db9f"
+  }
+]

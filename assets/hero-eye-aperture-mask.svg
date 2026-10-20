@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1774 887">
+  <defs>
+    <filter id="soft-edge" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+  <!-- Clipping only, following the supplied frame's transparent opening. -->
+  <path fill="white" filter="url(#soft-edge)" d="M690 235 C828 212 1022 307 1111 421 C1180 511 1195 617 1117 676 C1018 751 883 719 782 665 C663 600 577 522 554 444 C520 337 589 260 690 235Z"/>
+</svg>

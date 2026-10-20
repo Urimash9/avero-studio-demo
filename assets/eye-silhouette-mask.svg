@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1536">
+  <!-- A soft mask around the existing raster silhouette; this does not redraw the eye. -->
+  <defs><filter id="edge" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="12"/></filter></defs>
+  <path fill="white" filter="url(#edge)" d="M74 774 C255 624 456 414 658 376 C835 328 1008 375 1144 461 C1272 547 1360 695 1443 774 C1267 949 1029 1112 770 1112 C499 1123 244 975 74 774Z"/>
+</svg>

@@ -11,6 +11,7 @@ menuButton.addEventListener('click', () => {
   menuButton.setAttribute('aria-expanded', String(!isOpen));
   menuButton.setAttribute('aria-label', isOpen ? 'Abrir menu' : 'Fechar menu');
 });
+matchMedia('(max-width: 700px)').addEventListener('change', closeMenu);
 mobileNav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && !mobileNav.hidden) { closeMenu(); menuButton.focus(); }
@@ -35,28 +36,669 @@ document.querySelectorAll('[data-project]').forEach(link => link.addEventListene
   document.querySelector('#mensagem').value = `Gostaria de conhecer a direção ${link.dataset.project} e adaptar esse conceito para o meu negócio.`;
 }));
 
-const rail = document.querySelector('.collection-rail');
-const cards = [...rail.querySelectorAll('.collection-card')];
-const pages = [...document.querySelectorAll('.collection-pagination button')];
-let currentCard = 0;
-function goToCard(index) {
-  currentCard = (index + cards.length) % cards.length;
-  cards.forEach((card, i) => card.classList.toggle('active', i === currentCard));
-  requestAnimationFrame(() => rail.scrollTo({ left: cards[currentCard].offsetLeft - cards[0].offsetLeft, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
-  pages.forEach((button, i) => {
-    button.classList.toggle('active', i === currentCard);
-    if (i === currentCard) button.setAttribute('aria-current', 'true');
-    else button.removeAttribute('aria-current');
+// Build 01.16B.3 — a tapered energy envelope on the approved, unchanged paths.
+function createLinePulses() {
+  const ns = 'http://www.w3.org/2000/svg';
+  const pillarRoutes = [];
+  // Same distance/time knots as the CSS travel keyframes; node peaks follow
+  // the head even through the small acceleration in the middle of the route.
+  function pulseArrival(progress) {
+    const travel = [[0, -100], [.25, 225], [.5, 570], [.75, 905], [.94, 1180]];
+    const distance = progress * 1000 - 6;
+    for (let i = 1; i < travel.length; i++) {
+      const [time, position] = travel[i];
+      const [previousTime, previousPosition] = travel[i - 1];
+      if (distance <= position) return previousTime + (time - previousTime) * (distance - previousPosition) / (position - previousPosition);
+    }
+    return .94;
+  }
+  function nearestProgress(path, x, y) {
+    const length = path.getTotalLength();
+    let best = 0, distance = Infinity;
+    for (let i = 0; i <= 240; i++) {
+      const point = path.getPointAtLength(length * i / 240);
+      const d = (point.x - x) ** 2 + (point.y - y) ** 2;
+      if (d < distance) { distance = d; best = i / 240; }
+    }
+    return best;
+  }
+  document.querySelectorAll('.pillar-line, .pillar-mobile-segment, .method-path').forEach((svg, index) => {
+    const source = svg.querySelector('path');
+    if (!source) return;
+    source.classList.add('line-base');
+    const breath = source.cloneNode(false);
+    breath.removeAttribute('id');
+    breath.setAttribute('class', 'line-breath');
+    svg.append(breath);
+    let defs = svg.querySelector('defs');
+    if (!defs) { defs = document.createElementNS(ns, 'defs'); svg.prepend(defs); }
+    const gradient = document.createElementNS(ns, 'linearGradient');
+    const id = `avero-line-pulse-${index}`;
+    gradient.id = id;
+    gradient.setAttribute('x1', '0'); gradient.setAttribute('x2', '1');
+    [['0', 'var(--silver)'], ['.6', 'var(--silver)'], ['.84', 'var(--champagne-light)'], ['1', 'var(--silver)']].forEach(([offset, color]) => {
+      const stop = document.createElementNS(ns, 'stop');
+      stop.setAttribute('offset', offset); stop.setAttribute('stop-color', color);
+      gradient.append(stop);
+    });
+    defs.append(gradient);
+    // Nested strokes share one leading edge. Their increasing opacity creates
+    // a luminous head and a graduated wake, rather than separate flat dashes.
+    ['halo', 'wake', 'tail', 'body', 'shoulder', 'head', 'core'].forEach(part => {
+      const pulse = source.cloneNode(false);
+      pulse.removeAttribute('id');
+      pulse.setAttribute('class', `line-pulse line-pulse--${part}`);
+      pulse.setAttribute('pathLength', '1000');
+      pulse.style.setProperty('--pulse-stroke', `url(#${id})`);
+      svg.append(pulse);
+    });
+    svg.querySelectorAll('.method-nodes circle').forEach((node, order) => {
+      const energy = node.cloneNode(false);
+      energy.setAttribute('class', 'line-node-energy');
+      const progress = nearestProgress(source, Number(node.getAttribute('cx')), Number(node.getAttribute('cy')));
+      energy.style.setProperty('--node-at', String(pulseArrival(progress)));
+      if (order === 1 || order === 2) energy.style.setProperty('--node-color', 'var(--champagne-light)');
+      svg.append(energy);
+    });
+    if (svg.classList.contains('pillar-line')) pillarRoutes.push({ svg, source });
+  });
+  // Measure only at initialization/resize; no geometry reads in an animation loop.
+  function positionPillarResponses() {
+    pillarRoutes.forEach(({ svg, source }) => {
+      if (!svg.getClientRects().length) return;
+      const inverse = source.getScreenCTM()?.inverse();
+      if (!inverse) return;
+      document.querySelectorAll('.pillar-node').forEach(node => {
+        const rect = node.getBoundingClientRect();
+        const point = new DOMPoint(rect.x + rect.width / 2, rect.y + rect.height / 2).matrixTransform(inverse);
+        const progress = nearestProgress(source, point.x, point.y);
+        node.style.setProperty('--node-at', String(pulseArrival(progress)));
+      });
+    });
+  }
+  positionPillarResponses();
+  let compactPillars = matchMedia('(max-width: 900px)').matches;
+  let measureFrame = null;
+  window.addEventListener('resize', () => {
+    if (measureFrame !== null) cancelAnimationFrame(measureFrame);
+    measureFrame = requestAnimationFrame(() => {
+      positionPillarResponses();
+      // Only the desktop/mobile pillar switch needs to reconcile its DOM nodes
+      // with a newly displayed SVG. Height-only resize must not restart energy.
+      const nextCompactPillars = matchMedia('(max-width: 900px)').matches;
+      if (nextCompactPillars === compactPillars) { measureFrame = null; return; }
+      compactPillars = nextCompactPillars;
+      const sections = [...document.querySelectorAll('.positioning, .method')];
+      sections.forEach(section => section.classList.add('is-line-reset'));
+      document.querySelector('.line-base').getBoundingClientRect();
+      measureFrame = requestAnimationFrame(() => {
+        sections.forEach(section => section.classList.remove('is-line-reset'));
+        measureFrame = null;
+      });
+    });
+  }, { passive: true });
+  // CSS owns the clocks: no scroll/intersection trigger and no per-frame JS.
+}
+createLinePulses();
+
+// Build 01.9 — the HTML list is the catalogue: stable DOM order, replaceable assets.
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const collectionSystem = document.querySelector('.collection-system');
+const collectionList = collectionSystem.querySelector('.collection-pieces');
+const collectionPieces = [...collectionList.children];
+const collectionDirections = collectionPieces.map((piece, order) => ({
+  id: piece.dataset.direction,
+  sector: piece.dataset.sector,
+  variant: piece.dataset.variant,
+  order,
+  image: piece.querySelector('img').getAttribute('src'),
+  thumbnail: piece.dataset.thumbnail,
+  name: piece.querySelector('h3').textContent.trim(),
+  description: piece.querySelector('.collection-piece-copy p').textContent.trim(),
+  provisional: piece.dataset.provisional === 'true',
+  piece
+}));
+const collectionMobile = matchMedia('(max-width: 900px)');
+const collectionNavigation = collectionSystem.querySelector('.collection-navigation');
+const collectionCurrent = collectionSystem.querySelector('.collection-current');
+const collectionPosition = collectionSystem.querySelector('.collection-position');
+const collectionAnnouncement = collectionSystem.querySelector('.collection-announcement');
+const collectionAmbient = collectionSystem.querySelector('.collection-ambient-toggle');
+// Build 01.15 — the approved radial catalogue now serves both compositions.
+const collectionState = {
+  activeIndex: 0,
+  wheelRotation: 0,
+  transitionState: 'idle',
+  destination: null,
+  queuedDestination: null,
+  run: 0,
+  pauseState: { manual: false, interaction: false, pointer: false, focus: false },
+  reducedMotion: reducedMotion.matches,
+  visibilityState: { component: false, document: !document.hidden },
+  animations: [],
+  resumeTimer: null,
+  frame: null,
+  lastFrame: null,
+  ambientElapsed: 0,
+  geometry: null,
+  transfer: null
+};
+const collectionEngine = collectionSystem.querySelector('.collection-engine');
+const directionIndex = index => (index + collectionDirections.length) % collectionDirections.length;
+const collectionRadialStep = 360 / collectionDirections.length;
+const collectionFrontGap = collectionRadialStep / 2;
+const collectionAmbientSpeed = 3.2; // degrees per second; one turn in 112.5 seconds.
+const collectionExtractionAngle = -60;
+const collectionTransferDuration = 900;
+const collectionReturnDelay = 120;
+const collectionTransferOverlap = 160;
+const collectionTransferEasing = 'cubic-bezier(.32,.12,.28,.92)';
+const collectionImageReady = new Map();
+function prepareCollectionImage(direction) {
+  if (!collectionImageReady.has(direction.image)) {
+    const image = new Image();
+    image.src = direction.image;
+    // A failed image never leaves navigation latched; normal image fallback applies.
+    collectionImageReady.set(direction.image, image.decode().catch(() => {}));
+  }
+  return collectionImageReady.get(direction.image);
+}
+const collectionTransferCropSupported = typeof CSS.registerProperty === 'function';
+if (collectionTransferCropSupported) {
+  ['--collection-transfer-crop-x', '--collection-transfer-crop-y'].forEach(name => {
+    CSS.registerProperty({ name, syntax: '<number>', inherits: true, initialValue: '1' });
   });
 }
-document.querySelector('.rail-prev').addEventListener('click', () => goToCard(currentCard - 1));
-document.querySelector('.rail-next').addEventListener('click', () => goToCard(currentCard + 1));
-pages.forEach((button, i) => button.addEventListener('click', () => goToCard(i)));
-rail.addEventListener('keydown', event => {
-  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-    event.preventDefault(); goToCard(currentCard + (event.key === 'ArrowRight' ? 1 : -1));
+// Physical slots keep their geometry; only their decorative contents are exchanged.
+const radialBladeContent = collectionDirections.map((_, index) => index);
+let collectionRadialStage = null, collectionRadialRotor = null;
+const collectionRadialBlades = [];
+
+function closestCollectionRotation(index, from = collectionState.wheelRotation) {
+  const target = -index * collectionRadialStep - collectionFrontGap;
+  return closestCollectionAngle(target, from);
+}
+function closestCollectionAngle(target, from = collectionState.wheelRotation) {
+  return from + ((target - from + 180) % 360 + 360) % 360 - 180;
+}
+function createCollectionRadial() {
+  if (collectionRadialStage) return;
+  collectionRadialStage = document.createElement('div');
+  collectionRadialStage.className = 'collection-radial-stage';
+  collectionRadialStage.setAttribute('aria-hidden', 'true');
+  collectionRadialStage.inert = true;
+  const tilt = document.createElement('div');
+  tilt.className = 'collection-radial-tilt';
+  collectionRadialRotor = document.createElement('div');
+  collectionRadialRotor.className = 'collection-radial-rotor';
+  collectionDirections.forEach((direction, index) => {
+    const blade = document.createElement('div');
+    blade.className = 'collection-radial-blade';
+    blade.style.setProperty('--blade-angle', `${index * collectionRadialStep}deg`);
+    ['front', 'back'].forEach(side => {
+      const face = document.createElement('div');
+      face.className = `collection-radial-face collection-radial-${side}`;
+      face.setAttribute('aria-hidden', 'true');
+      const image = document.createElement('img');
+      image.src = direction.thumbnail;
+      image.alt = '';
+      image.draggable = false;
+      image.decoding = 'async';
+      face.append(image);
+      blade.append(face);
+    });
+    collectionRadialBlades.push(blade);
+    collectionRadialRotor.append(blade);
+  });
+  tilt.append(collectionRadialRotor);
+  collectionRadialStage.append(tilt);
+  collectionEngine.append(collectionRadialStage);
+}
+
+function measureCollection() {
+  const width = collectionList.clientWidth, height = collectionList.clientHeight;
+  const compact = collectionMobile.matches;
+  const pageWidth = compact ? Math.min(width * .44, 240) : width * .66;
+  const pageHeight = pageWidth * (compact ? 1.05 : .625);
+  const activeY = height * (compact ? matchMedia('(max-width: 430px)').matches ? .1 : .07 : .15);
+  const stageWidth = compact ? Math.min(width * .5, 260) : width * .98;
+  const radius = stageWidth * (compact ? .37 : .42);
+  const stageHeight = compact ? pageHeight : height * .8;
+  // Desktop places the axis on the frame edge: the other half continues beyond it.
+  const stageLeft = compact ? width - stageWidth : width - stageWidth / 2;
+  const stageTop = compact ? activeY : (height - stageHeight) / 2;
+  collectionState.geometry = {
+    width, height, pageWidth, pageHeight, activeY, stageWidth, radius,
+    bladeWidth: radius * (compact ? .44 : .52), bladeHeight: radius * (compact ? 1.28 : 1.04),
+    camera: compact ? Math.min(1200, Math.max(800, width * 2.6)) : Math.max(1300, width * 2.4)
+  };
+  collectionList.style.setProperty('--collection-page-width', `${pageWidth}px`);
+  collectionList.style.setProperty('--collection-page-height', `${pageHeight}px`);
+  collectionList.style.setProperty('--collection-active-y', `${activeY}px`);
+  const g = collectionState.geometry;
+  const properties = {
+    '--radial-stage-width': stageWidth, '--radial-stage-left': stageLeft,
+    '--radial-stage-top': stageTop, '--radial-stage-height': stageHeight,
+    '--radial-radius': radius, '--radial-blade-width': g.bladeWidth,
+    '--radial-blade-height': g.bladeHeight, '--radial-camera': g.camera
+  };
+  Object.entries(properties).forEach(([name, value]) => collectionRadialStage.style.setProperty(name, `${value}px`));
+}
+function renderCollectionRadial() {
+  if (!collectionRadialRotor) return;
+  collectionRadialRotor.style.transform = `rotateY(${collectionState.wheelRotation}deg)`;
+  collectionRadialBlades.forEach((blade, index) => {
+    blade.classList.toggle('is-active', radialBladeContent[index] === collectionState.activeIndex);
+  });
+  updateCollectionDepth();
+}
+function collectionBladePresence(index, rotation = collectionState.wheelRotation) {
+  const angle = (index * collectionRadialStep + rotation) * Math.PI / 180;
+  return .28 + .26 * (1 + Math.cos(angle)) / 2;
+}
+function updateCollectionDepth() {
+  collectionRadialBlades.forEach((blade, index) => {
+    const presence = collectionBladePresence(index);
+    // Quantize only the decorative opacity writes; the rotor angle stays smooth.
+    if (Math.abs(presence - Number(blade.dataset.presence || 0)) > .004) {
+      blade.style.setProperty('--blade-presence', presence.toFixed(3));
+      blade.dataset.presence = String(presence);
+    }
+  });
+}
+function syncCollectionAmbient() {
+  collectionAmbient.hidden = collectionState.reducedMotion;
+  const moving = canCollectionMove();
+  if (moving) {
+    // Decode only adjacent directions ahead of interaction, reusing the asset cache.
+    prepareCollectionImage(collectionDirections[directionIndex(collectionState.activeIndex + 1)]);
+    prepareCollectionImage(collectionDirections[directionIndex(collectionState.activeIndex - 1)]);
   }
+  collectionSystem.classList.toggle('is-resting', !moving);
+  collectionAmbient.setAttribute('aria-pressed', String(collectionState.pauseState.manual));
+  collectionAmbient.setAttribute('aria-label', collectionState.pauseState.manual ? 'Retomar movimento do conjunto' : 'Pausar movimento do conjunto');
+  collectionAmbient.querySelector('span').textContent = collectionState.pauseState.manual ? '▷' : 'Ⅱ';
+  if (!moving) stopCollectionFrame();
+  else if (collectionState.frame === null) collectionState.frame = requestAnimationFrame(collectionFrame);
+}
+function stopCollectionFrame() {
+  if (collectionState.frame !== null) cancelAnimationFrame(collectionState.frame);
+  collectionState.frame = null;
+  collectionState.lastFrame = null;
+  collectionState.ambientElapsed = 0;
+}
+function canCollectionMove() {
+  const s = collectionState;
+  return collectionRadialRotor && !s.reducedMotion &&
+    s.visibilityState.component && s.visibilityState.document && ['idle', 'preparing'].includes(s.transitionState) &&
+    !Object.values(s.pauseState).some(Boolean);
+}
+function collectionFrame(time) {
+  const s = collectionState;
+  s.frame = null;
+  if (!canCollectionMove()) { s.lastFrame = null; return; }
+  if (s.lastFrame !== null) {
+    const dt = Math.min(time - s.lastFrame, 64);
+    s.ambientElapsed += dt;
+    const ramp = Math.min(1, s.ambientElapsed / 600);
+    s.wheelRotation -= dt * collectionAmbientSpeed * (ramp * ramp * (3 - 2 * ramp)) / 1000;
+    // No per-frame layout reads; angle and occasional face opacity writes only.
+    collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
+    updateCollectionDepth();
+  }
+  s.lastFrame = time;
+  s.frame = requestAnimationFrame(collectionFrame);
+}
+function arrangeCollection(announce = false) {
+  collectionDirections.forEach((direction, index) => {
+    const active = index === collectionState.activeIndex;
+    const slot = active ? 0 : 'off';
+    direction.piece.dataset.slot = String(slot);
+    delete direction.piece.dataset.wheelSlot;
+    direction.piece.inert = !active;
+    direction.piece.setAttribute('aria-hidden', String(!active));
+    if (active) direction.piece.setAttribute('aria-current', 'true');
+    else direction.piece.removeAttribute('aria-current');
+    direction.piece.querySelector('img').src = active ? direction.image : direction.thumbnail;
+    direction.piece.style.removeProperty('transform');
+    direction.piece.style.removeProperty('opacity');
+  });
+  collectionCurrent.textContent = String(collectionState.activeIndex + 1).padStart(2, '0');
+  collectionPosition.setAttribute('aria-label', `Direção ${collectionState.activeIndex + 1} de ${collectionDirections.length}`);
+  if (announce) collectionAnnouncement.textContent = `${collectionState.activeIndex + 1} de ${collectionDirections.length}: ${collectionDirections[collectionState.activeIndex].name}`;
+  renderCollectionRadial();
+}
+function settleCollectionMotion(announce = true) {
+  if (collectionState.transfer) { settleTransfer(announce); return; }
+  // Resize, reduced motion and hidden tabs finish the intended selection atomically.
+  const hadDestination = collectionState.destination !== null;
+  collectionState.run++;
+  collectionState.animations.forEach(animation => animation.cancel());
+  collectionState.animations = [];
+  if (hadDestination) {
+    collectionState.activeIndex = collectionState.destination;
+    collectionState.wheelRotation = closestCollectionRotation(collectionState.destination);
+  }
+  collectionState.destination = null;
+  collectionState.transitionState = 'idle';
+  collectionSystem.removeAttribute('aria-busy');
+  collectionSystem.classList.remove('is-transferring');
+  collectionSystem.classList.remove('is-rotating');
+  collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
+  collectionPieces.forEach(piece => piece.classList.remove('is-travelling'));
+  arrangeCollection(announce && hadDestination);
+  if (hadDestination) {
+    pauseCollectionInteraction();
+    resumeCollectionInteraction();
+  } else syncCollectionAmbient();
+}
+function pauseCollectionInteraction() {
+  collectionState.pauseState.interaction = true;
+  clearTimeout(collectionState.resumeTimer);
+  collectionSystem.classList.add('is-interacting');
+  syncCollectionAmbient();
+}
+function resumeCollectionInteraction(delay = 700) {
+  clearTimeout(collectionState.resumeTimer);
+  collectionState.resumeTimer = setTimeout(() => {
+    collectionState.pauseState.interaction = false;
+    collectionSystem.classList.remove('is-interacting');
+    syncCollectionAmbient();
+  }, delay);
+}
+async function navigateCollectionRadial(destination) {
+  const s = collectionState, run = ++s.run, oldActive = s.activeIndex;
+  const sourceSlot = radialBladeContent.indexOf(destination);
+  const oldActiveSlot = radialBladeContent.indexOf(oldActive);
+  const transfer = s.transfer = { oldActive, sourceSlot, oldActiveSlot, endRotation: s.wheelRotation, layer: null };
+  s.destination = destination;
+  s.transitionState = 'preparing';
+  collectionSystem.setAttribute('aria-busy', 'true');
+  if (s.reducedMotion || !s.visibilityState.document || !s.visibilityState.component || typeof collectionRadialRotor.animate !== 'function') {
+    settleTransfer(); return;
+  }
+  try {
+    // Keep the current card and ambient wheel alive while a cold asset decodes.
+    await prepareCollectionImage(collectionDirections[destination]);
+    if (s.run !== run) return;
+    const startRotation = s.wheelRotation;
+    const ramp = Math.min(1, s.ambientElapsed / 600);
+    const velocity = canCollectionMove() ? -collectionAmbientSpeed * ramp * ramp * (3 - 2 * ramp) : 0;
+    pauseCollectionInteraction();
+    const gateRotation = closestCollectionAngle(collectionExtractionAngle - sourceSlot * collectionRadialStep, startRotation);
+    const distance = Math.abs(gateRotation - startRotation);
+    const alignmentDuration = Math.round(Math.max(180, Math.min(440, 180 + distance * 260 / 180)));
+    transfer.alignmentDuration = alignmentDuration;
+    transfer.startAt = alignmentDuration - collectionTransferOverlap;
+    transfer.duration = transfer.startAt + collectionTransferDuration;
+    transfer.rotationAt = time => {
+      if (time >= alignmentDuration) return gateRotation - collectionAmbientSpeed * (time - alignmentDuration) / 1000;
+      const t = Math.max(0, time / alignmentDuration), smooth = t * t * (3 - 2 * t);
+      return startRotation + (gateRotation - startRotation) * smooth +
+        (t * t * t - 2 * t * t + t) * velocity * alignmentDuration / 1000 +
+        (t * t * t - t * t) * -collectionAmbientSpeed * alignmentDuration / 1000;
+    };
+    transfer.endRotation = transfer.rotationAt(transfer.duration);
+    beginCollectionTransfer(transfer, destination, run);
+    await Promise.allSettled(s.animations.map(animation => animation.finished));
+  } finally {
+    if (s.run === run && s.transfer === transfer) settleTransfer(true, true);
+  }
+}
+
+function measureTransferSurface(element, projected = false) {
+  const rect = element.getBoundingClientRect(), style = getComputedStyle(element);
+  const width = projected ? parseFloat(style.width) : rect.width;
+  const height = projected ? parseFloat(style.height) : rect.height;
+  let points = [[rect.left, rect.top], [rect.right, rect.top], [rect.right, rect.bottom], [rect.left, rect.bottom]];
+  if (projected) {
+    // Zero-size probes read the real projected corners, including camera and tilt.
+    // They are removed before either proxy exists; no per-frame measurements.
+    const probes = [[0, 0], [width, 0], [width, height], [0, height]].map(([x, y]) => {
+      const probe = document.createElement('span');
+      probe.style.cssText = `position:absolute;display:block;width:0;height:0;margin:0;padding:0;border:0;visibility:hidden;transform:none;left:${x - parseFloat(style.borderLeftWidth)}px;top:${y - parseFloat(style.borderTopWidth)}px`;
+      return probe;
+    });
+    element.append(...probes);
+    points = probes.map(probe => { const r = probe.getBoundingClientRect(); return [r.x, r.y]; });
+    probes.forEach(probe => probe.remove());
+  }
+  const radii = ['TopLeft', 'TopRight', 'BottomRight', 'BottomLeft'].map(corner => parseFloat(style[`border${corner}Radius`]));
+  return { points, width, height, radii, borderColor: style.borderColor };
+}
+function transferMatrix(points, width, height) {
+  // A planar homography keeps the first/last proxy corners on the measured face.
+  const [p0, p1, p2, p3] = points;
+  const dx1 = p1[0] - p2[0], dx2 = p3[0] - p2[0], dx3 = p0[0] - p1[0] + p2[0] - p3[0];
+  const dy1 = p1[1] - p2[1], dy2 = p3[1] - p2[1], dy3 = p0[1] - p1[1] + p2[1] - p3[1];
+  const denominator = dx1 * dy2 - dx2 * dy1;
+  const g = (dx3 * dy2 - dx2 * dy3) / denominator;
+  const h = (dx1 * dy3 - dx3 * dy1) / denominator;
+  const a = p1[0] - p0[0] + g * p1[0], b = p3[0] - p0[0] + h * p3[0];
+  const d = p1[1] - p0[1] + g * p1[1], e = p3[1] - p0[1] + h * p3[1];
+  return `matrix3d(${[a / width, d / width, 0, g / width, b / height, e / height, 0, h / height, 0, 0, 1, 0, p0[0], p0[1], 0, 1].join(',')})`;
+}
+function collectionTransferFrames(from, to, width, height, imageRatio, incoming, duration) {
+  const center = surface => surface.points.reduce((sum, p) => [sum[0] + p[0] / 4, sum[1] + p[1] / 4], [0, 0]);
+  const a = center(from), b = center(to), lerp = (x, y, t) => x + (y - x) * t;
+  const arc = incoming ? -Math.min(18, height * .12) : height * .3;
+  return Array.from({ length: 33 }, (_, index) => {
+    const t = index / 32, shape = t * t * (3 - 2 * t), bow = Math.sin(Math.PI * t) ** 2;
+    const depth = incoming ? 1 : 1 - .35 * bow;
+    // Endpoint tangents match the moving wheel; easing is applied only once.
+    const points = from.points.map((p, i) => p.map((value, axis) => {
+      const startTangent = from.next ? (from.next.points[i][axis] - value) / 8 * duration / (.12 / .32) : 0;
+      const endTangent = to.previous ? (to.points[i][axis] - to.previous.points[i][axis]) / 8 * duration / (.08 / .72) : 0;
+      const center = lerp(a[axis], b[axis], shape);
+      const point = lerp(value, to.points[i][axis], shape) +
+        (t * t * t - 2 * t * t + t) * startTangent + (t * t * t - t * t) * endTangent;
+      return center + (point - center) * depth + (axis === 1 ? bow * arc : 0);
+    }));
+    const w = lerp(from.width, to.width, shape), h = lerp(from.height, to.height, shape);
+    const cover = Math.max((w - 2) / imageRatio, h - 2) / Math.max((width - 2) / imageRatio, height - 2);
+    const radii = from.radii.map((r, i) => lerp(r, to.radii[i], shape));
+    return {
+      offset: t, transform: transferMatrix(points, width, height),
+      '--collection-transfer-crop-x': String(cover * width / w),
+      '--collection-transfer-crop-y': String(cover * height / h),
+      borderRadius: `${radii.map(r => r * width / w + 'px').join(' ')} / ${radii.map(r => r * height / h + 'px').join(' ')}`,
+      borderColor: t === 0 ? from.borderColor : to.borderColor,
+      opacity: incoming ? lerp(.82, 1, Math.min(1, t * 3)) : lerp(1, collectionBladePresence(collectionState.transfer.sourceSlot, collectionState.transfer.endRotation), shape)
+    };
+  });
+}
+function beginCollectionTransfer(transfer, destination, run) {
+  const s = collectionState, sourceBlade = collectionRadialBlades[transfer.sourceSlot];
+  const oldPiece = collectionDirections[transfer.oldActive].piece;
+  const highlight = measureTransferSurface(oldPiece.querySelector('.collection-piece-visual'));
+  const measureFaceAt = time => {
+    collectionRadialRotor.style.transform = `rotateY(${transfer.rotationAt(time)}deg)`;
+    return measureTransferSurface(sourceBlade.querySelector('.collection-radial-front'), true);
+  };
+  // Four endpoint measurements, before playback; no layout reads in animation frames.
+  const face = measureFaceAt(transfer.startAt);
+  face.next = measureFaceAt(transfer.startAt + 8);
+  const returnFace = measureFaceAt(transfer.duration);
+  returnFace.previous = measureFaceAt(transfer.duration - 8);
+  collectionRadialRotor.style.transform = `rotateY(${s.wheelRotation}deg)`;
+  transfer.scrollX = window.scrollX;
+  transfer.scrollY = window.scrollY;
+  const layer = transfer.layer = document.createElement('div');
+  layer.className = 'collection-transfer-layer';
+  layer.setAttribute('aria-hidden', 'true');
+  layer.inert = true;
+  const proxies = [true, false].map(incoming => {
+    const direction = collectionDirections[incoming ? destination : transfer.oldActive];
+    const proxy = document.createElement('div');
+    proxy.className = `collection-transfer-proxy ${incoming ? 'is-incoming' : 'is-outgoing'}`;
+    proxy.dataset.direction = direction.id;
+    proxy.style.width = `${highlight.width}px`;
+    proxy.style.height = `${highlight.height}px`;
+    if (incoming) proxy.style.opacity = '0';
+    const image = direction.piece.querySelector('img');
+    const duration = collectionTransferDuration - (incoming ? 0 : collectionReturnDelay);
+    const frames = collectionTransferFrames(incoming ? face : highlight, incoming ? highlight : returnFace, highlight.width, highlight.height, image.naturalWidth / image.naturalHeight || 4 / 3, incoming, duration);
+    const visual = document.createElement('img');
+    visual.src = direction.image;
+    visual.alt = '';
+    visual.draggable = false;
+    visual.setAttribute('aria-hidden', 'true');
+    proxy.append(visual);
+    layer.append(proxy);
+    return { proxy, visual, frames, incoming, duration };
+  });
+  document.body.append(layer);
+  collectionDirections[destination].piece.classList.add('is-transfer-highlight');
+  s.transitionState = 'transferring';
+  collectionSystem.classList.add('is-transferring');
+  const clock = document.timeline.currentTime;
+  const animate = (element, frames, timing) => {
+    const animation = element.animate(frames, timing);
+    // Resize/visibility can cancel any handle, including the late copy crossfade.
+    animation.finished.catch(() => {});
+    animation.startTime = clock;
+    s.animations.push(animation);
+    return animation;
+  };
+  // Alignment, extraction and drift share one uninterrupted wheel animation.
+  const wheelTimes = [...new Set([
+    ...Array.from({ length: 65 }, (_, index) => index / 64 * transfer.duration),
+    transfer.startAt, transfer.startAt + 8, transfer.alignmentDuration, transfer.duration - 8
+  ])].sort((a, b) => a - b);
+  animate(collectionRadialRotor, wheelTimes.map(time => {
+    const offset = time / transfer.duration;
+    return { offset, transform: `rotateY(${transfer.rotationAt(offset * transfer.duration)}deg)` };
+  }), { duration: transfer.duration, easing: 'linear', fill: 'both' });
+  collectionRadialBlades.forEach((blade, index) => {
+    const frames = [{ opacity: collectionBladePresence(index, s.wheelRotation) }];
+    if (index === transfer.sourceSlot) frames.push({ offset: transfer.startAt / transfer.duration, opacity: .82 });
+    frames.push({ opacity: collectionBladePresence(index, transfer.endRotation) });
+    blade.querySelectorAll('.collection-radial-face').forEach(surface => animate(surface, frames, { duration: transfer.duration, easing: 'linear', fill: 'both' }));
+  });
+  // The original face hands off on the same clock as the incoming proxy.
+  animate(sourceBlade, [{ visibility: 'visible' }, { visibility: 'hidden' }], { duration: transfer.startAt, fill: 'forwards' });
+  proxies.forEach(({ proxy, visual, frames, incoming, duration }) => {
+    const delay = transfer.startAt + (incoming ? 0 : collectionReturnDelay);
+    const timing = { duration, delay, easing: collectionTransferEasing, fill: incoming ? 'forwards' : 'both' };
+    animate(proxy, frames, timing);
+    // Match the face image's brightness at the handoff, without changing rotor styles.
+    animate(visual, [{ filter: `brightness(${incoming ? .86 : 1})` }, { filter: `brightness(${incoming ? 1 : .86})` }], timing);
+    if (!collectionTransferCropSupported) animate(visual, frames.map(frame => ({ offset: frame.offset, transform: `scale(${frame['--collection-transfer-crop-x']},${frame['--collection-transfer-crop-y']})` })), timing);
+  });
+  // Keep a stable stage behind the travelling surfaces until the new card arrives.
+  animate(oldPiece.querySelector('img'), [{ opacity: 1 }, { opacity: 1, offset: .35 }, { opacity: 0, offset: .72 }, { opacity: 0 }], { delay: transfer.startAt, duration: collectionTransferDuration, fill: 'both' });
+  const copyAt = transfer.startAt + Math.round(collectionTransferDuration * .72);
+  const copyCue = animate(oldPiece.querySelector('.collection-piece-copy'), [
+    { opacity: 1 }, { opacity: 1, offset: .85 }, { opacity: .72 }
+  ], { duration: copyAt, fill: 'both' });
+  // An animation-clock milestone keeps copy/counter/ARIA together, even after a busy frame.
+  copyCue.finished.then(() => {
+    if (s.run !== run || s.transfer !== transfer) return;
+    s.activeIndex = destination;
+    arrangeCollection(true);
+    const copy = animate(collectionDirections[destination].piece.querySelector('.collection-piece-copy'), [
+      { opacity: .72 }, { opacity: 1 }
+    ], { duration: 180, easing: 'ease-out', fill: 'both' });
+    copy.startTime = clock + copyAt;
+  }, () => {});
+}
+
+function settleTransfer(announce = true, continuous = false) {
+  const s = collectionState, transfer = s.transfer;
+  if (!transfer) return;
+  s.run++;
+  s.animations.forEach(animation => animation.cancel());
+  s.animations = [];
+  // Preparing may have kept drifting while the image decoded.
+  if (transfer.rotationAt) s.wheelRotation = transfer.endRotation;
+  const changed = s.activeIndex !== s.destination;
+  if (changed) s.activeIndex = s.destination;
+  [radialBladeContent[transfer.sourceSlot], radialBladeContent[transfer.oldActiveSlot]] = [transfer.oldActive, s.activeIndex];
+  [transfer.sourceSlot, transfer.oldActiveSlot].forEach(slot => {
+    const direction = collectionDirections[radialBladeContent[slot]];
+    collectionRadialBlades[slot].querySelectorAll('img').forEach(image => { image.src = direction.thumbnail; });
+    collectionRadialBlades[slot].classList.remove('is-transfer-hidden');
+  });
+  [transfer.oldActive, s.activeIndex].forEach(index => collectionDirections[index].piece.classList.remove('is-transfer-highlight'));
+  transfer.layer?.remove();
+  s.transfer = null;
+  s.destination = null;
+  s.transitionState = 'idle';
+  collectionSystem.removeAttribute('aria-busy');
+  collectionSystem.classList.remove('is-transferring', 'is-rotating');
+  collectionNavigation.querySelectorAll('.circle-link').forEach(button => button.removeAttribute('aria-disabled'));
+  arrangeCollection(announce && changed);
+  clearTimeout(s.resumeTimer);
+  s.pauseState.interaction = false;
+  collectionSystem.classList.remove('is-interacting');
+  s.ambientElapsed = continuous ? 600 : 0;
+  syncCollectionAmbient();
+  // Coalesce rapid inputs into one next destination instead of dropping clicks.
+  if (s.queuedDestination !== null) queueMicrotask(() => {
+    if (s.transitionState !== 'idle') return;
+    const destination = s.queuedDestination;
+    s.queuedDestination = null;
+    if (destination !== null) navigateCollection(destination);
+  });
+}
+function collectionNavigationIndex() {
+  return collectionState.queuedDestination ?? collectionState.destination ?? collectionState.activeIndex;
+}
+function navigateCollection(index) {
+  // Both layouts share the same physical exchange and single transition owner.
+  const destination = directionIndex(index);
+  if (collectionState.transitionState !== 'idle') { collectionState.queuedDestination = destination; return; }
+  if (destination === collectionState.activeIndex) return;
+  if (collectionPieces.some(piece => piece.contains(document.activeElement))) collectionList.focus({ preventScroll: true });
+  navigateCollectionRadial(destination);
+}
+function syncCollectionLayout() {
+  collectionSystem.classList.add('is-radial');
+  if (!collectionRadialStage) collectionState.wheelRotation = closestCollectionRotation(collectionState.activeIndex);
+  createCollectionRadial();
+  measureCollection();
+  settleCollectionMotion();
+}
+collectionSystem.classList.add('is-enhanced');
+collectionNavigation.hidden = false;
+syncCollectionLayout();
+collectionSystem.querySelector('.collection-previous').addEventListener('click', () => navigateCollection(collectionNavigationIndex() - 1));
+collectionSystem.querySelector('.collection-next').addEventListener('click', () => navigateCollection(collectionNavigationIndex() + 1));
+function collectionKeyboard(event) {
+  const destinations = { ArrowRight: collectionNavigationIndex() + 1, ArrowLeft: collectionNavigationIndex() - 1, Home: 0, End: collectionDirections.length - 1 };
+  if (event.key in destinations) { event.preventDefault(); navigateCollection(destinations[event.key]); }
+}
+collectionList.addEventListener('keydown', collectionKeyboard);
+collectionNavigation.addEventListener('keydown', collectionKeyboard);
+collectionAmbient.addEventListener('click', () => { collectionState.pauseState.manual = !collectionState.pauseState.manual; syncCollectionAmbient(); });
+// Hover leaves the object alive; explicit pause and focus remain available.
+collectionList.addEventListener('focusin', () => { collectionState.pauseState.focus = true; syncCollectionAmbient(); });
+collectionList.addEventListener('focusout', event => { if (!collectionList.contains(event.relatedTarget)) { collectionState.pauseState.focus = false; syncCollectionAmbient(); } });
+// Pointer/touch navigation owns its exchange; a press never freezes the ambient wheel.
+collectionMobile.addEventListener('change', syncCollectionLayout);
+reducedMotion.addEventListener('change', () => { collectionState.reducedMotion = reducedMotion.matches; settleCollectionMotion(); });
+window.addEventListener('resize', () => {
+  // Mobile browser chrome can resize height during scroll without changing layout.
+  if (Math.abs(collectionList.clientWidth - collectionState.geometry.width) > .5 ||
+    (!collectionMobile.matches && Math.abs(collectionList.clientHeight - collectionState.geometry.height) > .5)) syncCollectionLayout();
+}, { passive: true });
+window.addEventListener('scroll', () => {
+  const transfer = collectionState.transfer;
+  if (transfer?.layer) transfer.layer.style.transform = `translate3d(${transfer.scrollX - window.scrollX}px,${transfer.scrollY - window.scrollY}px,0)`;
+}, { passive: true });
+document.addEventListener('visibilitychange', () => {
+  collectionState.visibilityState.document = !document.hidden;
+  if (document.hidden) settleCollectionMotion();
+  syncCollectionAmbient();
 });
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(entries => {
+    collectionState.visibilityState.component = entries[0].isIntersecting;
+    if (!collectionState.visibilityState.component && collectionState.transitionState !== 'idle') settleCollectionMotion(false);
+    syncCollectionAmbient();
+  }, { threshold: .15 }).observe(collectionSystem);
+} else collectionState.visibilityState.component = true;
+syncCollectionAmbient();
 
 const form = document.querySelector('.contact-card');
 form.addEventListener('submit', event => {
@@ -82,30 +724,247 @@ form.addEventListener('submit', event => {
   status.append(fallback);
 });
 
-const projectDirections = [
-  { name: 'STÚDIO NICOTA', category: 'Arquitetura & Interiores', image: 'project-nicota.png', tag: 'Conceito Avero' },
-  { name: 'VÉRTICE CLÍNICA', category: 'Saúde & Bem-estar', image: 'project-clinic.png', tag: 'Conceito Avero' },
-  { name: 'SABOR REAL', category: 'Gastronomia', image: 'project-sabor.png', tag: 'Demo personalizada' }
-];
+// Build 01.7 — three real slides; CSS order rotates the view, never the DOM.
+const projectViewport = document.querySelector('.project-viewport');
+const projectTrack = document.querySelector('.project-track');
+const projectSlides = [...projectTrack.querySelectorAll('.project-slide')];
 const projectPages = [...document.querySelectorAll('.project-pagination button')];
+const projectControls = document.querySelector('.project-carousel-controls');
+const projectAnnouncement = document.querySelector('.project-announcement');
 let currentProject = 0;
-function showProject(index) {
-  currentProject = (index + projectDirections.length) % projectDirections.length;
-  const project = projectDirections[currentProject];
-  const featured = document.querySelector('.featured');
-  featured.querySelector('.featured-art').src = `assets/${project.image}`;
-  featured.querySelector('.featured-art').alt = `${project.name}: projeto em computador e celular`;
-  featured.querySelector('.project-meta h3').textContent = project.name;
-  featured.querySelector('.project-meta p').textContent = project.category;
-  featured.querySelector('.project-tags span').textContent = project.tag;
-  featured.querySelector('[data-project]').dataset.project = project.name;
-  projectPages.forEach((button, i) => {
-    button.classList.toggle('active', i === currentProject);
-    if (i === currentProject) button.setAttribute('aria-current', 'true');
+let projectDestination = 0;
+let projectAnimation = null;
+const projectIndex = index => (index + projectSlides.length) % projectSlides.length;
+
+function orderProjects(first) {
+  projectSlides.forEach((slide, index) => { slide.style.order = projectIndex(index - first); });
+}
+function settleProject(announce = true) {
+  // Cancel before replacing the order: the track returns to its resting position.
+  if (projectAnimation) { projectAnimation.cancel(); projectAnimation = null; }
+  currentProject = projectDestination;
+  orderProjects(currentProject);
+  projectSlides.forEach((slide, index) => {
+    const active = index === currentProject;
+    slide.classList.toggle('is-active', active);
+    slide.inert = !active;
+    slide.setAttribute('aria-hidden', String(!active));
+  });
+  projectPages.forEach((button, index) => {
+    button.classList.toggle('active', index === currentProject);
+    if (index === currentProject) button.setAttribute('aria-current', 'true');
     else button.removeAttribute('aria-current');
   });
-  document.querySelector('.project-announcement').textContent = `Projeto ${currentProject + 1} de ${projectDirections.length}: ${project.name}`;
+  projectViewport.removeAttribute('aria-busy');
+  if (announce) projectAnnouncement.textContent = `Projeto ${currentProject + 1} de ${projectSlides.length}: ${projectSlides[currentProject].querySelector('h3').textContent}`;
 }
-document.querySelector('.project-prev').addEventListener('click', () => showProject(currentProject - 1));
-document.querySelector('.project-next').addEventListener('click', () => showProject(currentProject + 1));
+function showProject(index) {
+  // A second input during a transition first settles its destination.
+  if (projectAnimation) settleProject(false);
+  const destination = projectIndex(index);
+  if (destination === currentProject) return;
+  projectDestination = destination;
+  if (projectViewport.contains(document.activeElement)) projectViewport.focus({ preventScroll: true });
+  if (reducedMotion.matches || !projectTrack.animate) { settleProject(); return; }
+  const next = destination === projectIndex(currentProject + 1);
+  const step = projectSlides[0].getBoundingClientRect().width + parseFloat(getComputedStyle(projectTrack).columnGap);
+  // Going back starts with the previous slide off-screen to the left.
+  if (!next) orderProjects(destination);
+  projectViewport.setAttribute('aria-busy', 'true');
+  projectAnimation = projectTrack.animate(
+    [{ transform: `translateX(${next ? 0 : -step}px)` }, { transform: `translateX(${next ? -step : 0}px)` }],
+    { duration: 620, easing: 'cubic-bezier(.22,.68,.22,1)', fill: 'forwards' }
+  );
+  projectAnimation.onfinish = () => settleProject();
+}
+projectViewport.classList.add('is-enhanced');
+projectControls.hidden = false;
+settleProject(false);
+document.querySelector('.project-prev').addEventListener('click', () => showProject(projectDestination - 1));
+document.querySelector('.project-next').addEventListener('click', () => showProject(projectDestination + 1));
 projectPages.forEach((button, index) => button.addEventListener('click', () => showProject(index)));
+function projectKeyboard(event) {
+  const destinations = { ArrowRight: projectDestination + 1, ArrowLeft: projectDestination - 1, Home: 0, End: projectSlides.length - 1 };
+  if (event.key in destinations) { event.preventDefault(); showProject(destinations[event.key]); }
+}
+projectControls.addEventListener('keydown', projectKeyboard);
+projectViewport.addEventListener('keydown', projectKeyboard);
+// Native vertical scrolling remains available; a deliberate horizontal swipe advances.
+let projectSwipe = null;
+projectViewport.addEventListener('pointerdown', event => {
+  if (event.pointerType === 'mouse' || event.target.closest('a, button')) return;
+  projectSwipe = { x: event.clientX, y: event.clientY, id: event.pointerId };
+});
+projectViewport.addEventListener('pointerup', event => {
+  if (!projectSwipe || event.pointerId !== projectSwipe.id) return;
+  const dx = event.clientX - projectSwipe.x;
+  const dy = event.clientY - projectSwipe.y;
+  projectSwipe = null;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) showProject(projectDestination + (dx < 0 ? 1 : -1));
+});
+projectViewport.addEventListener('pointercancel', () => { projectSwipe = null; });
+window.addEventListener('resize', () => { if (projectAnimation) settleProject(); });
+reducedMotion.addEventListener('change', () => { if (reducedMotion.matches && projectAnimation) settleProject(); });
+
+// Build 01.6 — four slots, stable DOM order, no autoplay or animation library.
+const serviceOrbit = document.querySelector('.services-orbit');
+const orbitServices = [...serviceOrbit.querySelectorAll('.service-card')];
+const orbitNavigation = serviceOrbit.querySelector('.service-orbit-navigation');
+const orbitNext = serviceOrbit.querySelector('.service-orbit-next');
+const orbitCurrent = serviceOrbit.querySelector('.service-orbit-current strong');
+const orbitDesktop = matchMedia('(min-width: 1101px)');
+let highlightedService = 0;
+let orbitAnimations = [];
+function settleServiceOrbit() {
+  orbitAnimations.forEach(animation => animation.cancel());
+  orbitAnimations = [];
+}
+function syncServiceOrbit() {
+  settleServiceOrbit();
+  serviceOrbit.classList.toggle('is-orbital', orbitDesktop.matches);
+  orbitNavigation.hidden = !orbitDesktop.matches;
+}
+function advanceServiceOrbit() {
+  if (!orbitDesktop.matches || orbitAnimations.length) return;
+  const before = orbitServices.map(card => card.getBoundingClientRect());
+  const previousSlots = orbitServices.map(card => Number(card.dataset.orbitSlot));
+  highlightedService = (highlightedService + 1) % orbitServices.length;
+  orbitServices.forEach((card, index) => {
+    card.dataset.orbitSlot = String((index - highlightedService + orbitServices.length) % orbitServices.length);
+  });
+  const label = orbitServices[highlightedService].querySelector('h3').textContent;
+  orbitCurrent.textContent = label;
+  orbitNext.setAttribute('aria-label', `Destacar próxima solução. Em destaque: ${label}`);
+  if (reducedMotion.matches || typeof orbitNext.animate !== 'function') return;
+  const after = orbitServices.map(card => card.getBoundingClientRect());
+  // Each leg bends outwards, keeping movement around the core, never through it.
+  const bows = [[-40, 0], [0, -155], [38, 0], [0, 105]];
+  orbitAnimations = orbitServices.map((card, index) => {
+    const old = before[index], next = after[index];
+    const dx = old.left - next.left, dy = old.top - next.top;
+    const [bowX, bowY] = bows[previousSlots[index]];
+    const sx = old.width / next.width, sy = old.height / next.height;
+    const frames = Array.from({ length: 9 }, (_, step) => {
+      const t = step / 8, arc = 4 * t * (1 - t);
+      return { transform: `translate(${dx * (1 - t) + bowX * arc}px, ${dy * (1 - t) + bowY * arc}px) scale(${sx + (1 - sx) * t}, ${sy + (1 - sy) * t})`, offset: t };
+    });
+    return card.animate(frames, { duration: 760, easing: 'cubic-bezier(.22,1,.36,1)' });
+  });
+  const activeAnimations = orbitAnimations;
+  Promise.allSettled(activeAnimations.map(animation => animation.finished)).then(() => {
+    if (orbitAnimations === activeAnimations) orbitAnimations = [];
+  });
+}
+orbitNext.addEventListener('click', advanceServiceOrbit);
+orbitDesktop.addEventListener('change', syncServiceOrbit);
+reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) settleServiceOrbit(); });
+window.addEventListener('resize', settleServiceOrbit, { passive: true });
+syncServiceOrbit();
+
+// Hero only — real mouse input moves the iris inside the fixed official frame.
+(function initHeroEye() {
+  const hero = document.querySelector('.hero');
+  const iris = hero?.querySelector('.hero-eye-iris');
+  const eye = hero?.querySelector('.hero-eye-layer');
+  if (!iris || !eye) return;
+  // Input is checked per event: a secondary mouse also works on hybrid computers.
+  const desktop = matchMedia('(min-width: 901px)');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  let enabled = false, visible = true, inside = false, bounds, focus, boundsDirty = true;
+  let frame = 0, lastTime = 0;
+  let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+  function measure() {
+    bounds = hero.getBoundingClientRect();
+    const shape = eye.getBoundingClientRect();
+    focus = {
+      x: shape.left + shape.width * .538,
+      y: shape.top + shape.height * .565,
+      radiusX: Math.max(1, shape.width * .30),
+      radiusY: Math.max(1, shape.height * .52),
+      maxX: Math.min(20, shape.width * .024),
+      maxY: Math.min(12, shape.height * .030)
+    };
+    boundsDirty = false;
+  }
+  function stop(reset = false) {
+    cancelAnimationFrame(frame);
+    frame = lastTime = 0;
+    if (reset) {
+      inside = false;
+      targetX = targetY = currentX = currentY = 0;
+      iris.style.removeProperty('--hero-look-x');
+      iris.style.removeProperty('--hero-look-y');
+      hero.classList.toggle('has-eye-motion', false);
+    }
+  }
+  function tick(time) {
+    frame = 0;
+    if (!enabled || !visible || document.hidden) return;
+    const delta = lastTime ? Math.min(50, time - lastTime) : 16;
+    lastTime = time;
+    // 165ms exponential response: continuous velocity, no bounce or overshoot.
+    const ease = 1 - Math.exp(-delta / 165);
+    currentX += (targetX - currentX) * ease;
+    currentY += (targetY - currentY) * ease;
+    iris.style.setProperty('--hero-look-x', `${currentX.toFixed(3)}px`);
+    iris.style.setProperty('--hero-look-y', `${currentY.toFixed(3)}px`);
+    if (Math.abs(targetX - currentX) + Math.abs(targetY - currentY) > .015) {
+      frame = requestAnimationFrame(tick);
+    } else if (!inside) {
+      stop(true);
+    } else {
+      lastTime = 0;
+    }
+  }
+  function start() {
+    if (enabled && visible && !document.hidden && !frame) frame = requestAnimationFrame(tick);
+  }
+  function center() {
+    const needsReturn = inside || currentX !== 0 || currentY !== 0;
+    inside = false;
+    targetX = targetY = 0;
+    if (needsReturn) start();
+  }
+  function configure() {
+    enabled = desktop.matches && !reduce.matches;
+    boundsDirty = true;
+    if (enabled) center(); else stop(true);
+  }
+  function observe(event) {
+    if (!enabled || !visible || document.hidden || event.pointerType !== 'mouse') return;
+    if (boundsDirty) measure();
+    if (!bounds.width || !bounds.height) return;
+    if (event.clientX < bounds.left || event.clientX > bounds.right ||
+        event.clientY < bounds.top || event.clientY > bounds.bottom) {
+      center();
+      return;
+    }
+    let x = (event.clientX - focus.x) / focus.radiusX;
+    let y = (event.clientY - focus.y) / focus.radiusY;
+    const radius = Math.max(1, Math.hypot(x, y));
+    targetX = x / radius * focus.maxX;
+    targetY = y / radius * focus.maxY;
+    inside = true;
+    hero.classList.toggle('has-eye-motion', true);
+    start();
+  }
+  // Capture includes mouse movement over the header or controls inside the Hero bounds.
+  window.addEventListener('pointermove', observe, { passive: true, capture: true });
+  window.addEventListener('pointerout', event => { if (!event.relatedTarget) center(); }, { passive: true });
+  window.addEventListener('pointercancel', center, { passive: true });
+  window.addEventListener('blur', center);
+  window.addEventListener('scroll', () => { boundsDirty = true; }, { passive: true });
+  window.addEventListener('resize', configure, { passive: true });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(true); });
+  desktop.addEventListener('change', configure);
+  reduce.addEventListener('change', configure);
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(entries => {
+      visible = entries[0].isIntersecting;
+      boundsDirty = true;
+      if (!visible) stop(true);
+    }).observe(hero);
+  }
+  configure();
+})();

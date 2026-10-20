@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="avero-palette-b">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,76 +11,287 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" href="assets/avero-eye.png" type="image/png">
-  <link rel="preload" as="image" href="assets/avero-eye.png">
+  <link rel="preload" as="image" href="assets/avero-eye-isolated-v1.webp" media="(max-width:900px)">
+  <link rel="preload" as="image" href="assets/hero-eye-frame-official.png" media="(min-width:901px)">
+  <link rel="preload" as="image" href="assets/hero-eye-iris-official.png" media="(min-width:901px)">
   <script src="script.js" defer></script>
 </head>
 <body>
+<div class="page-flow" aria-hidden="true"><span></span><span></span><span></span></div>
 <a class="skip-link" href="#main">Ir para o conteúdo</a>
 <header class="site-header" id="top">
   <div class="container header-inner">
-    <a class="brand" href="#top" aria-label="AVERO Studio — início"><span class="brand-art" role="img" aria-label="AVERO Studio"></span></a>
+    <a class="brand" href="#top" aria-label="AVERO Studio — início"><span class="brand-art" role="img" aria-label="AVERO Studio"><img src="assets/avero-wordmark-provisional-01-16a.png" alt="" width="2172" height="724" decoding="async"></span></a>
     <nav class="desktop-nav" aria-label="Navegação principal"><a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a></nav>
-    <a class="btn btn-outline desktop-cta" href="#contato">Falar sobre meu projeto <span aria-hidden="true">→</span></a>
+    <a class="btn btn-outline desktop-cta" href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">Falar sobre meu projeto <span aria-hidden="true">→</span></a>
     <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span><span></span><span></span></button>
   </div>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação móvel" hidden><a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a></nav>
 </header>
-<main id="main">
+<main id="main" tabindex="-1">
   <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-art" aria-hidden="true"></div>
+    <!-- Desktop uses the supplied frame and iris; the approved mobile symbol stays static. -->
+    <div class="hero-art" aria-hidden="true" data-hero-layer="base">
+      <span class="hero-nebula-layer" data-hero-layer="atmosphere"></span>
+      <span class="hero-eye-layer" data-hero-layer="official-eye">
+        <span class="hero-eye-iris-window" data-hero-layer="iris-mask">
+          <span class="hero-eye-iris" data-hero-layer="iris"></span>
+        </span>
+        <span class="hero-eye-structure" data-hero-layer="structure"></span>
+      </span>
+      <span class="hero-shade-layer" data-hero-layer="contrast"></span>
+    </div>
     <div class="container hero-content">
       <p class="eyebrow">ESTRATÉGIA · DESIGN · TECNOLOGIA</p>
       <h1 id="hero-title">Sites que <br>impulsionam <br><em>negócios.</em></h1>
       <p class="lead">Estratégia, design e tecnologia para transformar sua presença digital em percepção, oportunidades e resultados.</p>
-      <div class="actions"><a class="btn btn-primary" href="#contato">Falar sobre meu projeto <span aria-hidden="true">→</span></a><a class="btn btn-outline" href="#projetos">Ver projetos <span aria-hidden="true">↗</span></a></div>
-      <a class="scroll-cue" href="#posicionamento"><span class="mouse" aria-hidden="true"></span>ROLAR</a>
+      <div class="actions"><a class="btn btn-primary" href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">Falar sobre meu projeto <span aria-hidden="true">→</span></a><a class="btn btn-outline" href="#projetos">Ver projetos <span aria-hidden="true">↗</span></a></div>
+      <div class="hero-mobile-eye" aria-hidden="true" data-hero-layer="mobile-eye-composite" data-motion="static"></div>
       <p class="hero-signature">VISÃO <br>MOVIMENTO <br>RESULTADOS</p>
     </div>
   </section>
-  <section class="positioning section-shell flow-section" id="posicionamento" aria-labelledby="position-title">
+  <section class="positioning section-shell" id="posicionamento" aria-labelledby="position-title">
     <div class="container">
-      <p class="section-index">01. POSICIONAMENTO</p>
-      <div class="split-copy"><h2 id="position-title">Sua empresa já existe. <br>Agora ela precisa parecer <br>tão boa no digital quanto <br>é no mundo real.</h2><div class="copy-side"><p>Um bom site não serve apenas para dizer que sua empresa existe. Ele deve transmitir valor, orientar o cliente e transformar atenção em oportunidade.</p><p>É por isso que estratégia, design e tecnologia entram antes da estética.</p></div></div>
-      <div class="pillars">
-        <svg class="pillar-line" viewBox="0 0 1280 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 43 C100 10 170 94 290 70 S470 0 590 30 S740 80 840 45 S990 10 1070 37 S1190 56 1280 20"/><g><circle cx="65" cy="41" r="3"/><circle cx="290" cy="70" r="3"/><circle cx="500" cy="22" r="3"/><circle cx="840" cy="45" r="3"/><circle cx="1070" cy="37" r="3"/></g></svg>
-        <article><span>01</span><h3>VISÃO</h3><p>Enxergar antes <br>de construir.</p></article><article><span>02</span><h3>MOVIMENTO</h3><p>Transformar estratégia <br>em experiência.</p></article><article><span>03</span><h3>RESULTADOS</h3><p>Presença que abre <br>oportunidades.</p></article>
+      <div class="split-copy">
+        <h2 id="position-title">Sua empresa já existe. <br>Agora ela precisa parecer <br>tão boa no digital quanto <br>é no mundo real.</h2>
+        <div class="copy-side"><p>Um bom site não serve apenas para dizer que sua empresa existe. Ele deve transmitir valor, orientar o cliente e transformar atenção em oportunidade.</p><p>É por isso que estratégia, design e tecnologia entram antes da estética.</p></div>
+      </div>
+      <div class="position-journey" data-motion="static">
+        <!-- One static trajectory; the ordered list remains the reading order at every width. -->
+        <svg class="pillar-line" viewBox="0 0 1280 240" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <defs><linearGradient id="position-trajectory-fade" x1="0" x2="1"><stop offset="0" stop-color="#4da3ff" stop-opacity="0"/><stop offset=".12" stop-color="#7cb4e1" stop-opacity=".72"/><stop offset=".76" stop-color="#7cb4e1" stop-opacity=".64"/><stop offset="1" stop-color="#4da3ff" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0 44 H90 C275 44 352 44 424 88 C465 113 485 122 538 122 C722 122 800 70 973 70 C1110 70 1203 70 1280 88"/>
+        </svg>
+        <ol class="pillars" role="list" aria-label="Da visão aos resultados">
+          <li class="pillar pillar--vision"><svg class="pillar-mobile-segment" viewBox="0 0 64 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M32 0 C16 30 48 65 32 100"/></svg><span class="pillar-node" aria-hidden="true"></span><h3>VISÃO</h3><p>Enxergar antes de construir.</p></li>
+          <li class="pillar pillar--movement"><svg class="pillar-mobile-segment" viewBox="0 0 64 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M32 0 C48 30 16 65 32 100"/></svg><span class="pillar-node" aria-hidden="true"></span><h3>MOVIMENTO</h3><p>Transformar estratégia em experiência.</p></li>
+          <li class="pillar pillar--results"><svg class="pillar-mobile-segment" viewBox="0 0 64 100" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M32 0 C16 30 48 65 32 100"/></svg><span class="pillar-node" aria-hidden="true"></span><h3>RESULTADOS</h3><p>Presença que abre oportunidades.</p></li>
+        </ol>
       </div>
     </div>
   </section>
   <section class="services section-shell" id="servicos" aria-labelledby="services-title">
-    <div class="container services-layout">
-      <div class="services-intro"><p class="section-index">02. SERVIÇOS</p><h2 id="services-title">Seu site precisa <br>fazer mais do <br>que existir.</h2><p>Cada negócio tem um momento diferente. A Avero combina estratégia, design e tecnologia para construir a solução que faz sentido para o seu objetivo.</p><a class="text-cta" href="#contato">Não sabe exatamente o que precisa? <br><strong>Conte sobre seu negócio <span aria-hidden="true">→</span></strong></a></div>
-      <div class="service-grid">
-        <article class="service-card"><img class="service-image service-institutional" src="assets/service-institutional.png" alt="Site institucional em telas de computador e celular" width="1536" height="1152" loading="lazy" decoding="async"><div class="service-copy"><span class="num">01</span><h3>Sites institucionais</h3><small>PRESENÇA QUE POSICIONA</small><p>Reputação e confiança em uma presença digital à altura do seu negócio.</p><a class="circle-link service-link" href="#contato" data-service="Site institucional" aria-label="Conversar sobre site institucional">→</a></div></article>
-        <article class="service-card"><img class="service-image service-landing" src="assets/service-landing.png" alt="Landing page com versão para celular" width="1536" height="1152" loading="lazy" decoding="async"><div class="service-copy"><span class="num">02</span><h3>Landing Pages</h3><small>PÁGINAS QUE CONVERTEM</small><p>Uma página. Um objetivo. Mais clareza, mais direção.</p><a class="circle-link service-link" href="#contato" data-service="Landing page" aria-label="Conversar sobre landing page">→</a></div></article>
-        <article class="service-card"><img class="service-image service-commerce" src="assets/service-commerce.png" alt="Loja e cardápio digital em computador e celular" width="1536" height="1152" loading="lazy" decoding="async"><div class="service-copy"><span class="num">03</span><h3>E-commerce <br>+ Cardápios</h3><small>EXPERIÊNCIAS QUE VENDEM</small><p>Experiências de compra claras, rápidas e eficientes.</p><a class="circle-link service-link" href="#contato" data-service="E-commerce / Cardápio" aria-label="Conversar sobre e-commerce e cardápios">→</a></div></article>
-        <article class="service-card"><img class="service-image service-seo" src="assets/service-performance.png" alt="Painéis de busca, métricas e desempenho" width="1536" height="1152" loading="lazy" decoding="async"><div class="service-copy"><span class="num">04</span><h3>SEO &amp; Performance</h3><small>BASE PARA CRESCER</small><p>Tecnologia, otimização e desempenho para resultados reais.</p><a class="circle-link service-link" href="#contato" data-service="SEO & Performance" aria-label="Conversar sobre SEO e performance">→</a></div></article>
+    <div class="container services-layout services-orbit">
+      <svg class="services-trajectory" viewBox="0 0 1200 1000" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M42 350 C-15 110 135 -15 390 18 C610 46 785 -12 990 84"/><path d="M1170 320 C1220 640 1000 965 645 968 C490 972 390 910 308 850"/></svg>
+      <div class="services-intro"><h2 id="services-title">Seu site precisa <br>fazer mais do <br>que existir.</h2><p>Cada negócio tem um momento diferente. A Avero combina estratégia, design e tecnologia para construir a solução que faz sentido para o seu objetivo.</p><a class="text-cta" href="#contato">Não sabe exatamente o que precisa? <br><strong>Conte sobre seu negócio <span aria-hidden="true">→</span></strong></a><div class="service-orbit-navigation" hidden><button class="service-orbit-next" type="button" aria-controls="service-solutions" aria-label="Destacar próxima solução"><span aria-hidden="true">↻</span></button><p class="service-orbit-current">Em destaque <strong>Sites institucionais</strong></p></div></div>
+      <div class="service-grid" id="service-solutions">
+        <article class="service-card service-card--institutional" data-orbit-slot="0">
+          <div class="service-visual"><img class="service-image service-institutional" src="assets/service-institutional.png" alt="Site institucional em telas de computador e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
+          <div class="service-copy">
+            <div class="service-kicker"><small>PRESENÇA QUE POSICIONA</small></div>
+            <h3>Sites institucionais</h3>
+            <div class="service-footer"><p>Reputação e confiança em uma presença digital à altura do seu negócio.</p><a class="circle-link service-link" href="/servicos/sites-institucionais" data-service="Site institucional" aria-label="Saiba mais sobre Sites Institucionais">→</a></div>
+          </div>
+        </article>
+        <article class="service-card service-card--landing" data-orbit-slot="1">
+          <div class="service-visual"><img class="service-image service-landing" src="assets/service-landing.png" alt="Landing page com versão para celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
+          <div class="service-copy">
+            <div class="service-kicker"><small>PÁGINAS QUE CONVERTEM</small></div>
+            <h3>Landing Pages</h3>
+            <div class="service-footer"><p>Uma página. Um objetivo. Mais clareza, mais direção.</p><a class="circle-link service-link" href="/servicos/landing-pages" data-service="Landing page" aria-label="Saiba mais sobre Landing Pages">→</a></div>
+          </div>
+        </article>
+        <article class="service-card service-card--commerce" data-orbit-slot="2">
+          <div class="service-visual"><img class="service-image service-commerce" src="assets/service-commerce.png" alt="Loja e cardápio digital em computador e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
+          <div class="service-copy">
+            <div class="service-kicker"><small>EXPERIÊNCIAS QUE VENDEM</small></div>
+            <h3>E-commerce + Cardápios</h3>
+            <div class="service-footer"><p>Experiências de compra claras, rápidas e eficientes.</p><a class="circle-link service-link" href="/servicos/ecommerce-cardapios" data-service="E-commerce / Cardápio" aria-label="Saiba mais sobre E-commerce e Cardápios">→</a></div>
+          </div>
+        </article>
+        <article class="service-card service-card--seo" data-orbit-slot="3">
+          <div class="service-visual"><img class="service-image service-seo" src="assets/service-performance.png" alt="Painéis de busca, métricas e desempenho" width="1536" height="1152" loading="lazy" decoding="async"></div>
+          <div class="service-copy">
+            <div class="service-kicker"><small>BASE PARA CRESCER</small></div>
+            <h3>SEO &amp; Performance</h3>
+            <div class="service-footer"><p>Tecnologia, otimização e desempenho para resultados reais.</p><a class="circle-link service-link" href="/servicos/seo-performance" data-service="SEO & Performance" aria-label="Saiba mais sobre SEO e Performance">→</a></div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
-  <section class="collection section-shell flow-section" id="colecao" aria-labelledby="collection-title">
+  <section class="collection section-shell" id="colecao" aria-labelledby="collection-title">
     <div class="container collection-layout">
-      <div class="collection-intro"><p class="section-index">03. COLEÇÃO AVERO</p><h2 id="collection-title">Ainda não sabe <br>como seu site <br>deveria parecer?</h2><p>Explore algumas direções criadas pela Avero e encontre um ponto de partida para o seu projeto. Cada estrutura pode ser adaptada à identidade, ao conteúdo e aos objetivos do seu negócio.</p><a class="btn btn-outline" href="#catalogo">Explorar toda a Coleção <span aria-hidden="true">→</span></a></div>
-      <div class="collection-stage" id="catalogo"><div class="collection-controls"><button class="circle-link rail-prev" aria-label="Ver direção anterior">←</button><button class="circle-link rail-next" aria-label="Ver próxima direção">→</button></div><div class="collection-rail" tabindex="0" aria-label="Direções da Coleção Avero">
-        <article class="collection-card active"><img class="collection-image gastronomy" src="assets/collection-gastronomy.png" alt="Conceito de site e cardápio digital para gastronomia" width="1536" height="1152" loading="lazy" decoding="async"><div class="collection-copy"><h3>GASTRONOMIA</h3><p>Sites e cardápios digitais <br>para restaurantes e bares.</p></div></article>
-        <article class="collection-card"><img class="collection-image beauty" src="assets/collection-beauty.png" alt="Conceito de site para estética e beleza" width="1536" height="1152" loading="lazy" decoding="async"><div class="collection-copy"><h3>ESTÉTICA &amp; BELEZA</h3><p>Presença digital para <br>clínicas e profissionais.</p></div></article>
-        <article class="collection-card"><img class="collection-image health" src="assets/collection-health.png" alt="Conceito de site para clínicas e profissionais de saúde" width="1536" height="1152" loading="lazy" decoding="async"><div class="collection-copy"><h3>SAÚDE</h3><p>Sites institucionais <br>e páginas de conversão.</p></div></article>
-      <article class="collection-card"><img class="collection-image" src="assets/collection-architecture.png" alt="Conceito de site para Arquitetura &amp; Interiores" width="1536" height="1152" loading="lazy" decoding="async"><div class="collection-copy"><h3>ARQUITETURA &AMP; INTERIORES</h3><p>Presença digital para studios <br>e projetos com identidade.</p></div></article><article class="collection-card"><img class="collection-image" src="assets/service-landing.png" alt="Conceito de site para Serviços &amp; Consultoria" width="1536" height="1152" loading="lazy" decoding="async"><div class="collection-copy"><h3>SERVIÇOS &AMP; CONSULTORIA</h3><p>Clareza e confiança para <br>empresas e profissionais.</p></div></article><article class="collection-card"><img class="collection-image" src="assets/service-commerce.png" alt="Conceito de site para E-commerce &amp; Cardápios" width="1536" height="1152" loading="lazy" decoding="async"><div class="collection-copy"><h3>E-COMMERCE &AMP; CARDÁPIOS</h3><p>Experiências de compra <br>simples e bem direcionadas.</p></div></article></div><div class="collection-pagination" aria-label="Posição na coleção"><button class="active" aria-label="Ver Gastronomia" aria-current="true">01</button><button aria-label="Ver Estética e beleza">02</button><button aria-label="Ver Saúde">03</button><button aria-label="Ver Arquitetura e interiores">04</button><button aria-label="Ver Serviços e consultoria">05</button><button aria-label="Ver E-commerce e cardápios">06</button></div><p class="collection-note">Conceitos personalizáveis. Um ponto de partida para a sua marca.</p></div>
+      <div class="collection-intro"><h2 id="collection-title">Ainda não sabe <br>como seu site <br>deveria parecer?</h2><p>Explore algumas direções criadas pela Avero e encontre um ponto de partida para o seu projeto. Cada estrutura pode ser adaptada à identidade, ao conteúdo e aos objetivos do seu negócio.</p><a class="btn btn-outline" href="#catalogo">Explorar toda a Coleção <span aria-hidden="true">→</span></a></div>
+      <div class="collection-system" id="catalogo" role="region" aria-label="Direções personalizáveis da Coleção Avero">
+        <div class="collection-engine">
+          <svg class="collection-axis" viewBox="0 0 700 490" preserveAspectRatio="none" aria-hidden="true" focusable="false"><defs><linearGradient id="collection-orbit-fade"><stop stop-color="#7daacf" stop-opacity="0"/><stop offset=".45" stop-color="#7daacf" stop-opacity=".48"/><stop offset="1" stop-color="#7daacf" stop-opacity="0"/></linearGradient></defs><path d="M32 208 C72 38 420 2 607 114 C764 218 599 449 344 463"/><path d="M112 423 C215 489 534 456 604 285"/><circle cx="470" cy="230" r="3"/></svg>
+          <ol class="collection-pieces" id="collection-directions" role="list" aria-label="12 direções organizadas por setor" tabindex="0">
+          <li class="collection-piece" data-direction="gastronomia-v1" data-sector="gastronomia" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-01-GASTRONOMIA.png" data-provisional="false">
+            <article aria-labelledby="direction-gastronomia-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-01-GASTRONOMIA.png" alt="Conceito demonstrativo da Coleção Avero: Gastronomia." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-gastronomia-v1">Gastronomia</h3><p>A mesa como encontro entre origem e desejo.</p><a href="#contato" data-project="Gastronomia" aria-label="Explorar direção Gastronomia">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="arquitetura-interiores-v1" data-sector="arquitetura-interiores" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-02-ARQUITETURA-INTERIORES.png" data-provisional="false">
+            <article aria-labelledby="direction-arquitetura-interiores-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-02-ARQUITETURA-INTERIORES.png" alt="Conceito demonstrativo da Coleção Avero: Arquitetura &amp; Interiores." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-arquitetura-interiores-v1">Arquitetura &amp; Interiores</h3><p>Mostrar como uma decisão de desenho vira espaço vivido.</p><a href="#contato" data-project="Arquitetura &amp; Interiores" aria-label="Explorar direção Arquitetura &amp; Interiores">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="hotelaria-v1" data-sector="hotelaria" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-03-HOTELARIA.png" data-provisional="false">
+            <article aria-labelledby="direction-hotelaria-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-03-HOTELARIA.png" alt="Conceito demonstrativo da Coleção Avero: Hotelaria." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-hotelaria-v1">Hotelaria</h3><p>A estadia como aproximação com o ritmo da serra.</p><a href="#contato" data-project="Hotelaria" aria-label="Explorar direção Hotelaria">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="estetica-beleza-v1" data-sector="estetica-beleza" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-04-ESTETICA-BELEZA.png" data-provisional="false">
+            <article aria-labelledby="direction-estetica-beleza-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-04-ESTETICA-BELEZA.png" alt="Conceito demonstrativo da Coleção Avero: Estética &amp; Beleza." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-estetica-beleza-v1">Estética &amp; Beleza</h3><p>Cuidado individual com presença editorial e pele real.</p><a href="#contato" data-project="Estética &amp; Beleza" aria-label="Explorar direção Estética &amp; Beleza">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="saude-v1" data-sector="saude" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-05-SAUDE.jpg" data-provisional="false">
+            <article aria-labelledby="direction-saude-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-05-SAUDE.jpg" alt="Conceito demonstrativo da Coleção Avero: Saúde." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-saude-v1">Saúde</h3><p>A jornada de atendimento começa pela escuta.</p><a href="#contato" data-project="Saúde" aria-label="Explorar direção Saúde">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="moda-v1" data-sector="moda" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-06-MODA.png" data-provisional="false">
+            <article aria-labelledby="direction-moda-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-06-MODA.png" alt="Conceito demonstrativo da Coleção Avero: Moda." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-moda-v1">Moda</h3><p>Vestir como escolha de direção e atitude.</p><a href="#contato" data-project="Moda" aria-label="Explorar direção Moda">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="varejo-v1" data-sector="varejo" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-07-VAREJO.png" data-provisional="false">
+            <article aria-labelledby="direction-varejo-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-07-VAREJO.png" alt="Conceito demonstrativo da Coleção Avero: Varejo." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-varejo-v1">Varejo</h3><p>Curadoria útil que facilita escolhas de compra.</p><a href="#contato" data-project="Varejo" aria-label="Explorar direção Varejo">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="barbearia-v1" data-sector="barbearia" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-08-BARBEARIA.png" data-provisional="false">
+            <article aria-labelledby="direction-barbearia-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-08-BARBEARIA.png" alt="Conceito demonstrativo da Coleção Avero: Barbearia." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-barbearia-v1">Barbearia</h3><p>O corte como cuidado com a presença cotidiana.</p><a href="#contato" data-project="Barbearia" aria-label="Explorar direção Barbearia">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="coquetelaria-v1" data-sector="coquetelaria" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-09-COQUETELARIA.jpg" data-provisional="false">
+            <article aria-labelledby="direction-coquetelaria-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-09-COQUETELARIA.jpg" alt="Conceito demonstrativo da Coleção Avero: Coquetelaria." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-coquetelaria-v1">Coquetelaria</h3><p>O primeiro gole inicia uma experiência de encontro.</p><a href="#contato" data-project="Coquetelaria" aria-label="Explorar direção Coquetelaria">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="moveis-planejados-v1" data-sector="moveis-planejados" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-10-MOVEIS-PLANEJADOS.png" data-provisional="false">
+            <article aria-labelledby="direction-moveis-planejados-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-10-MOVEIS-PLANEJADOS.png" alt="Conceito demonstrativo da Coleção Avero: Móveis Planejados." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-moveis-planejados-v1">Móveis Planejados</h3><p>A personalização aparece no uso e no detalhe construtivo.</p><a href="#contato" data-project="Móveis Planejados" aria-label="Explorar direção Móveis Planejados">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="institucional-premium-v1" data-sector="institucional-premium" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-11-INSTITUCIONAL-PREMIUM.jpg" data-provisional="false">
+            <article aria-labelledby="direction-institucional-premium-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-11-INSTITUCIONAL-PREMIUM.jpg" alt="Conceito demonstrativo da Coleção Avero: Institucional Premium." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-institucional-premium-v1">Institucional Premium</h3><p>Clareza estratégica com acompanhamento estruturado.</p><a href="#contato" data-project="Institucional Premium" aria-label="Explorar direção Institucional Premium">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          <li class="collection-piece" data-direction="solucao-tecnologica-comercial-v1" data-sector="solucao-tecnologica-comercial" data-variant="01" data-thumbnail="assets/colecao-avero/v2/COLECAO-AVERO-12-SOLUCAO-TECNOLOGICA-COMERCIAL.png" data-provisional="false">
+            <article aria-labelledby="direction-solucao-tecnologica-comercial-v1">
+              <div class="collection-piece-visual"><img src="assets/colecao-avero/v2/COLECAO-AVERO-12-SOLUCAO-TECNOLOGICA-COMERCIAL.png" alt="Conceito demonstrativo da Coleção Avero: Solução Tecnológica / Comercial." width="1536" height="1024" loading="lazy" decoding="async"></div>
+              <div class="collection-piece-copy"><h3 id="direction-solucao-tecnologica-comercial-v1">Solução Tecnológica / Comercial</h3><p>Explicar como um pedido atravessa as etapas do negócio.</p><a href="#contato" data-project="Solução Tecnológica / Comercial" aria-label="Explorar direção Solução Tecnológica / Comercial">Explorar direção <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </li>
+          </ol>
+        </div>
+        <div class="collection-navigation" role="group" aria-label="Navegação da Coleção" hidden><button type="button" class="circle-link collection-previous" aria-controls="collection-directions" aria-label="Ver direção anterior">←</button><span class="collection-position" aria-label="Direção 1 de 12"><span class="collection-current">01</span><span aria-hidden="true"> / </span><span class="collection-total">12</span></span><button type="button" class="circle-link collection-next" aria-controls="collection-directions" aria-label="Ver próxima direção">→</button><button type="button" class="collection-ambient-toggle" aria-pressed="false" aria-label="Pausar movimento do conjunto" hidden><span aria-hidden="true">Ⅱ</span></button></div>
+        <p class="collection-note">Conceitos personalizáveis. Um ponto de partida para a sua marca.</p>
+        <p class="sr-only collection-announcement" role="status" aria-atomic="true"></p>
+      </div>
     </div>
   </section>
-  <section class="projects section-shell" id="projetos" aria-labelledby="projects-title"><div class="container project-grid">
-    <article class="project-card featured"><img class="featured-art" src="assets/project-nicota.png" alt="Stúdio Nicota: site de arquitetura em computador e celular" width="1536" height="1152" loading="lazy" decoding="async"><div class="projects-intro"><p class="section-index">04. PROJETOS</p><h2 id="projects-title">Cada negócio pede <br>uma direção diferente.</h2><p>Projetos construídos a partir do contexto, <br>da identidade e dos objetivos de cada marca.</p></div><div class="project-meta"><h3>STÚDIO NICOTA</h3><p>Arquitetura &amp; Interiores</p><div class="project-tags"><span>Conceito Avero</span><span>2026</span></div><a class="project-cta" href="#contato" data-project="Stúdio Nicota">Explorar projeto <span aria-hidden="true">→</span></a></div></article>
-    <div class="project-side"><a class="btn btn-outline all-projects" href="#project-list">Ver todos os projetos <span aria-hidden="true">→</span></a><div id="project-list">
-      <article class="project-card small"><img class="project-image clinic" src="assets/project-clinic.png" alt="Projeto de clínica em computador e celular" width="1536" height="1152" loading="lazy" decoding="async"><div class="project-small-copy"><h3>VÉRTICE CLÍNICA</h3><p>Saúde &amp; Bem-estar</p><div class="project-tags"><span>Conceito Avero</span><span>2026</span></div></div><a class="circle-link project-cta" href="#contato" data-project="Vértice Clínica" aria-label="Conversar sobre a direção Vértice Clínica">→</a></article>
-      <article class="project-card small"><img class="project-image restaurant" src="assets/project-sabor.png" alt="Projeto de gastronomia em computador e celular" width="1536" height="1152" loading="lazy" decoding="async"><div class="project-small-copy"><h3>SABOR REAL</h3><p>Gastronomia</p><div class="project-tags"><span>Demo personalizada</span><span>2026</span></div></div><a class="circle-link project-cta" href="#contato" data-project="Sabor Real" aria-label="Conversar sobre a direção Sabor Real">→</a></article>
-    </div></div>
-<div class="project-carousel-controls"><button class="circle-link project-prev" aria-label="Ver projeto anterior">←</button><div class="project-pagination" aria-label="Projetos em destaque"><button class="active" aria-label="Ver Stúdio Nicota" aria-current="true">01</button><button aria-label="Ver Vértice Clínica">02</button><button aria-label="Ver Sabor Real">03</button></div><button class="circle-link project-next" aria-label="Ver próximo projeto">→</button><p class="sr-only project-announcement" role="status"></p></div>  </div></section>
-  <section class="method section-shell flow-section" id="sobre" aria-labelledby="method-title"><div class="container method-layout"><div><p class="section-index">05. MÉTODO AVERO</p><h2 id="method-title">Antes de construir, <br>precisamos enxergar.</h2><p>Cada projeto começa entendendo o negócio, <br>o momento da marca e o que o digital precisa resolver. <br>Depois, transformamos essa visão em direção, <br>experiência e execução.</p><a class="btn btn-outline" href="#metodo">Conheça nosso método <span aria-hidden="true">→</span></a></div><ol class="timeline" id="metodo"><li><span>01</span><div><h3>IMERSÃO</h3><p>Entender antes de propor.</p></div></li><li><span>02</span><div><h3>DIREÇÃO</h3><p>Definir antes de desenhar.</p></div></li><li><span>03</span><div><h3>CRIAÇÃO</h3><p>Transformar estratégia em experiência.</p></div></li><li><span>04</span><div><h3>EVOLUÇÃO</h3><p>O lançamento não precisa ser o fim.</p></div></li></ol></div></section>
-  <section class="perspective section-shell" aria-labelledby="perspective-title"><div class="container"><p class="section-index">06. PERSPECTIVA</p><div class="perspective-grid"><h2 id="perspective-title">Não é sobre <br>estar online.</h2><div class="perspective-eye" aria-hidden="true"></div><div class="perspective-copy"><h3>É sobre como <br>sua empresa é percebida <br>quando alguém <br>encontra você.</h3><p>Percepção gera confiança. <br>Confiança abre oportunidades.</p></div></div><div class="perspective-sign">VISÃO · MOVIMENTO · RESULTADOS<p>Estratégia, design e tecnologia para transformar presença digital em resultados reais.</p></div></div></section>
-  <section class="contact section-shell flow-section" id="contato" aria-labelledby="contact-title"><div class="container contact-layout"><div><p class="section-index">07. CTA FINAL</p><h2 id="contact-title">Seu próximo <br>movimento <br>começa aqui.</h2><p>Se você quer transformar a presença digital <br>do seu negócio em algo mais claro, estratégico <br>e profissional, a Avero pode ajudar a construir <br>esse próximo passo.</p><p>Você não precisa chegar com tudo resolvido. <br>Às vezes, uma boa conversa já é o começo da direção certa.</p><div class="actions"><a class="btn btn-primary" href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">Falar sobre meu projeto <span aria-hidden="true">→</span></a><a class="btn btn-outline" href="#colecao">Explorar a Coleção <span aria-hidden="true">→</span></a></div><p class="contact-note"><span aria-hidden="true">◉</span> Projetos personalizados para a realidade e o momento de cada negócio.</p></div>
+  <section class="projects section-shell" id="projetos" aria-labelledby="projects-title">
+    <div class="container project-showcase">
+      <div class="projects-intro">
+        <h2 id="projects-title">Cada negócio pede <br>uma direção diferente.</h2>
+        <p>Projetos construídos a partir do contexto, da identidade e dos objetivos de cada marca.</p>
+      </div>
+      <div class="project-viewport" role="region" aria-roledescription="carrossel" aria-label="Vitrine de projetos" tabindex="0">
+        <div class="project-track" id="project-list">
+          <article class="project-slide" aria-labelledby="project-atelier-forma-name">
+            <div class="project-visual"><img class="project-art" src="assets/project-atelier-forma.jpg" alt="Atelier Forma: projeto conceitual de interiores em notebook e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
+            <div class="project-details">
+              <div class="project-identity"><h3 id="project-atelier-forma-name">ATELIER FORMA</h3><p>Arquitetura &amp; Interiores</p><div class="project-tags"><span>Projeto conceitual AVERO</span><span>2026</span></div></div>
+              <a class="project-cta" href="https://avero-concept-interiores.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Abrir demo do Atelier Forma em nova aba">Explorar projeto <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+          <article class="project-slide" aria-labelledby="project-estudio-lume-name">
+            <div class="project-visual"><img class="project-art" src="assets/project-estudio-lume.jpg" alt="Estúdio Lume: projeto conceitual de arquitetura em notebook e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
+            <div class="project-details">
+              <div class="project-identity"><h3 id="project-estudio-lume-name">ESTÚDIO LUME</h3><p>Arquitetura autoral</p><div class="project-tags"><span>Projeto conceitual AVERO</span><span>2026</span></div></div>
+              <a class="project-cta" href="https://avero-arquitetura-conceitual.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Abrir demo do Estúdio Lume em nova aba">Explorar projeto <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+          <article class="project-slide" aria-labelledby="project-essentia-odonto-name">
+            <div class="project-visual"><img class="project-art" src="assets/project-essentia-odonto.jpg" alt="Essentia Odonto: projeto conceitual de odontologia em notebook e celular" width="1536" height="1152" loading="lazy" decoding="async"></div>
+            <div class="project-details">
+              <div class="project-identity"><h3 id="project-essentia-odonto-name">ESSENTIA ODONTO</h3><p>Saúde &amp; Odontologia</p><div class="project-tags"><span>Projeto conceitual AVERO</span><span>2026</span></div></div>
+              <a class="project-cta" href="https://essentia-odonto-demo.vercel.app/" target="_blank" rel="noopener noreferrer" aria-label="Abrir demo da Essentia Odonto em nova aba">Explorar projeto <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        </div>
+      </div>
+      <div class="project-showcase-footer">
+        <div class="project-carousel-controls" role="group" aria-label="Controles dos projetos" hidden>
+          <button type="button" class="circle-link project-prev" aria-controls="project-list" aria-label="Ver projeto anterior">←</button>
+          <div class="project-pagination" role="group" aria-label="Projetos em destaque">
+            <button type="button" aria-controls="project-list" aria-label="Ver Atelier Forma" aria-current="true" class="active">01</button>
+            <button type="button" aria-controls="project-list" aria-label="Ver Estúdio Lume">02</button>
+            <button type="button" aria-controls="project-list" aria-label="Ver Essentia Odonto">03</button>
+          </div>
+          <button type="button" class="circle-link project-next" aria-controls="project-list" aria-label="Ver próximo projeto">→</button>
+        </div>
+        <a class="all-projects" href="#project-list">Ver todos os projetos <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="sr-only project-announcement" role="status" aria-atomic="true"></p>
+    </div>
+  </section>
+  <section class="method section-shell" id="sobre" aria-labelledby="method-title">
+    <div class="container method-layout">
+      <div class="method-intro">
+        <h2 id="method-title">Antes de construir, <br>precisamos enxergar.</h2>
+        <p>Cada projeto começa entendendo o negócio, o momento da marca e o que o digital precisa resolver. Depois, transformamos essa visão em direção, experiência e execução.</p>
+      </div>
+      <div class="method-journey">
+        <div class="method-route" data-motion="static">
+          <svg class="method-path method-path--desktop" viewBox="0 0 600 460" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <defs><linearGradient id="method-desktop-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0"><stop offset="0" stop-color="var(--line)" stop-opacity="0"/><stop offset="0.16" stop-color="var(--line)" stop-opacity="0.58"/><stop offset="0.66" stop-color="var(--line)" stop-opacity="0.58"/><stop offset="0.84" stop-color="var(--line)" stop-opacity="0.4"/><stop offset="0.93" stop-color="var(--line)" stop-opacity="0.2"/><stop offset="1" stop-color="var(--line)" stop-opacity="0"/></linearGradient></defs>
+            <path d="M4 0 C20 0 34 4 34 24.35 C34 64.7 60 84 118 90 C236 102.206897 540 109.35 565 134.35 C590 159.35 590 199.95 565 244.35 C540 288.75 462 309.310345 330 315 C214 320 40 314 40 354.35 C40 374 18 374 4 374"/>
+            <g class="method-nodes"><circle cx="34" cy="24.35" r="3"/><circle cx="565" cy="134.35" r="3"/><circle cx="565" cy="244.35" r="3"/><circle cx="40" cy="354.35" r="3"/></g>
+          </svg>
+          <svg class="method-path method-path--mobile" viewBox="0 0 400 460" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <defs><linearGradient id="method-mobile-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="0"><stop offset="0" stop-color="var(--line)" stop-opacity="0"/><stop offset="0.16" stop-color="var(--line)" stop-opacity="0.58"/><stop offset="0.66" stop-color="var(--line)" stop-opacity="0.58"/><stop offset="0.84" stop-color="var(--line)" stop-opacity="0.4"/><stop offset="0.93" stop-color="var(--line)" stop-opacity="0.2"/><stop offset="1" stop-color="var(--line)" stop-opacity="0"/></linearGradient></defs>
+            <path d="M4 2 C36 2 75 4 75 26.66 C75 66 97 88 148 96 C215 106.509804 339 112.68 362 136.18 C385 159.68 362 201.21 362 245.71 C362 296.71 398 330 290 330 C182 330 75 330 75 355.24 C75 389 30 371 4 371"/>
+            <g class="method-nodes"><circle cx="75" cy="26.66" r="3"/><circle cx="362" cy="136.18" r="3"/><circle cx="362" cy="245.71" r="3"/><circle cx="75" cy="355.24" r="3"/></g>
+          </svg>
+          <svg class="method-path method-path--phone" viewBox="0 0 400 460" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <defs><linearGradient id="method-phone-fade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="400" y2="0"><stop offset="0" stop-color="var(--line)" stop-opacity="0"/><stop offset="0.16" stop-color="var(--line)" stop-opacity="0.58"/><stop offset="0.66" stop-color="var(--line)" stop-opacity="0.58"/><stop offset="0.84" stop-color="var(--line)" stop-opacity="0.4"/><stop offset="0.93" stop-color="var(--line)" stop-opacity="0.2"/><stop offset="1" stop-color="var(--line)" stop-opacity="0"/></linearGradient></defs>
+            <path d="M4 2 C36 2 75 4 75 26 C75 66 97 88 148 96 C215 106.509804 339 112 362 135.5 C385 159 362 200.5 362 245 C362 296 398 330 290 330 C182 330 75 330 75 354.5 C75 389 30 371 4 371"/>
+            <g class="method-nodes"><circle cx="75" cy="26" r="3"/><circle cx="362" cy="135.5" r="3"/><circle cx="362" cy="245" r="3"/><circle cx="75" cy="354.5" r="3"/></g>
+          </svg>
+          <ol class="method-stages" id="metodo" role="list" aria-label="Etapas do Método Avero">
+            <li><div class="method-step-copy"><h3>IMERSÃO</h3><p>Entender antes de propor.</p></div></li>
+            <li><div class="method-step-copy"><h3>DIREÇÃO</h3><p>Definir antes de desenhar.</p></div></li>
+            <li><div class="method-step-copy"><h3>CRIAÇÃO</h3><p>Transformar estratégia em experiência.</p></div></li>
+            <li><div class="method-step-copy"><h3>EVOLUÇÃO</h3><p>O lançamento não precisa ser o fim.</p></div></li>
+          </ol>
+        </div>
+        <p class="method-closure">Clareza durante o processo.<br>Intenção em cada decisão.</p>
+      </div>
+    </div>
+  </section>
+  <section class="perspective section-shell" id="perspectiva" aria-labelledby="perspective-title">
+    <div class="container">
+      <div class="perspective-grid">
+        <h2 id="perspective-title">Não é sobre <br>estar online.</h2>
+        <div class="perspective-eye" aria-hidden="true" data-motion="static"></div>
+        <div class="perspective-copy"><h3>É sobre como <br>sua empresa é percebida <br>quando alguém <br>encontra você.</h3></div>
+      </div>
+      <p class="perspective-closure">Percepção gera confiança.<br>Confiança abre oportunidades.</p>
+      <div class="perspective-sign">VISÃO · MOVIMENTO · RESULTADOS<p>Estratégia, design e tecnologia para transformar presença digital em resultados reais.</p></div>
+    </div>
+  </section>
+  <section class="contact section-shell" id="contato" aria-labelledby="contact-title"><div class="container contact-layout"><div><h2 id="contact-title">Seu próximo <br>movimento <br>começa aqui.</h2><p>Se você quer transformar a presença digital <br>do seu negócio em algo mais claro, estratégico <br>e profissional, a Avero pode ajudar a construir <br>esse próximo passo.</p><p>Você não precisa chegar com tudo resolvido. <br>Às vezes, uma boa conversa já é o começo da direção certa.</p><div class="actions"><a class="btn btn-primary" href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">Falar sobre meu projeto <span aria-hidden="true">→</span></a><a class="btn btn-outline" href="#colecao">Explorar a Coleção <span aria-hidden="true">→</span></a></div><p class="contact-note"><span aria-hidden="true">◉</span> Projetos personalizados para a realidade e o momento de cada negócio.</p></div>
     <form class="contact-card"><h3>COMEÇAR CONVERSA</h3><p>Conte o essencial. O resto a gente constrói junto.</p><label class="sr-only" for="nome">Nome</label><input id="nome" name="nome" autocomplete="name" placeholder="Nome" required maxlength="100"><label class="sr-only" for="marca">Negócio / Marca</label><input id="marca" name="marca" autocomplete="organization" placeholder="Negócio / Marca" required maxlength="150"><label class="sr-only" for="mensagem">O que você precisa resolver?</label><textarea id="mensagem" name="mensagem" placeholder="O que você precisa resolver?" rows="2" required maxlength="1500"></textarea><fieldset class="chips"><legend class="sr-only">Tipo de projeto</legend><button type="button" aria-pressed="false">Site institucional</button><button type="button" aria-pressed="false">Landing page</button><button type="button" aria-pressed="false">Coleção Avero</button><button type="button" aria-pressed="false">Redesign</button><button type="button" aria-pressed="false">Ainda não sei</button></fieldset><button class="btn btn-primary full" type="submit">Começar conversa <span aria-hidden="true">→</span></button><p class="form-status" role="status"></p><a class="whatsapp" href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">Prefiro falar no WhatsApp <span aria-hidden="true">→</span></a></form>
   </div></section>
 </main>
-<footer class="footer"><div class="container footer-grid"><div><a class="brand" href="#top" aria-label="AVERO Studio — início"><span class="brand-art" role="img" aria-label="AVERO Studio"></span></a><p class="footer-tagline">Sites que impulsionam negócios.</p><p>Estratégia, design e tecnologia para negócios <br>que querem construir uma presença digital mais forte.</p></div><div><h3>EXPLORAR</h3><a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção Avero</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a></div><div><h3>CONTATO</h3><a class="btn btn-outline" href="#contato">Falar sobre meu projeto <span aria-hidden="true">→</span></a><a href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">◉ &nbsp; WhatsApp</a><a href="mailto:contato@avero.studio">✉ &nbsp; contato@avero.studio</a><span>◎ &nbsp; Instagram</span></div></div><div class="container footer-bottom"><span>Visão. Movimento. Resultados.</span><span>© 2026 AVERO Studio</span></div></footer>
+<footer class="footer"><div class="container footer-grid"><div><a class="brand" href="#top" aria-label="AVERO Studio — início"><span class="brand-art" role="img" aria-label="AVERO Studio"><img src="assets/avero-wordmark-provisional-01-16a.png" alt="" width="2172" height="724" decoding="async"></span></a><p class="footer-tagline">Sites que impulsionam negócios.</p><p>Estratégia, design e tecnologia para negócios <br>que querem construir uma presença digital mais forte.</p></div><div><h3>EXPLORAR</h3><a href="#top">Início</a><a href="#servicos">Serviços</a><a href="#colecao">Coleção Avero</a><a href="#projetos">Projetos</a><a href="#sobre">Sobre</a><a href="#contato">Contato</a></div><div><h3>CONTATO</h3><a class="btn btn-outline" href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">Falar sobre meu projeto <span aria-hidden="true">→</span></a><a href="https://wa.me/5534997374006" target="_blank" rel="noopener noreferrer">◉ &nbsp; WhatsApp</a><a href="mailto:avero.studio01@gmail.com">✉ &nbsp; avero.studio01@gmail.com</a><a href="https://www.instagram.com/_avero.studio/" target="_blank" rel="noopener noreferrer">◎ &nbsp; Instagram</a></div></div><div class="container footer-bottom"><span>Visão. Movimento. Resultados.</span><span>© 2026 AVERO Studio</span></div></footer>
 </body>
 </html>
